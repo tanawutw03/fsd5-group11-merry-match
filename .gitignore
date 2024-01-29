@@ -1,0 +1,35 @@
+# Ignore directories containing dependencies
+/node_modules
+
+# Ignore macOS metadata files
+**/.DS_Store
+
+# Ignore any temporary build or cache files
+**/.cache
+**/build/*
+
+# Ignore generated documentation files
+**/docs/build/*
+
+# Ignore log files
+**/logs/*
+
+# Ignore environment files (modify these names based on your project)
+/.env
+/.env.prod
+
+# Ignore any local configuration files
+/.config/*
+
+# Ignore Vim swap files
+*.swp
+
+# Ignore IDEA project files
+.idea/*
+
+# Ignore VS Code settings
+.vscode/*
+
+# Add any other files or patterns you want to ignore here
+
+# End of gitignore
