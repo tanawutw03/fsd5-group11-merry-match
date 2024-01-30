@@ -2,8 +2,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import { Link } from "react-router-dom";
 import Matching from "./pages/Matching";
+<<<<<<< HEAD
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
+=======
+import NonUserHomePage from "./pages/NonUserHomePage";
+
+>>>>>>> 08a39e1 (feat:add non user landing page)
 const NoMatch = () => {
   return (
     <div className="h-screen text-5xl flex flex-col justify-center items-center gap-5">
@@ -20,6 +25,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="*" element={<NoMatch />} />
+        <Route path="/nonuser" element={<NonUserHomePage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/matching" element={<Matching />} />
         <Route path="/register" element={<RegisterPage />} />
