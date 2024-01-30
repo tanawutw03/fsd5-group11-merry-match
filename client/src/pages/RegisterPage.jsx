@@ -63,6 +63,7 @@ const RegisterPage = () => {
             {...register("dob", { required: true })}
             className="border-2"
             placeholder="01/01/2022"
+            type="date"
           />
           {errors.dob && <span>This field is required</span>}
 
