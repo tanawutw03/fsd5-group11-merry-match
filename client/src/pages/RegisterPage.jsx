@@ -1,27 +1,15 @@
 import { useForm } from "react-hook-form";
-import Select from "react-select";
-import { Country } from "country-state-city";
-import { useState, useEffect } from "react";
+import InputSelect from "../components/common/InputSelect";
 
 const RegisterPage = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm();
-  const [countries, setCountries] = useState([]); // State to store countries
-  const [selectedOption, setSelectedOption] = useState(null);
 
   const onSubmit = (data) => console.log(data);
-
-  useEffect(() => {
-    // Fetch countries data within a useEffect hook
-    async function fetchCountries() {
-      const fetchedCountries = await Country.getAllCountries();
-      setCountries(fetchedCountries);
-    }
-    fetchCountries();
-  }, []);
 
   return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
@@ -41,22 +29,7 @@ const RegisterPage = () => {
           />
           {errors.name && <span>This field is required</span>}
 
-          <label htmlFor="location">Location</label>
-          <Select
-            defaultValue={selectedOption}
-            {...register("location", { required: true })}
-            onChange={setSelectedOption}
-            options={countries.map((country) => ({
-              value: country.name, // Use country.name as value for Select
-              label: country.name,
-            }))}
-            isSearchable
-            // Add loading state while fetching countries
-            isLoading={!countries.length}
-            placeholder={
-              !countries.length ? "Loading countries..." : "Select a country"
-            }
-          />
+          <InputSelect control={control} name="location" label="Location" />
 
           <label htmlFor="username">Username</label>
           <input
@@ -97,13 +70,13 @@ const RegisterPage = () => {
           {errors.email && <span>This field is required</span>}
 
           <input
-            {...register("password", { required: true })}
+            {...register("confirm-password", { required: true })}
             className="border-2"
             placeholder="At least 8 characters"
           />
           {errors.password && <span>This field is required</span>}
         </div>
-        <input type="submit" className="" />
+        <input type="submit" />
       </form>
     </div>
   );
