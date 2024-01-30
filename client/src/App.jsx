@@ -8,7 +8,12 @@ import LoginPage from "./pages/LoginPage";
 =======
 import NonUserHomePage from "./pages/NonUserHomePage";
 
+<<<<<<< HEAD
 >>>>>>> 08a39e1 (feat:add non user landing page)
+=======
+import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/LoginPage";
+>>>>>>> 892dcb8 (fix: resolve rebase conflict)
 const NoMatch = () => {
   return (
     <div className="h-screen text-5xl flex flex-col justify-center items-center gap-5">
