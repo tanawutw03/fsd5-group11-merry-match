@@ -18,7 +18,7 @@ function NonUserHomePage() {
   };
   return (
     <div className=" min-w-[1440px] bg-white z-auto flex flex-col items-center">
-      <navbar className="bg-white w-[1440px] flex flex-row justify-between items-center h-[88px] font-nunito z-10">
+      <nav className="bg-white w-[1440px] flex flex-row justify-between items-center h-[88px] font-nunito z-10">
         <img src={logo} className="px-[40px] z-50" />
         <div className=" flex w-1/3 flex-row justify-around items-center font-nunito z-40">
           <Button
@@ -37,7 +37,7 @@ function NonUserHomePage() {
           </Button>
           <Button colorScheme="pink">Register</Button>
         </div>
-      </navbar>
+      </nav>
       <header className="bg-[#160404] w-[1440px] h-[758px] flex flex-col justify-center items-center font-nunito relative overflow-hidden">
         <img
           src={image1}
