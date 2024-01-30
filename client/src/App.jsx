@@ -20,7 +20,6 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="*" element={<NoMatch />} />
-        <Route path="/" element={<HomePage />} />
         <Route path="/matching" element={<Matching />} />
         <Route path="/test" element={<HomePage />} />
         <Route path="/" element={<MerryPackagePage />} />
