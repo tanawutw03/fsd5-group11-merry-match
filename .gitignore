@@ -15,8 +15,8 @@
 **/logs/*
 
 # Ignore environment files (modify these names based on your project)
-/.env
-/.env.prod
+**/.env
+**/.env.prod
 
 # Ignore any local configuration files
 /.config/*
