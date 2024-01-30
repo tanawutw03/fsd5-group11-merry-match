@@ -5,6 +5,7 @@ import Matching from "./pages/Matching";
 import RegisterPage from "./pages/RegisterPage";
 import NonUserHomePage from "./pages/NonUserHomePage";
 import MerryPackagePage from "./pages/MerryPackagePage";
+import LoginPage from "./pages/LoginPage";
 
 const NoMatch = () => {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="*" element={<NoMatch />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/nonuser" element={<NonUserHomePage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/matching" element={<Matching />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/package" element={<MerryPackagePage />} />
