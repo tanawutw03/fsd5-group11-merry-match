@@ -1,5 +1,5 @@
 # Ignore directories containing dependencies
-/node_modules
+node_modules
 
 # Ignore macOS metadata files
 **/.DS_Store
