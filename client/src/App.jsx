@@ -2,7 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import { Link } from "react-router-dom";
 import Matching from "./pages/Matching";
-
+import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/LoginPage";
 const NoMatch = () => {
   return (
     <div className="h-screen text-5xl flex flex-col justify-center items-center gap-5">
@@ -21,6 +22,7 @@ function App() {
         <Route path="*" element={<NoMatch />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/matching" element={<Matching />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </BrowserRouter>
   );
