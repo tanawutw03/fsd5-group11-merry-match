@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import Matching from "./pages/Matching";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
+import NonUserHomePage from "./pages/NonUserHomePage";
+
 const NoMatch = () => {
   return (
     <div className="h-screen text-5xl flex flex-col justify-center items-center gap-5">
@@ -20,9 +22,11 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="*" element={<NoMatch />} />
-        <Route path="/nonuser" element={<NonUserHomePage />} />
         <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/nonuser" element={<NonUserHomePage />} />
         <Route path="/matching" element={<Matching />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </BrowserRouter>
   );

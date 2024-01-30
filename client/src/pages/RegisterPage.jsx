@@ -18,6 +18,12 @@ const RegisterPage = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-2 gap-5"
       >
+        <div className=" justify-start">
+          <div>Register</div>
+          <div className="text-5xl max-w-md h-28 text-[#A62D82]">
+            Join us and start matching
+          </div>
+        </div>
         <div className="h-fit w-[450px] flex flex-col border-2 border-blue-700 ">
           <label htmlFor="name">Name</label>
           <input
@@ -53,7 +59,6 @@ const RegisterPage = () => {
             className="border-2"
             placeholder="01/01/2022"
           />
-          {errors.dob && <span>This field is required</span>}
 
           <input
             {...register("city", { required: true })}
@@ -76,7 +81,6 @@ const RegisterPage = () => {
           />
           {errors.password && <span>This field is required</span>}
         </div>
-        <input type="submit" />
       </form>
     </div>
   );
