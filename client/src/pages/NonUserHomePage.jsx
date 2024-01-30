@@ -1,5 +1,4 @@
-import React from "react";
-import { Button, ButtonGroup } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import logo from "../assets/NonUserHomePage/logo.png";
 import image1 from "../assets/NonUserHomePage/image-1.png";
 import image2 from "../assets/NonUserHomePage/image-2.png";
@@ -168,7 +167,7 @@ function NonUserHomePage() {
         </div>
       </section>
       <footer className="flex w-[1440px] h-96 px-8 justify-center items-center bg-gray-100">
-        <div className="flex flex-col items-center w-1120 h-64 justify-between flex-shrink-0 justify-between">
+        <div className="flex flex-col items-center w-1120 h-64  flex-shrink-0 justify-between">
           <div className="flex flex-col items-center">
             <img src={logofooter} />
             <div className="text-gray-700 text-center font-nunito text-[20px] font-semibold leading-150">
