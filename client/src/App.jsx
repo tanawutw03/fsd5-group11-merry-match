@@ -1,9 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
 import { Link } from "react-router-dom";
+import HomePage from "./pages/HomePage";
 import Matching from "./pages/Matching";
 import RegisterPage from "./pages/RegisterPage";
-import LoginPage from "./pages/LoginPage";
 import NonUserHomePage from "./pages/NonUserHomePage";
 
 const NoMatch = () => {
@@ -23,7 +22,6 @@ function App() {
       <Routes>
         <Route path="*" element={<NoMatch />} />
         <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
         <Route path="/nonuser" element={<NonUserHomePage />} />
         <Route path="/matching" element={<Matching />} />
         <Route path="/register" element={<RegisterPage />} />
