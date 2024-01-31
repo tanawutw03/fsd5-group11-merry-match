@@ -3,6 +3,7 @@ import InputSelect from "../components/common/InputSelect.jsx";
 import { supabase } from "../utils/supabaseClient.js";
 import ChakraButton from "./common/ChakraButton.jsx";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 
 function Step1Inputs() {
   const {
@@ -12,11 +13,13 @@ function Step1Inputs() {
     control,
   } = useForm();
   const navigate = useNavigate();
+  const [userId, setUserId] = useState(null);
+  const formDataRef = useRef(null);
 
   const onSubmit = async (formData) => {
     console.log(formData);
+    formDataRef.current = formData; // Store formData in the ref
     try {
-      // Step 1: Sign up the user
       const { data: signUpData, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -29,70 +32,61 @@ function Step1Inputs() {
       } else {
         console.log("User signed up successfully:", signUpData.user.id);
 
-        alert(
-          "We just sent you a magic link to your email - click it to activate your account and start merry!"
-        );
-
-        // Step 2: Fetch user data using the UUID from signUp
-        const { data: userData, error: fetchError } =
-          await supabase.auth.getUser(signUpData.user.id);
-
-        if (fetchError) {
-          console.error("Error fetching user data:", fetchError.message);
-        } else {
-          // Step 3: Insert user data into the 'users' table
-          const { data: insertData, error: insertError } = await supabase
-            .from("users")
-            .insert({
-              // user_id: userData.id, // Ensure consistency with fetched UUID
-              username: formData.username,
-              email: formData.email,
-              password: formData.password,
-              // name: formData.name,
-              // city: formData.city,
-              // dob: formData.dob,
-              // location: formData.location,
-            })
-            .select();
-
-          console.log(insertData);
-
-          if (insertError) {
-            console.error("Error inserting user data:", insertError.message);
-          } else {
-            console.log("User data inserted successfully:", userData);
-            // You can redirect the user to another page or perform additional actions here
-          }
-          // Step 4: Upload profile pictures
-          const pictures = formData.profilePictures;
-
-          if (pictures.length < 2 || pictures.length > 5) {
-            console.error("Please upload between 2 and 5 profile pictures");
-            return;
-          }
-
-          // Example: Upload pictures to Supabase storage
-          const { data: uploadData, error: uploadError } =
-            await supabase.storage
-              .from("profile-pictures")
-              .upload("user-id/profile-picture", pictures, {
-                cacheControl: "3600",
-              });
-
-          if (uploadError) {
-            console.error(
-              "Error uploading profile pictures:",
-              uploadError.message
-            );
-          } else {
-            console.log("Profile pictures uploaded successfully:", uploadData);
-          }
-        }
+        setUserId(signUpData.user.id);
       }
     } catch (error) {
       console.error("Error:", error.message);
     }
   };
+
+  useEffect(() => {
+    const checkUserAuthentication = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        console.error("User not authenticated");
+        return;
+      }
+
+      if (userId !== null) {
+        console.log("userId:", userId);
+
+        const insertUserData = async () => {
+          try {
+            const { data: insertData, error: insertError } = await supabase
+              .from("profiles")
+              .upsert({
+                id: userId,
+                username: formDataRef.current.username,
+                full_name: formDataRef.current.name,
+                country: formDataRef.current.location,
+                city: formDataRef.current.city,
+                email: formDataRef.current.email,
+                date_of_birth: formDataRef.current.dob,
+                updated_at: new Date(),
+              })
+              .select();
+
+            console.log(insertData, insertError);
+
+            if (insertError) {
+              console.error("Error inserting user data:", insertError.message);
+            } else {
+              console.log("User data inserted successfully:", insertData);
+            }
+          } catch (error) {
+            console.error("Error inserting user data:", error.message);
+          }
+        };
+
+        insertUserData();
+      }
+    };
+
+    checkUserAuthentication();
+  }, [userId]);
 
   const handleNext = () => {
     navigate("/register2");
