@@ -69,18 +69,19 @@ function MerryCards() {
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
       {dataLoaded && !isLoading && !error && people.length > 0 && (
-        <div className="h-screen flex justify-center items-center gap-5">
+        <div className="h-[350px] w-[500px] flex justify-center items-center gap-5 border-2 overflow-hidden  ">
           {people.map((person) => (
             <TinderCard
+              className=" absolute"
               key={person.name}
               onSwipe={onSwipe}
               onCardLeftScreen={() => onCardLeftScreen(person.name)}
             >
               <div
-                className="bg-center bg-no-repeat bg-[length:600px_600px] p-5 relative w-[600px] h-[600px] rounded-2xl hover:cursor-grab active:cursor-grabbing"
+                className="bg-center bg-no-repeat bg-[length:250px_250px]  p-5 relative w-[280px] h-[280px] rounded-2xl hover:cursor-grab active:cursor-grabbing"
                 style={{ backgroundImage: `url(${person.url.data.publicUrl})` }}
               />
-              <h1 className="absolute bottom-10 left-5 text-white font-bold text-2xl">
+              <h1 className="absolute bottom-10 left-5 text-white font-bold text-2xl ">
                 {person.name}
               </h1>
             </TinderCard>
