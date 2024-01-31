@@ -10,6 +10,7 @@ import NonUserHomePage from "./pages/NonUserHomePage";
 import MerryPackagePage from "./pages/MerryPackagePage";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
+import CreatePackage from "./pages/CreatePackage";
 
 const NoMatch = () => {
   return (
@@ -62,6 +63,7 @@ function App() {
         <Route path="/" element={<NonUserHomePage />} />
         <Route path="/homepage" element={<AuthorizedHomePage />} />
         <Route path="/adminpage" element={<AdminPage />} />
+        <Route path="/createpackage" element={<CreatePackage />} />
         <Route path="/login" element={<LoginPage setToken={setToken} />} />
         <Route path="/matching" element={<Matching />} />
         <Route path="/register1" element={<RegisterPage1 />} />
