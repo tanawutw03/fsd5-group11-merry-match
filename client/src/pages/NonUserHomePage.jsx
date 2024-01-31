@@ -10,12 +10,20 @@ import logofooter from "../assets/NonUserHomePage/logofooter.png";
 import fb from "../assets/NonUserHomePage/fb.png";
 import ig from "../assets/NonUserHomePage/ig.png";
 import tw from "../assets/NonUserHomePage/tw.png";
+import { useNavigate } from "react-router-dom";
 
 function NonUserHomePage() {
+  const navigate = useNavigate();
+
   const scrollToSection = (sectionId) => {
     const targetSection = document.getElementById(sectionId);
     targetSection.scrollIntoView({ behavior: "smooth" });
   };
+
+  const handleClick = () => {
+    navigate("/register1");
+  };
+
   return (
     <div className=" min-w-[1440px] bg-white z-auto flex flex-col items-center">
       <nav className="bg-white w-[1440px] flex flex-row justify-between items-center h-[88px] font-nunito z-10">
@@ -35,7 +43,9 @@ function NonUserHomePage() {
           >
             How To Marry
           </Button>
-          <Button colorScheme="pink">Register</Button>
+          <Button colorScheme="pink" onClick={handleClick}>
+            Register
+          </Button>
         </div>
       </nav>
       <header className="bg-[#160404] w-[1440px] h-[758px] flex flex-col justify-center items-center font-nunito relative overflow-hidden">

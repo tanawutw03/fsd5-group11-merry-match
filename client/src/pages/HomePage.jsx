@@ -1,7 +1,7 @@
+import NonUserHomePage from "./NonUserHomePage";
+
 function HomePage() {
-  return (
-    <div className="flex justify-center items-center h-screen text-red-500">HomePage</div>
-  );
+  return <NonUserHomePage />;
 }
 
 export default HomePage;

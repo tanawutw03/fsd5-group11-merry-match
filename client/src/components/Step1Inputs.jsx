@@ -61,7 +61,7 @@ function Step1Inputs() {
                 id: userId,
                 username: formDataRef.current.username,
                 full_name: formDataRef.current.name,
-                country: formDataRef.current.location,
+                country: formDataRef.current.location.value,
                 city: formDataRef.current.city,
                 email: formDataRef.current.email,
                 date_of_birth: formDataRef.current.dob,

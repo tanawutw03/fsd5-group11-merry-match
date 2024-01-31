@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
@@ -27,29 +26,16 @@ const Login = ({ setToken }) => {
     });
   }
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(handleSubmit);
 
     try {
-      const isEmail = formData.username.includes("@");
-
-      let signInData;
-
-      if (isEmail) {
-        signInData = await supabase.auth.signInWithPassword({
-          email: formData.username,
-          password: formData.password,
-        });
-      } else {
-        signInData = await supabase.auth.signIn({
-          identifier: formData.username,
-          password: formData.password,
-        });
-      }
-
-      const { data, error } = signInData;
-
-      console.log(data);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.username,
+        password: formData.password,
+      });
+      console.log(data, error);
 
       if (error) {
         throw error;
@@ -60,7 +46,7 @@ const Login = ({ setToken }) => {
     } catch (error) {
       alert(error.message);
     }
-  }
+  };
 
   return (
     <div className="fixed">
@@ -122,13 +108,13 @@ const Login = ({ setToken }) => {
           </h1>
           <form onSubmit={handleSubmit} className="flex flex-col w-full">
             <label
-              for="username"
+              htmlFor="username"
               className="mt-4 mb-2 font-medium text-gray-700"
             >
               Username or Email
             </label>
             <input
-              id="username"
+              name="username"
               type="text"
               onChange={handleChange}
               placeholder="Enter Username or Email"
@@ -136,13 +122,13 @@ const Login = ({ setToken }) => {
             />
 
             <label
-              for="password"
+              htmlFor="password"
               className="mt-4 mb-2 font-medium text-gray-700"
             >
               Password
             </label>
             <input
-              id="password"
+              name="password"
               type="password"
               onChange={handleChange}
               placeholder="Enter Password"
@@ -157,12 +143,12 @@ const Login = ({ setToken }) => {
             </button>
           </form>
           <div className="mt-4">
-            Don't have an account?{" "}
+            Don&apos;t have an account?
             <Link
               to="/register1"
               className="text-[#C70039] hover:text-[#ff1659]  font-bold"
             >
-              Register
+              &nbsp;Register
             </Link>
           </div>
         </div>
