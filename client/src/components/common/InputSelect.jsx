@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { Controller } from "react-hook-form";
-import Select from "react-select";
+import { Select } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { Country } from "country-state-city";
 

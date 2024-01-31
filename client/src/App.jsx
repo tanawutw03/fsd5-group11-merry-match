@@ -7,6 +7,7 @@ import RegisterPage1 from "./pages/RegisterPage1";
 import RegisterPage2 from "./pages/RegisterPage2";
 import RegisterPage3 from "./pages/RegisterPage3";
 import NonUserHomePage from "./pages/NonUserHomePage";
+<<<<<<< HEAD
 import MerryPackagePage from "./pages/MerryPackagePage";
 import LoginPage from "./pages/LoginPage";
 
