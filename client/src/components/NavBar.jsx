@@ -12,12 +12,12 @@ const NavBar = () => {
           <img src={logo} />
         </li>
         <li className="start-matching-link font-nunito  font-bold ml-[360px]">
-          <Button variant="link" colorScheme=" blue">
+          <Button variant="link" colorScheme="custom" color="#191C77">
             Start Matching
           </Button>
         </li>
         <li className="merry-membership-link font-nunito  font-bold mr-[24px]  ml-[28px]">
-          <Button variant="link" colorScheme="blue">
+          <Button variant="link" colorScheme="custom" color="#191C77">
             Merry Membership
           </Button>
         </li>
