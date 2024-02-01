@@ -3,29 +3,19 @@ import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { useRef, useState } from "react";
 
 function UploadProfiles() {
-  const fileInputRefs = useRef(
-    Array.from({ length: 5 }).map(() => React.createRef())
-  );
+  const fileInputRef = useRef(null);
   const [selectedFiles, setSelectedFiles] = useState([]);
 
-  const handleFileInputChange = (index) => {
-    return () => {
-      // Handle file input change logic here
-      const files = Array.from(fileInputRefs.current[index].current.files);
-
-      // Ensure we only keep up to 5 files
-      const newSelectedFiles = files.slice(0, 5);
-
-      // Update the state with the new array of files
-      setSelectedFiles([...selectedFiles, ...newSelectedFiles]);
-    };
+  const handleFileInputChange = () => {
+    const files = Array.from(fileInputRef.current.files);
+    const newSelectedFiles = files.slice(0, 5);
+    setSelectedFiles([...selectedFiles, ...newSelectedFiles]);
   };
 
-  const handleDeleteFile = (index) => {
-    // Create a new array excluding the file to be deleted
-    const updatedFiles = selectedFiles.filter((_, i) => i !== index);
+  const handleDeleteFile = (index, event) => {
+    event.stopPropagation();
 
-    // Update the state with the new array of files
+    const updatedFiles = selectedFiles.filter((_, i) => i !== index);
     setSelectedFiles(updatedFiles);
   };
 
@@ -42,51 +32,63 @@ function UploadProfiles() {
         </div>
 
         <SimpleGrid columns={[1, 2, 3, 4, 5]} spacing={210}>
-          {selectedFiles.map((file, index) => (
-            <div key={index}>
-              <Card sx={{ w: "176px", h: "176px", rounded: "16px" }}>
+          {Array.from({ length: 5 }).map((_, index) => (
+            <div key={index} style={{ position: "relative" }}>
+              <Card
+                sx={{
+                  w: "176px",
+                  h: "176px",
+                  rounded: "16px",
+                  position: "relative",
+                }}
+                onClick={() => fileInputRef.current.click()}
+                className="hover:cursor-pointer"
+              >
                 <CardBody className="flex flex-col justify-center items-center w-[176px] h-[176px] rounded-[16px] bg-[#f1f2f6]">
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt={`Thumbnail ${index}`}
-                    className="w-full h-full object-cover rounded-[16px]"
-                  />
-                  <IconButton
-                    icon={<CloseIcon />}
-                    aria-label="Delete"
-                    color="red"
-                    onClick={() => handleDeleteFile(index)}
-                    className="absolute top-2 right-2"
-                  />
-                </CardBody>
-              </Card>
-            </div>
-          ))}
-
-          {Array.from({ length: Math.max(0, 5 - selectedFiles.length) }).map(
-            (_, index) => (
-              <div key={index}>
-                <Card sx={{ w: "176px", h: "176px", rounded: "16px" }}>
-                  <CardBody className="flex flex-col justify-center items-center w-[176px] h-[176px] rounded-[16px] bg-[#f1f2f6]">
-                    <input
-                      type="file"
-                      ref={fileInputRefs.current[index]}
-                      style={{ display: "none" }}
-                      onChange={handleFileInputChange(index)}
-                      multiple
-                    />
-                    <label htmlFor={`file-input-${index}`}>
+                  {selectedFiles[index] ? (
+                    <>
+                      <img
+                        src={URL.createObjectURL(selectedFiles[index])}
+                        alt={`Thumbnail ${index}`}
+                        className="w-full h-full object-cover rounded-[16px]"
+                      />
+                      <IconButton
+                        icon={<CloseIcon />}
+                        aria-label="Delete"
+                        color="white"
+                        bgColor="red.500"
+                        _hover={{ bgColor: "red.600" }}
+                        onClick={(event) => handleDeleteFile(index, event)}
+                        style={{
+                          position: "absolute",
+                          top: -15,
+                          right: -15,
+                          borderRadius: "50%",
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <>
                       <AddIcon color="purple" />
                       <h1 className="text-[#a62d82] text-xl absolute bottom-10">
                         Upload photo
                       </h1>
-                    </label>
-                  </CardBody>
-                </Card>
-              </div>
-            )
-          )}
+                    </>
+                  )}
+                </CardBody>
+              </Card>
+            </div>
+          ))}
         </SimpleGrid>
+
+        {/* File input hidden for styling */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={handleFileInputChange}
+          multiple
+        />
       </div>
     </>
   );
