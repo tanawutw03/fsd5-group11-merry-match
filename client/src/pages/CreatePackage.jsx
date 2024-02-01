@@ -12,11 +12,15 @@ import {
 } from "@chakra-ui/react";
 import { SmallAddIcon, SmallCloseIcon, DragHandleIcon } from "@chakra-ui/icons";
 import { useState } from "react";
+import { supabase } from "../utils/supabaseClient";
 
 function CreatePackage() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [packageDetails, setPackageDetails] = useState([]);
   const [newDetail, setNewDetail] = useState("");
+  const [packageName, setPackageName] = useState("");
+  const [merryLimit, setMerryLimit] = useState(0);
+  const [price, setPrice] = useState(0);
 
   const handleAddDetail = () => {
     if (newDetail.trim() !== "") {
@@ -30,11 +34,6 @@ function CreatePackage() {
     updatedDetails.splice(index, 1);
     setPackageDetails(updatedDetails);
   };
-  const handleEditDetail = (index, updatedDetail) => {
-    const updatedDetails = [...packageDetails];
-    updatedDetails[index] = updatedDetail;
-    setPackageDetails(updatedDetails);
-  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -42,8 +41,90 @@ function CreatePackage() {
       setSelectedFile(URL.createObjectURL(file));
     }
   };
+
   const handleDeleteIcon = () => {
     setSelectedFile(null);
+  };
+
+  const handleCreatePackage = async () => {
+    // ... (Existing code)
+
+    let iconUrl = null;
+    let iconPath = null;
+
+    // Upload icon to Supabase Storage
+    if (selectedFile) {
+      try {
+        const { data: storageData, error: storageError } =
+          await supabase.storage
+            .from("iconPackage")
+            .upload(
+              `iconPackage/${Date.now()}_${selectedFile.name}`,
+              selectedFile
+            );
+
+        console.log("Storage Data:", storageData);
+        console.error("Storage Error:", storageError);
+
+        if (storageError) {
+          // Handle the error, e.g., show a message to the user
+          return;
+        }
+
+        // Get the URL and path of the uploaded file
+        iconUrl = storageData[0].url;
+        iconPath = storageData[0].path;
+      } catch (error) {
+        console.error("Error uploading icon to storage:", error);
+        // Handle the error, e.g., show a message to the user
+        return;
+      }
+    }
+
+    // Insert package data into the database
+    const { data: packageData, error: packageError } = await supabase
+      .from("packages")
+      .insert([
+        {
+          name: packageName,
+          merry_limit: merryLimit,
+          price: price,
+          description: packageDetails,
+        },
+      ]);
+
+    if (packageError) {
+      console.error("Error inserting package data:", packageError);
+      // Handle the error, e.g., show a message to the user
+      return;
+    }
+
+    // Insert icon data into the "icons" table
+    const { data: iconData, error: iconError } = await supabase
+      .from("icons")
+      .insert([
+        {
+          name: packageName, // Set the name based on your requirement
+          path: iconPath,
+          package_id: packageData[0].id, // Assuming the "packages" table has an 'id' column
+        },
+      ]);
+
+    if (iconError) {
+      console.error("Error inserting icon data:", iconError);
+      // Handle the error, e.g., show a message to the user
+      return;
+    }
+
+    // Reset form fields or redirect to another page after successful creation
+    setPackageName("");
+    setMerryLimit(0);
+    setPrice(0);
+    setPackageDetails([]);
+    setSelectedFile(null);
+
+    console.log("Package data inserted successfully:", packageData);
+    console.log("Icon data inserted successfully:", iconData);
   };
   return (
     <div className="flex flex-row justify-stretch min-w-[1440px]">
@@ -90,7 +171,10 @@ function CreatePackage() {
               Cancel
             </button>
 
-            <button className="flex p-3 w-[100px]  text-white text-center font-Nunito text-[16px] font-bold leading-6 justify-center items-center space-x-2 rounded-full bg-[#C70039] shadow-md">
+            <button
+              className="flex p-3 w-[100px]  text-white text-center font-Nunito text-[16px] font-bold leading-6 justify-center items-center space-x-2 rounded-full bg-[#C70039] shadow-md "
+              onClick={handleCreatePackage}
+            >
               Create
             </button>
           </div>
@@ -100,13 +184,21 @@ function CreatePackage() {
             <div className="w-1/3 m-[70px]">
               <FormControl isRequired>
                 <FormLabel>Package name</FormLabel>
-                <Input placeholder="Package name" />
+                <Input
+                  placeholder="Package name"
+                  value={packageName}
+                  onChange={(e) => setPackageName(e.target.value)}
+                />
               </FormControl>
             </div>
             <div className="w-1/3 m-[70px]">
               <FormControl isRequired>
                 <FormLabel>Merry limit </FormLabel>
-                <NumberInput min={0}>
+                <NumberInput
+                  min={0}
+                  value={merryLimit}
+                  onChange={(value) => setMerryLimit(value)}
+                >
                   <NumberInputField />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
@@ -118,7 +210,11 @@ function CreatePackage() {
             <div className="w-1/3 m-[70px]">
               <FormControl isRequired>
                 <FormLabel>Price </FormLabel>
-                <NumberInput min={10}>
+                <NumberInput
+                  min={10}
+                  value={price}
+                  onChange={(value) => setPrice(value)}
+                >
                   <NumberInputField />
                   <NumberInputStepper>
                     <NumberIncrementStepper />

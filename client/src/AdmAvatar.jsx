@@ -12,7 +12,7 @@ export default function Avatar({ url, size, onUpload }) {
   async function downloadImage(path) {
     try {
       const { data, error } = await supabase.storage
-        .from("avatars")
+        .from("package-icons")
         .download(path);
       if (error) {
         throw error;
@@ -38,12 +38,13 @@ export default function Avatar({ url, size, onUpload }) {
       const filePath = `${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from("avatars")
+        .from("package-icons")
         .upload(filePath, file);
 
       if (uploadError) {
         throw uploadError;
       }
+      
 
       onUpload(event, filePath);
     } catch (error) {
