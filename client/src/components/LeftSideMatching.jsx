@@ -2,6 +2,7 @@ import seach from "../assets/Matching/search.svg";
 import person1 from "../assets/Matching/person1.svg";
 import person2 from "../assets/Matching/person2.svg";
 import person3 from "../assets/Matching/person3.svg";
+
 const LeftSideMatching = () => {
   return (
     <div className="w-[314px] h-[500px] flex-col flex mr-5 ">
