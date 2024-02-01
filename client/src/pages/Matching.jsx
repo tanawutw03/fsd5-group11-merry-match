@@ -1,17 +1,13 @@
 import MerryCards from "../components/MerryCards";
-import NavBar from "../components/NavBar";
+import { NavBar } from "../components/NavBar";
 import LeftSideMatching from "../components/LeftSideMatching";
-<<<<<<< HEAD
 import { Checkbox } from "@chakra-ui/react";
 import SliderAge from "../components/SliderAge";
 
-=======
->>>>>>> 68eb034 (feat:add components sidebar)
 function Matching() {
   return (
     <>
       <NavBar />
-<<<<<<< HEAD
       <div className="flex flex-row mt-10 ml-5 ">
         <LeftSideMatching />
         <MerryCards />
@@ -35,11 +31,6 @@ function Matching() {
             <SliderAge />
           </div>
         </div>
-=======
-      <div className="flex flex-row mt-10 ">
-        <LeftSideMatching />
-        <MerryCards />
->>>>>>> 68eb034 (feat:add components sidebar)
       </div>
     </>
   );
