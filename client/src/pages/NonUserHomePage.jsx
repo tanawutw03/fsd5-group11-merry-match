@@ -1,5 +1,4 @@
 import { Button } from "@chakra-ui/react";
-import logo from "../assets/NonUserHomePage/logo.png";
 import image1 from "../assets/NonUserHomePage/image-1.png";
 import image2 from "../assets/NonUserHomePage/image-2.png";
 import vector from "../assets/NonUserHomePage/vector.png";
@@ -11,6 +10,7 @@ import fb from "../assets/NonUserHomePage/fb.png";
 import ig from "../assets/NonUserHomePage/ig.png";
 import tw from "../assets/NonUserHomePage/tw.png";
 import { useNavigate } from "react-router-dom";
+import NavBar from "../components/common/NavBar";
 
 function NonUserHomePage() {
   const navigate = useNavigate();
@@ -21,12 +21,23 @@ function NonUserHomePage() {
   };
 
   const handleClick = () => {
-    navigate("/register1");
+    navigate("/login");
   };
 
   return (
     <div className=" min-w-[1440px] bg-white z-auto flex flex-col items-center">
-      <nav className="bg-white w-[1440px] flex flex-row justify-between items-center h-[88px] font-nunito z-10">
+      <NavBar
+        useMenu={false}
+        name="Login"
+        color="red"
+        onClick={handleClick}
+        firstMenuName="Why Merry Match?"
+        secondMenuName="How to Merry"
+        onClickFirstMenu={() => scrollToSection("WhyMerry")}
+        onClickSecondMenu={() => scrollToSection("HowToMerry")}
+        showBell={false}
+      />
+      {/* <nav className="bg-white w-[1440px] flex flex-row justify-between items-center h-[88px] font-nunito z-10">
         <img src={logo} className="px-[40px] z-50" />
         <div className=" flex w-1/3 flex-row justify-around items-center font-nunito z-40">
           <Button
@@ -46,8 +57,9 @@ function NonUserHomePage() {
           <Button colorScheme="pink" onClick={handleClick}>
             Register
           </Button>
+          <ChakraButton name="Login" color="red" onNext={handleClick} />
         </div>
-      </nav>
+      </nav> */}
       <header className="bg-[#160404] w-[1440px] h-[758px] flex flex-col justify-center items-center font-nunito relative overflow-hidden">
         <img
           src={image1}
@@ -83,7 +95,7 @@ function NonUserHomePage() {
         </div>
       </header>
       <section
-        id="WhyMarry"
+        id="WhyMerry"
         className=" bg-[#160404] w-[1440px] h-[533px] flex flex-col justify-center items-center font-nunito"
       >
         <div className="flex w-1120 items-center gap-6">
@@ -110,7 +122,7 @@ function NonUserHomePage() {
         </div>
       </section>
       <section
-        id="HowToMarry"
+        id="HowToMerry"
         className="bg-[#160404] w-[1440px] flex flex-col h-[622px] px-16 py-20 justify-center items-center"
       >
         <div className="text-purple-300 text-center font-nunito text-[46px] font-extrabold leading-125 tracking-tight mb-[48px]">
