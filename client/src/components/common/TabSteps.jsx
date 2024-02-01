@@ -58,6 +58,8 @@ function TabSteps() {
     console.log("Navigating to the prev page");
   };
 
+  const dummyFunction = () => {};
+
   return (
     <>
       <RegisterWords />
@@ -106,7 +108,7 @@ function TabSteps() {
             name={renderButtonLabel}
             color="red"
             type={renderButtonType}
-            onNext={isLastTab ? undefined : handleNext}
+            onNext={isLastTab ? handleNext : dummyFunction}
           />
         </div>
       </div>

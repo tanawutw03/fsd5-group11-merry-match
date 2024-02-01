@@ -1,13 +1,7 @@
 import UploadProfiles from "./UploadProfiles";
 
 function Step3Inputs() {
-  return (
-    <>
-      <div>
-        <UploadProfiles />
-      </div>
-    </>
-  );
+  return <UploadProfiles />;
 }
 
 export default Step3Inputs;
