@@ -156,7 +156,7 @@ const Login = ({ setToken }) => {
             <div className="mt-4">
               Don&apos;t have an account?
               <Link
-                to="/register1"
+                to="/register"
                 className="text-[#C70039] hover:text-[#ff1659]  font-bold"
               >
                 &nbsp;Register
