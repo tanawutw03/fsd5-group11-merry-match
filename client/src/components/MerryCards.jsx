@@ -72,16 +72,16 @@ function MerryCards() {
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
       {dataLoaded && !isLoading && !error && people.length > 0 && (
-        <div className="h-[836px] w-[805px] bg-[#160404] flex justify-center items-center gap-5 border-2 overflow-hidden  ">
-          <div className="flex flex-row mt-[530px]  absolute z-10 ">
-            <img className=" w-[80px] h-[80px]  " src={action} />
-            <img className=" w-[80px] h-[80px] " src={heart} />
+        <div className="h-[936px] w-[905px] bg-[#160404] flex justify-center items-center gap-5 border-2 overflow-hidden  ">
+          <div className="flex flex-row mt-[710px]  absolute z-10 ">
+            <img className=" w-[90px] h-[90px]  " src={action} />
+            <img className=" w-[90px] h-[90px] " src={heart} />
           </div>
-          <div className=" flex flex-row absolute z-20 mt-[670px] ">
+          <div className=" flex flex-row absolute z-20 mt-[870px] ">
             <p className="text-[#646D89]">Merry limit today</p>
             <p className="ml-2 text-[#FF1659]">2/20</p>
           </div>
-          <div className=" flex flex-row absolute z-30 mt-[365px] ml-[420px]  ">
+          <div className=" flex flex-row absolute z-30 mt-[565px] ml-[520px]  ">
             <ArrowBackIcon w={5} h={5} color="white" mr={4} />
             <ArrowForwardIcon w={5} h={5} color="white" />
           </div>
@@ -93,7 +93,7 @@ function MerryCards() {
               onCardLeftScreen={() => onCardLeftScreen(person.name)}
             >
               <div
-                className="bg-center bg-no-repeat bg-[length:620px_620px]  p-5 relative w-[620px] h-[620px] rounded-2xl hover:cursor-grab active:cursor-grabbing"
+                className="bg-center bg-no-repeat bg-[length:720px_720px]  p-5 relative w-[720px] h-[720px] rounded-2xl hover:cursor-grab active:cursor-grabbing"
                 style={{ backgroundImage: `url(${person.url.data.publicUrl})` }}
               />
 

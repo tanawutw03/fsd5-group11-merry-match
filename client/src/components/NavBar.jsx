@@ -12,7 +12,7 @@ export const NavBar = () => {
           <li className="merry-math-logo ml-[160px]">
             <img src={logo} />
           </li>
-          <li className="start-matching-link font-nunito  font-bold ml-[360px]">
+          <li className="start-matching-link font-nunito  font-bold ml-[600px]">
             <Button variant="link" colorScheme="custom" color="#191C77">
               Start Matching
             </Button>
