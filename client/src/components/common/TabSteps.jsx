@@ -103,12 +103,12 @@ function TabSteps() {
           </div>
         </Tabs>
         <div className="absolute bottom-0 right-0">
-          <ChakraButton name="Back" color="gray" onNext={handlePrev} />
+          <ChakraButton name="Back" color="gray" onClick={handlePrev} />
           <ChakraButton
             name={renderButtonLabel}
             color="red"
             type={renderButtonType}
-            onNext={isLastTab ? handleNext : dummyFunction}
+            onClick={isLastTab ? handleNext : dummyFunction}
           />
         </div>
       </div>

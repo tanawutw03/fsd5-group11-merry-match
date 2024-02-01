@@ -4,7 +4,7 @@ import Select from "react-select";
 import { useState, useEffect } from "react";
 import { Country } from "country-state-city";
 
-function InputSelect({ control, name, label }) {
+function CountryInputSelect({ control, name, label, onCountryChange }) {
   const [countries, setCountries] = useState([]);
 
   useEffect(() => {
@@ -34,6 +34,7 @@ function InputSelect({ control, name, label }) {
             options={countries.map((country) => ({
               value: country.name,
               label: country.name,
+              isoCode: country.isoCode,
             }))}
             isSearchable={true}
             isClearable
@@ -43,6 +44,10 @@ function InputSelect({ control, name, label }) {
                 ? `Loading ${label.toLowerCase()}...`
                 : `Select ${label.toLowerCase()}`
             }
+            onChange={(selectedCountry) => {
+              field.onChange(selectedCountry);
+              onCountryChange(selectedCountry);
+            }}
           />
         )}
       />
@@ -50,10 +55,11 @@ function InputSelect({ control, name, label }) {
   );
 }
 
-InputSelect.propTypes = {
+CountryInputSelect.propTypes = {
   control: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
+  onCountryChange: PropTypes.func.isRequired,
 };
 
-export default InputSelect;
+export default CountryInputSelect;
