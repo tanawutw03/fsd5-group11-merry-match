@@ -89,7 +89,7 @@ function Step1Inputs() {
   }, [userId]);
 
   const handleNext = () => {
-    navigate("/register2");
+    navigate("/register");
     console.log("Navigating to the next page");
   };
 
