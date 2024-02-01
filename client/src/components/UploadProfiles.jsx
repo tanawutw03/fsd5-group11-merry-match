@@ -4,7 +4,7 @@ import { IconButton } from "@chakra-ui/react";
 
 function UploadProfiles() {
   return (
-    <div className="w-full h-screen flex justify-center items-center border-2 border-red-700 w ">
+    <div>
       <SimpleGrid columns={[1, 2, 3, 4, 5]} spacing={4}>
         {Array.from({ length: 5 }).map((_, index) => (
           <Card

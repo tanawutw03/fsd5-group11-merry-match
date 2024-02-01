@@ -1,8 +1,6 @@
 import { useForm } from "react-hook-form";
 import InputSelect from "../components/common/InputSelect.jsx";
 import { supabase } from "../utils/supabaseClient.js";
-import ChakraButton from "./common/ChakraButton.jsx";
-import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 
 function Step1Inputs() {
@@ -12,7 +10,6 @@ function Step1Inputs() {
     formState: { errors },
     control,
   } = useForm();
-  const navigate = useNavigate();
   const [userId, setUserId] = useState(null);
   const formDataRef = useRef(null);
 
@@ -88,30 +85,17 @@ function Step1Inputs() {
     checkUserAuthentication();
   }, [userId]);
 
-  const handleNext = () => {
-    navigate("/register");
-    console.log("Navigating to the next page");
-  };
-
-  const handlePrev = () => {
-    navigate("/");
-    console.log("Navigating to the prev page");
-  };
-
   return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
     <>
-      <div className="h-full w-screen flex justify-center items-center border-2 border-red-700 ">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="grid grid-cols-2 gap-5"
-        >
-          <div className="h-fit w-[450px] flex flex-col border-2 border-blue-700 ">
+      <div>
+        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2">
+          <div className="flex flex-col border-2 border-blue-700 ">
             <label htmlFor="name">Name</label>
             <input
               defaultValue=""
               {...register("name", { required: true })}
-              className="border-2 mb-10"
+              className="border-2"
               placeholder="John Snow"
               type="text"
             />
@@ -122,7 +106,7 @@ function Step1Inputs() {
             <label htmlFor="username">Username</label>
             <input
               {...register("username", { required: true })}
-              className="border-2 mb-10"
+              className="border-2 "
               placeholder="At least 6 characters"
             />
             {errors.username && <span>This field is required</span>}
@@ -135,13 +119,15 @@ function Step1Inputs() {
             />
             {errors.password && <span>This field is required</span>}
           </div>
-          <div className="h-fit w-[450px] flex flex-col border-2 border-red-700 gap-10">
+          <div className="flex flex-col border-2 border-red-700">
+            <label htmlFor="dob">dob</label>
             <input
               {...register("dob", { required: true })}
               className="border-2"
               placeholder="01/01/2022"
             />
 
+            <label htmlFor="city">city</label>
             <input
               {...register("city", { required: true })}
               className="border-2"
@@ -149,6 +135,7 @@ function Step1Inputs() {
             />
             {errors.city && <span>This field is required</span>}
 
+            <label htmlFor="email">email</label>
             <input
               {...register("email", { required: true })}
               className="border-2"
@@ -156,6 +143,7 @@ function Step1Inputs() {
             />
             {errors.email && <span>This field is required</span>}
 
+            <label htmlFor="confirm-password">confirm-password</label>
             <input
               {...register("confirm-password", { required: true })}
               className="border-2"
@@ -163,13 +151,7 @@ function Step1Inputs() {
             />
             {errors.password && <span>This field is required</span>}
           </div>
-
-          <input type="submit" />
         </form>
-      </div>
-      <div className="w-screen flex justify-end p-5">
-        <ChakraButton name="Back" color="gray" onNext={handlePrev} />
-        <ChakraButton name="Next Step" color="red" onNext={handleNext} />
       </div>
     </>
   );
