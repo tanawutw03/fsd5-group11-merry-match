@@ -22,8 +22,52 @@ dist-ssr
 *.njsproj
 *.slnn
 *.sw?
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> cf589b3 (fix:conflict)
+=======
+>>>>>>> d3a7c06 (fix:conflict)
+>>>>>>> 7a0ab82 (fix: conflict)
 
 # Ignore environment files (modify these names based on your project)
 **/.env
 **/.env.development
 **/.env.prod
+<<<<<<< HEAD
+=======
+=======
+prisma
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+.env
+>>>>>>> 5e55b9a (feat:remove unused data)
+
+>>>>>>> 99fd8e4 (fix: conflict)
+=======
+prisma
+=======
+.env
+>>>>>>> 5e55b9a (feat:remove unused data)
+=======
+>>>>>>> cf589b3 (fix:conflict)
+=======
+=======
+.env
+>>>>>>> 5e55b9a (feat:remove unused data)
+>>>>>>> d3a7c06 (fix:conflict)
+
+>>>>>>> 99fd8e4 (fix: conflict)
+=======
+prisma
+
+>>>>>>> 99fd8e4 (fix: conflict)
+>>>>>>> 7a0ab82 (fix: conflict)
