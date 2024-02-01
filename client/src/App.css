@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* #root {
   max-width: 1440px;
   margin: 0;
@@ -8,11 +7,9 @@
 .font-nunito {
   font-family: "Nunito", sans-serif;
 } */
-=======
 .font-nunito {
   font-family: "Nunito", sans-serif; /* Use the actual font family name you imported */
 }
->>>>>>> 68eb034 (feat:add components sidebar)
 /*
 .logo {
   height: 6em;
