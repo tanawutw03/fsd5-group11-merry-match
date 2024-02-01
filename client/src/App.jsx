@@ -58,8 +58,6 @@ function App() {
         <Route path="/matching" element={<Matching />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/package" element={<MerryPackagePage />} />
-        <Route path="/admin" element={<AdminLoginPage />} />
-        <Route path="/test" element={<AdminPackagePageTest />} />
       </Routes>
     </BrowserRouter>
   );
