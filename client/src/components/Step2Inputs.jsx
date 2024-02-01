@@ -4,20 +4,20 @@ import { useNavigate } from "react-router-dom";
 import TagSelect from "./common/TagSelect.jsx";
 import ChakraButton from "./common/ChakraButton.jsx";
 
-const colourOptions = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
-  { value: "mint", label: "Mint" },
-  { value: "caramel", label: "Caramel" },
-  { value: "coffee", label: "Coffee" },
-  { value: "raspberry", label: "Raspberry" },
-  { value: "lemon", label: "Lemon" },
-  { value: "hazelnut", label: "Hazelnut" },
-  { value: "blueberry", label: "Blueberry" },
-  { value: "cookiesncream", label: "Cookies 'n Cream" },
-  { value: "pistachio", label: "Pistachio" },
-  { value: "butterscotch", label: "Butterscotch" },
+const hobbiesOptions = [
+  { value: "e-sports", label: "E-sports" },
+  { value: "series", label: "Series" },
+  { value: "workout", label: "Workout" },
+  { value: "travel", label: "Travel" },
+  { value: "movies", label: "Movies" },
+  { value: "photography", label: "Photography" },
+  { value: "singing", label: "Singing" },
+  { value: "meditation", label: "Meditation" },
+  { value: "painting", label: "Painting" },
+  { value: "music", label: "Music" },
+  { value: "cafe", label: "Cafe hopping" },
+  { value: "party", label: "Party" },
+  { value: "festival", label: "Festival" },
 ];
 
 function Step2Inputs() {
@@ -44,7 +44,7 @@ function Step2Inputs() {
 
   return (
     <>
-      <div className="h-screen w-screen flex flex-col items-center">
+      <div className="h-[300px] w-full flex flex-col items-center">
         {/* "handleSubmit" will validate your inputs before invoking "onSubmit" */}
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -53,7 +53,7 @@ function Step2Inputs() {
           {/* First selector column */}
           <div className="h-[48px] w-[453px] flex flex-col">
             <h3>Sexual Identities</h3>
-            <Select placeholder="Select option" {...register("sex")} mb={10}>
+            <Select defaultValue="male" {...register("sex")} mb={10}>
               <option value="male">Male</option>
               <option value="female">Female</option>
               <option value="other">Other</option>
@@ -61,7 +61,7 @@ function Step2Inputs() {
 
             <h3>Racial Preferences</h3>
             <Select
-              placeholder="Select option"
+              defaultValue="asian"
               {...register("racial_preference")}
               mb={10}
             >
@@ -80,7 +80,7 @@ function Step2Inputs() {
           <div className="h-[48px] w-[453px] flex flex-col">
             <h3>Sexual Preferences</h3>
             <Select
-              placeholder="Select option"
+              defaultValue="female"
               {...register("sex_preference")}
               mb={10}
             >
@@ -91,7 +91,7 @@ function Step2Inputs() {
 
             <h3>Meeting Interests</h3>
             <Select
-              placeholder="Select option"
+              defaultValue="friends"
               {...register("meeting_interest")}
               mb={10}
             >
@@ -100,23 +100,22 @@ function Step2Inputs() {
               <option value="other">Other</option>
             </Select>
 
-            {/* errors will return when field validation fails  */}
-            {errors.exampleRequired && <span>This field is required</span>}
-
             <input type="submit" className="flex justify-end mt-20" />
           </div>
-          <div className="justify-center absolute w-[946px] h-[53px] bottom-[450px]">
+          <div className="justify-center absolute w-[946px] h-[53px] bottom-52">
             <h3>Hobbies / Interests (Maximum 10)</h3>
             <TagSelect
               control={control}
               name="hobbies"
               label=""
-              options={colourOptions}
+              options={hobbiesOptions}
+              defaultValue={[{ value: "e-sports" }, { value: "series" }]}
+              max={10}
             />
           </div>
         </form>
       </div>
-      <footer className="fixed bottom-0 left-0 w-full h-112 p-5 bg-white shadow-md flex justify-end">
+      <footer className="bottom-0 left-0 w-full h-112 p-5 bg-white shadow-md flex justify-end">
         <ChakraButton name="Back" color="gray" onNext={handlePrev} />
         <ChakraButton name="Next Step" color="red" onNext={handleNext} />
       </footer>
