@@ -44,7 +44,7 @@ function Step2Inputs() {
 
   return (
     <>
-      <div className="h-[300px] w-full flex flex-col items-center">
+      <div>
         {/* "handleSubmit" will validate your inputs before invoking "onSubmit" */}
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -100,7 +100,8 @@ function Step2Inputs() {
               <option value="other">Other</option>
             </Select>
 
-            <input type="submit" className="flex justify-end mt-20" />
+            {/* errors will return when field validation fails  */}
+            {errors.exampleRequired && <span>This field is required</span>}
           </div>
           <div className="justify-center absolute w-[946px] h-[53px] bottom-52">
             <h3>Hobbies / Interests (Maximum 10)</h3>
@@ -115,10 +116,6 @@ function Step2Inputs() {
           </div>
         </form>
       </div>
-      <footer className="bottom-0 left-0 w-full h-112 p-5 bg-white shadow-md flex justify-end">
-        <ChakraButton name="Back" color="gray" onNext={handlePrev} />
-        <ChakraButton name="Next Step" color="red" onNext={handleNext} />
-      </footer>
     </>
   );
 }

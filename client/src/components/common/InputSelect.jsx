@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { Controller } from "react-hook-form";
-import { Select } from "@chakra-ui/react";
+import Select from "react-select";
 import { useState, useEffect } from "react";
 import { Country } from "country-state-city";
 
@@ -9,8 +9,13 @@ function InputSelect({ control, name, label }) {
 
   useEffect(() => {
     async function fetchCountries() {
-      const fetchedCountries = await Country.getAllCountries();
-      setCountries(fetchedCountries);
+      try {
+        const fetchedCountries = await Country.getAllCountries();
+        console.log("Fetched Countries:", fetchedCountries);
+        setCountries(fetchedCountries);
+      } catch (error) {
+        console.error("Error fetching countries:", error.message);
+      }
     }
     fetchCountries();
   }, []);
@@ -21,7 +26,7 @@ function InputSelect({ control, name, label }) {
       <Controller
         name={name}
         control={control}
-        defaultValue={null}
+        defaultValue=""
         rules={{ required: true }}
         render={({ field }) => (
           <Select
@@ -30,7 +35,7 @@ function InputSelect({ control, name, label }) {
               value: country.name,
               label: country.name,
             }))}
-            isSearchable
+            isSearchable={true}
             isClearable
             isLoading={!countries.length}
             placeholder={
