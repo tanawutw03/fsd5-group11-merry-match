@@ -1,17 +1,17 @@
-import Step3Inputs from "../components/Step3Inputs";
+import Step1Inputs from "../components/Step1Inputs.jsx";
 import RegisterWords from "../components/common/RegisterWords.jsx";
 import TabSteps from "../components/common/TabSteps.jsx";
 
-function RegisterPage3() {
+const RegisterPage = () => {
   return (
     <>
       <div className="flex">
         <RegisterWords />
         <TabSteps />
       </div>
-      <Step3Inputs />
+      <Step1Inputs />
     </>
   );
-}
+};
 
-export default RegisterPage3;
+export default RegisterPage;

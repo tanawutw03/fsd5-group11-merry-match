@@ -21,7 +21,7 @@ function InputSelect({ control, name, label }) {
       <Controller
         name={name}
         control={control}
-        defaultValue={null}
+        defaultValue=""
         rules={{ required: true }}
         render={({ field }) => (
           <Select

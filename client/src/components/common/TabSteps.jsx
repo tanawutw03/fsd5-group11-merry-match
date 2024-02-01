@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
 import {
   Tabs,
   TabList,
@@ -8,29 +7,37 @@ import {
   Tab,
   TabIndicator,
 } from "@chakra-ui/react";
+import Step1Inputs from "../Step1Inputs";
+import Step2Inputs from "../Step2Inputs";
+import Step3Inputs from "../Step3Inputs";
 
 function TabSteps() {
-  const navigate = useNavigate();
-  const location = useLocation();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-
-  useEffect(() => {
-    // Extract the tab index from the current route
-    const tabIndex = Number(location.pathname.replace("/register", "")) - 1;
-    console.log(tabIndex);
-
-    // Set the active tab index
-    setActiveTabIndex(tabIndex >= 0 ? tabIndex : 0);
-  }, [location.pathname]);
 
   const handleTabChange = (index) => {
     console.log("Current tab index:", index);
 
-    // Navigate based on the tab index (add 1 as the route starts from 1)
-    navigate(`/register${index + 1}`);
-
     // Set the active tab index after navigation
     setActiveTabIndex(index);
+  };
+
+  const renderFormByTabIndex = (index) => {
+    switch (index) {
+      case 0:
+        return {
+          form: <Step1Inputs />,
+          formName: "Basic Information",
+        };
+      case 1:
+        return {
+          form: <Step2Inputs />,
+          formName: "Identities and Interests",
+        };
+      case 2:
+        return { form: <Step3Inputs />, formName: "Upload Photos" };
+      default:
+        return null;
+    }
   };
 
   return (
@@ -56,13 +63,8 @@ function TabSteps() {
         />
         <TabPanels className="text-2xl text-[#A62D82]">
           <TabPanel>
-            <p>Basic Information</p>
-          </TabPanel>
-          <TabPanel>
-            <p>Identities and Interests</p>
-          </TabPanel>
-          <TabPanel>
-            <p>Upload Photos</p>
+            <p>{renderFormByTabIndex(activeTabIndex).formName}</p>
+            {renderFormByTabIndex(activeTabIndex).form}
           </TabPanel>
         </TabPanels>
       </Tabs>

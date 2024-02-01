@@ -3,9 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Link } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Matching from "./pages/Matching";
-import RegisterPage1 from "./pages/RegisterPage1";
-import RegisterPage2 from "./pages/RegisterPage2";
-import RegisterPage3 from "./pages/RegisterPage3";
+import RegisterPage from "./pages/RegisterPage";
 import NonUserHomePage from "./pages/NonUserHomePage";
 import MerryPackagePage from "./pages/MerryPackagePage";
 import LoginPage from "./pages/LoginPage";
@@ -66,9 +64,7 @@ function App() {
         <Route path="/createpackage" element={<CreatePackage />} />
         <Route path="/login" element={<LoginPage setToken={setToken} />} />
         <Route path="/matching" element={<Matching />} />
-        <Route path="/register1" element={<RegisterPage1 />} />
-        <Route path="/register2" element={<RegisterPage2 />} />
-        <Route path="/register3" element={<RegisterPage3 />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/package" element={<MerryPackagePage />} />
       </Routes>
     </BrowserRouter>
