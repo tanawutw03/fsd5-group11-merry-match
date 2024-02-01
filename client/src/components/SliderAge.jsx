@@ -1,82 +1,89 @@
+import { useState, useEffect } from "react";
+
 import {
-  RangeSlider,
-  RangeSliderTrack,
-  RangeSliderFilledTrack,
-  RangeSliderThumb,
+  Flex,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+  Input,
+  Tooltip,
 } from "@chakra-ui/react";
-import { Tooltip } from "@chakra-ui/react";
-import { useState } from "react";
 
-function SliderAge() {
-  const [sliderValues, setSliderValues] = useState([18, 31]);
+const RangeSlider = () => {
+  const [minValue, setMinValue] = useState(0);
+  const [maxValue, setMaxValue] = useState(1000);
 
-  const handleSliderChange = (newValues) => {
-    setSliderValues(newValues);
-    console.log("Final Slider Values:", newValues);
+  const sliderMinValue = 0;
+  const sliderMaxValue = 2000;
+
+  useEffect(() => {
+    setArea();
+  }, [minValue, maxValue, setArea]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const setArea = () => {
+    const range = document.querySelector(".slider-track");
+
+    range.style.left = `${
+      ((minValue - sliderMinValue) / (sliderMaxValue - sliderMinValue)) * 100
+    }%`;
+    range.style.right = `${
+      100 -
+      ((maxValue - sliderMinValue) / (sliderMaxValue - sliderMinValue)) * 100
+    }%`;
   };
 
-  const getTooltipContent = (value) => `${value}`;
+  const handleMinChange = (value) => {
+    setMinValue(value);
+  };
 
-  const handleInputChange = (index, newValue) => {
-    const updatedValues = [...sliderValues];
-
-    updatedValues[index] = newValue;
-
-    setSliderValues(updatedValues);
+  const handleMaxChange = (value) => {
+    setMaxValue(value);
   };
 
   return (
-    <>
-      <RangeSlider
-        aria-label={["Minimum age", "Maximum age"]}
-        defaultValue={[18, 31]}
-        onChange={handleSliderChange}
-        w="36"
-        min={18}
-        max={60}
+    <Flex direction="column" align="center" mt={4}>
+      <Slider
+        min={sliderMinValue}
+        max={sliderMaxValue}
+        defaultValue={[minValue, maxValue]}
+        onChange={(values) => {
+          handleMinChange(values[0]);
+          handleMaxChange(values[1]);
+        }}
+        step={1}
       >
-        <RangeSliderTrack>
-          <RangeSliderFilledTrack />
-        </RangeSliderTrack>
-        <Tooltip
-          hasArrow
-          placement="bottom"
-          isOpen
-          renderContent={() => getTooltipContent(sliderValues[0])}
-          label={`${sliderValues[0]}`}
-        >
-          <RangeSliderThumb index={0} />
-        </Tooltip>
-        <Tooltip
-          hasArrow
-          placement="bottom"
-          isOpen
-          renderContent={() => getTooltipContent(sliderValues[1])}
-          label={`${sliderValues[1]}`}
-        >
-          <RangeSliderThumb index={1} />
-        </Tooltip>
-      </RangeSlider>
-      <div className="mt-10 flex justify-center ">
-        <span>
-          <input
-            className="w-24 border-2"
-            type="number"
-            value={sliderValues[0]}
-            onChange={(e) => handleInputChange(0, parseInt(e.target.value))}
-          />
-        </span>
-        <span>
-          <input
-            className="w-24 border-2"
-            type="number"
-            value={sliderValues[1]}
-            onChange={(e) => handleInputChange(1, parseInt(e.target.value))}
-          />
-        </span>
-      </div>
-    </>
-  );
-}
+        <SliderTrack bg="gray.100" borderRadius="full">
+          <SliderFilledTrack bg="blue.500" />
+        </SliderTrack>
+        <SliderThumb boxSize={6} />
+      </Slider>
 
-export default SliderAge;
+      <Flex justify="space-between" w="full" mt={4}>
+        <Input
+          type="number"
+          value={minValue}
+          onChange={(e) => handleMinChange(e.target.value)}
+          w="40%"
+        />
+        <Input
+          type="number"
+          value={maxValue}
+          onChange={(e) => handleMaxChange(e.target.value)}
+          w="40%"
+        />
+      </Flex>
+
+      <Tooltip label={`Min: ${minValue}`} placement="top">
+        <div className="min-tooltip" />
+      </Tooltip>
+
+      <Tooltip label={`Max: ${maxValue}`} placement="top">
+        <div className="max-tooltip" />
+      </Tooltip>
+    </Flex>
+  );
+};
+
+export default RangeSlider;
