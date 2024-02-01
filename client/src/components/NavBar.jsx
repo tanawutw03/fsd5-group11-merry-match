@@ -31,13 +31,7 @@ const NavBar = () => {
               />
             </li>
           </div>
-          <li className="mr-[160px]">
-            <img
-              className="w-[48px] h-[48px] rounded-[999px] object-fit object-cover"
-              src={person01}
-              alt=""
-            />
-          </li>
+          <li className="mr-[160px]"></li>
         </div>
       </ul>
     </nav>

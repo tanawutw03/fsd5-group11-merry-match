@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import TinderCard from "react-tinder-card";
 import { supabase } from "../utils/supabaseClient.js";
+import action from "../assets/Matching/action button.svg";
+import heart from "../assets/Matching/heart button (1).svg";
+import { ArrowForwardIcon, ArrowBackIcon, ViewIcon } from "@chakra-ui/icons";
 
 function MerryCards() {
   const [people, setPeople] = useState([]);
@@ -69,7 +72,19 @@ function MerryCards() {
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
       {dataLoaded && !isLoading && !error && people.length > 0 && (
-        <div className="h-[350px] w-[500px] flex justify-center items-center gap-5 border-2 overflow-hidden  ">
+        <div className="h-[836px] w-[805px] bg-[#160404] flex justify-center items-center gap-5 border-2 overflow-hidden  ">
+          <div className="flex flex-row mt-[530px]  absolute z-10 ">
+            <img className=" w-[80px] h-[80px]  " src={action} />
+            <img className=" w-[80px] h-[80px] " src={heart} />
+          </div>
+          <div className=" flex flex-row absolute z-20 mt-[670px] ">
+            <p className="text-[#646D89]">Merry limit today</p>
+            <p className="ml-2 text-[#FF1659]">2/20</p>
+          </div>
+          <div className=" flex flex-row absolute z-30 mt-[365px] ml-[420px]  ">
+            <ArrowBackIcon w={5} h={5} color="white" mr={4} />
+            <ArrowForwardIcon w={5} h={5} color="white" />
+          </div>
           {people.map((person) => (
             <TinderCard
               className=" absolute"
@@ -78,11 +93,15 @@ function MerryCards() {
               onCardLeftScreen={() => onCardLeftScreen(person.name)}
             >
               <div
-                className="bg-center bg-no-repeat bg-[length:250px_250px]  p-5 relative w-[280px] h-[280px] rounded-2xl hover:cursor-grab active:cursor-grabbing"
+                className="bg-center bg-no-repeat bg-[length:620px_620px]  p-5 relative w-[620px] h-[620px] rounded-2xl hover:cursor-grab active:cursor-grabbing"
                 style={{ backgroundImage: `url(${person.url.data.publicUrl})` }}
               />
-              <h1 className="absolute bottom-10 left-5 text-white font-bold text-2xl ">
+
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent  rounded-2xl to-[#411849]"></div>
+              <h1 className=" absolute bottom-16 left-5 text-white font-bold text-s ">
                 {person.name}
+
+                <ViewIcon w={5} h={5} ml={4} color="white" />
               </h1>
             </TinderCard>
           ))}
