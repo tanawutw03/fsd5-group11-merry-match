@@ -3,8 +3,9 @@ import CountryInputSelect from "./common/CountryInputSelect.jsx";
 import CityInputSelect from "./common/CityInputSelect.jsx";
 import { supabase } from "../utils/supabaseClient.js";
 import { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 
-function Step1Inputs() {
+function Step1Inputs({ setData }) {
   const {
     register,
     handleSubmit,
@@ -12,12 +13,13 @@ function Step1Inputs() {
     control,
   } = useForm();
   const [userId, setUserId] = useState(null);
-  const formDataRef = useRef(null);
+  const formDataRef = useRef({});
   const [selectedCountry, setSelectedCountry] = useState(null);
 
   const onSubmit = async (formData) => {
     console.log(formData);
     formDataRef.current = formData; // Store formData in the ref
+    setData(formData);
     try {
       const { data: signUpData, error } = await supabase.auth.signUp({
         email: formData.email,
@@ -60,8 +62,8 @@ function Step1Inputs() {
                 id: userId,
                 username: formDataRef.current.username,
                 full_name: formDataRef.current.name,
-                country: formDataRef.current.location.value,
-                city: formDataRef.current.city.value,
+                country: formDataRef.current.location?.value,
+                city: formDataRef.current.city?.value,
                 email: formDataRef.current.email,
                 date_of_birth: formDataRef.current.dob,
                 updated_at: new Date(),
@@ -88,7 +90,6 @@ function Step1Inputs() {
   }, [userId]);
 
   return (
-    /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
     <>
       <div className="font-nunito">
         <div>
@@ -105,7 +106,6 @@ function Step1Inputs() {
               Name
             </label>
             <input
-              defaultValue=""
               {...register("name", { required: true })}
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="John Snow"
@@ -167,15 +167,13 @@ function Step1Inputs() {
             />
             {errors.email && <span>This field is required</span>}
 
-            <label htmlFor="confirm-password" className="text-left">
-              Confirm password
-            </label>
+            <label htmlFor="confirmPassword">Confirm password</label>
             <input
-              {...register("confirm-password", { required: true })}
+              {...register("confirmPassword", { required: true })}
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="At least 8 characters"
             />
-            {errors.password && <span>This field is required</span>}
+            {errors.confirmPassword && <span>This field is required</span>}
           </div>
           <input type="submit" />
         </form>
@@ -183,5 +181,9 @@ function Step1Inputs() {
     </>
   );
 }
+
+Step1Inputs.propTypes = {
+  setData: PropTypes.func.isRequired,
+};
 
 export default Step1Inputs;
