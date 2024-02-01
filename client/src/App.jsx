@@ -43,7 +43,6 @@ const AuthorizedHomePage = () => {
 
 function App() {
   return (
-<<<<<<< HEAD
     <UserProvider>
       <BrowserRouter>
         <Routes>
@@ -61,23 +60,6 @@ function App() {
         </Routes>
       </BrowserRouter>
     </UserProvider>
-=======
-    <BrowserRouter>
-      <Routes>
-        <Route path="*" element={<NoMatch />} />
-        <Route path="/" element={<NonUserHomePage />} />
-        <Route path="/homepage" element={<AuthorizedHomePage />} />
-        <Route path="/adminpage" element={<AdminPage />} />
-        <Route path="/createpackage" element={<CreatePackage />} />
-        <Route path="/login" element={<LoginPage setToken={setToken} />} />
-        <Route path="/matching" element={<Matching />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/package" element={<MerryPackagePage />} />
-        <Route path="/admin" element={<AdminLoginPage />} />
-        <Route path="/test" element={<AdminPackagePageTest />} />
-      </Routes>
-    </BrowserRouter>
->>>>>>> 99fd8e4 (fix: conflict)
   );
 }
 

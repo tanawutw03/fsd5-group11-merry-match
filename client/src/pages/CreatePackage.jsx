@@ -60,7 +60,6 @@ function CreatePackage() {
     setSelectedFile(null);
   };
 
-<<<<<<< HEAD
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
@@ -71,11 +70,6 @@ function CreatePackage() {
       // Handle the error if needed
     }
   };
-=======
-  const handleCreatePackage = async (file,fileName) => {
-    // ... (Existing code)
->>>>>>> 5e55b9a (feat:remove unused data)
-
   const handleCreatePackage = async () => {
     let iconUrl;
 
@@ -95,13 +89,7 @@ function CreatePackage() {
     if (selectedFile) {
       try {
         const { data: storageData, error: storageError } =
-<<<<<<< HEAD
           await supabase.storage.from("iconPackage").upload(iconPath, file);
-=======
-          await supabase.storage
-            .from("packages")
-            .upload(`packages${fileName}`, selectedFile);
->>>>>>> 5e55b9a (feat:remove unused data)
 
         console.log("Storage Data:", storageData);
         const { data: urlData, error } = await supabase.storage
@@ -176,6 +164,7 @@ function CreatePackage() {
     setSelectedFile(null);
 
     console.log("Package data inserted successfully:", packageData);
+    navigate("/adminpage");
     // console.log("Icon data inserted successfully:", iconData);
   };
   return (
