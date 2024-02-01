@@ -9,6 +9,7 @@ import MerryPackagePage from "./pages/MerryPackagePage";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import CreatePackage from "./pages/CreatePackage";
+// import CreatePackage from "./AdmAvatar"
 
 const NoMatch = () => {
   return (
@@ -66,8 +67,6 @@ function App() {
         <Route path="/matching" element={<Matching />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/package" element={<MerryPackagePage />} />
-        <Route path="/admin" element={<AdminLoginPage />} />
-        <Route path="/test" element={<AdminPackagePageTest />} />
       </Routes>
     </BrowserRouter>
   );
