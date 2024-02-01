@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { SimpleGrid, Card, CardBody } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import { IconButton } from "@chakra-ui/react";
+import { supabase } from "../../src/utils/supabaseClient.js";
 
 function UploadProfiles() {
   const fileInputRef = useRef(null);
@@ -20,6 +21,38 @@ function UploadProfiles() {
 
     const updatedFiles = selectedFiles.filter((_, i) => i !== index);
     setSelectedFiles(updatedFiles);
+  };
+
+  const onSubmit = async () => {
+    try {
+      if (selectedFiles.length < 2) {
+        throw new Error("You must upload at least 2 photos");
+      }
+
+      for (const file of selectedFiles) {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+
+        if (file.size > 5 * 1024 * 1024) {
+          throw new Error("File size must not exceed 5MB");
+        }
+
+        const filePath = `avatars/${fileName}`;
+        const { data, error } = await supabase.storage
+          .from("avatars")
+          .upload(filePath, file, {
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        console.log(data, error);
+      }
+
+      // Reset selected files after successful upload
+      setSelectedFiles([]);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -87,14 +120,17 @@ function UploadProfiles() {
           ))}
         </SimpleGrid>
 
-        {/* File input hidden for styling */}
         <input
           type="file"
           ref={fileInputRef}
           style={{ display: "none" }}
           onChange={handleFileInputChange}
           multiple
+          accept="image/*"
         />
+
+        {/* Submit button triggers the onSubmit function */}
+        <button onClick={onSubmit}>Upload</button>
       </div>
     </>
   );
