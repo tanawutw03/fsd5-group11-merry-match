@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
-import InputSelect from "../components/common/InputSelect.jsx";
+import CountryInputSelect from "./common/CountryInputSelect.jsx";
+import CityInputSelect from "./common/CityInputSelect.jsx";
 import { supabase } from "../utils/supabaseClient.js";
 import { useState, useEffect, useRef } from "react";
 
@@ -12,6 +13,7 @@ function Step1Inputs() {
   } = useForm();
   const [userId, setUserId] = useState(null);
   const formDataRef = useRef(null);
+  const [selectedCountry, setSelectedCountry] = useState(null);
 
   const onSubmit = async (formData) => {
     console.log(formData);
@@ -59,7 +61,7 @@ function Step1Inputs() {
                 username: formDataRef.current.username,
                 full_name: formDataRef.current.name,
                 country: formDataRef.current.location.value,
-                city: formDataRef.current.city,
+                city: formDataRef.current.city.value,
                 email: formDataRef.current.email,
                 date_of_birth: formDataRef.current.dob,
                 updated_at: new Date(),
@@ -101,7 +103,12 @@ function Step1Inputs() {
             />
             {errors.name && <span>This field is required</span>}
 
-            <InputSelect control={control} name="location" label="Location" />
+            <CountryInputSelect
+              control={control}
+              name="location"
+              label="Location"
+              onCountryChange={setSelectedCountry}
+            />
 
             <label htmlFor="username">Username</label>
             <input
@@ -127,15 +134,15 @@ function Step1Inputs() {
               placeholder="01/01/2022"
             />
 
-            <label htmlFor="city">city</label>
-            <input
-              {...register("city", { required: true })}
-              className="border-2"
-              placeholder="Bangkok"
+            <CityInputSelect
+              label="City"
+              name="city"
+              control={control}
+              selectedCountry={selectedCountry}
             />
             {errors.city && <span>This field is required</span>}
 
-            <label htmlFor="email">email</label>
+            <label htmlFor="mail">Email</label>
             <input
               {...register("email", { required: true })}
               className="border-2"
@@ -143,7 +150,7 @@ function Step1Inputs() {
             />
             {errors.email && <span>This field is required</span>}
 
-            <label htmlFor="confirm-password">confirm-password</label>
+            <label htmlFor="confirm-password">Confirm password</label>
             <input
               {...register("confirm-password", { required: true })}
               className="border-2"
@@ -151,6 +158,7 @@ function Step1Inputs() {
             />
             {errors.password && <span>This field is required</span>}
           </div>
+          <input type="submit" />
         </form>
       </div>
     </>
