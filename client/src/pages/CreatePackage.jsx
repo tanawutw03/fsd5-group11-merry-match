@@ -2,7 +2,7 @@ import logo from "../assets/AdminPage/logo.png";
 import pack from "../assets/AdminPage/package.png";
 import logout from "../assets/AdminPage/logout.png";
 import complaint from "../assets/AdminPage/complaint.png";
-import { FormControl, FormLabel, Input, Textarea } from "@chakra-ui/react";
+import { FormControl, FormLabel, Input } from "@chakra-ui/react";
 import {
   NumberInput,
   NumberInputField,
@@ -10,7 +10,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
 } from "@chakra-ui/react";
-import { SmallAddIcon, SmallCloseIcon } from "@chakra-ui/icons";
+import { SmallAddIcon, SmallCloseIcon, DragHandleIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 
 function CreatePackage() {
@@ -165,11 +165,12 @@ function CreatePackage() {
               </label>
             </FormControl>
             <hr className="my-[70px] border-gray-300" />
-            <div className="w-1/2 m-[20px]">
+            <div className="w-full m-[20px]">
               <FormControl isRequired>
                 <FormLabel>Package Detail</FormLabel>
                 {packageDetails.map((detail, index) => (
                   <div key={index} className="flex items-center mb-2">
+                    <DragHandleIcon />
                     <Input
                       value={detail}
                       onChange={(e) => handleEditDetail(index, e.target.value)}
@@ -185,6 +186,7 @@ function CreatePackage() {
                   </div>
                 ))}
                 <div className="flex items-center">
+                  <DragHandleIcon />
                   <Input
                     placeholder="Enter package detail..."
                     value={newDetail}
@@ -194,7 +196,7 @@ function CreatePackage() {
                 </div>
               </FormControl>
               <button
-                className="w-[140px] h-[50px] text-[16px] text-[#95002B] rounded-full bg-[#FFE1EA] shadow-md p-4 m-[10px] flex justify-center items-center"
+                className="w-[140px] h-[50px] text-[16px] text-[#95002B] rounded-full bg-[#FFE1EA] shadow-md p-4 m-[30px] flex justify-center items-center"
                 onClick={handleAddDetail}
               >
                 + Add detail
