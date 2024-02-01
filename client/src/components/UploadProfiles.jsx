@@ -6,7 +6,7 @@ import ChakraButton from "./common/ChakraButton.jsx";
 function UploadProfiles() {
   return (
     <>
-      <div className="w-full h-full flex flex-col justify-center px-[255px] font-nunito">
+      <div className="w-full flex flex-col justify-center px-[255px] pb-[300px] font-nunito">
         <div className="flex flex-col justify-start items-start pb-10">
           <h1 className="text-3xl font-bold text-[#a62d82]">
             Profile Pictures
@@ -17,9 +17,10 @@ function UploadProfiles() {
           {Array.from({ length: 5 }).map((_, index) => (
             <Card
               key={index}
+              sx={{ w: "176px", h: "176px", rounded: "16px" }}
               onClick={() => console.log(`Card ${index + 1} clicked!`)}
             >
-              <CardBody className="flex flex-col justify-center items-center gap-10 rounded-md bg-[#f1f2f6]">
+              <CardBody className="flex flex-col justify-center items-center w-[176px] h-[176px] rounded-[16px] bg-[#f1f2f6]">
                 <IconButton
                   aria-label="Upload photo"
                   colorScheme="custom"
