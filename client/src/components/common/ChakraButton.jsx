@@ -9,9 +9,11 @@ function ChakraButton(props) {
   return (
     <Button
       onClick={handleNext}
-      m={10}
+      m={5}
+      variant={props.variant}
+      rounded={props.rounded}
       colorScheme={props.color}
-      className="w-[150px] hover:cursor-pointer"
+      className="w-[100px] hover:cursor-pointer"
     >
       {props.name}
     </Button>

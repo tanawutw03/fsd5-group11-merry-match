@@ -88,14 +88,24 @@ function Step1Inputs() {
   return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
     <>
-      <div>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2">
-          <div className="flex flex-col border-2 border-blue-700 ">
-            <label htmlFor="name">Name</label>
+      <div className="font-nunito">
+        <div>
+          <h1 className="flex justify-start absolute left-[290px] top-[280px] pb-2 2xl:pt-[70px] text-2xl text-[#A62D82] font-bold">
+            Basic Information
+          </h1>
+        </div>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-row justify-center ml-1 mt-72 gap-10"
+        >
+          <div className="flex flex-col w-[453px]">
+            <label htmlFor="name" className="text-left">
+              Name
+            </label>
             <input
               defaultValue=""
               {...register("name", { required: true })}
-              className="border-2"
+              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="John Snow"
               type="text"
             />
@@ -103,50 +113,62 @@ function Step1Inputs() {
 
             <InputSelect control={control} name="location" label="Location" />
 
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username" className="text-left">
+              Username
+            </label>
             <input
               {...register("username", { required: true })}
-              className="border-2 "
+              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="At least 6 characters"
             />
             {errors.username && <span>This field is required</span>}
 
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password" className="text-left">
+              Password
+            </label>
             <input
               {...register("password", { required: true })}
-              className="border-2"
+              className="border-2 px-3 py-2 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="At least 8 characters"
             />
             {errors.password && <span>This field is required</span>}
           </div>
-          <div className="flex flex-col border-2 border-red-700">
-            <label htmlFor="dob">dob</label>
+          <div className="flex flex-col w-[453px]">
+            <label htmlFor="dob" className="text-left">
+              Date of Birth
+            </label>
             <input
               {...register("dob", { required: true })}
-              className="border-2"
+              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="01/01/2022"
             />
 
-            <label htmlFor="city">city</label>
+            <label htmlFor="city" className="text-left">
+              City
+            </label>
             <input
               {...register("city", { required: true })}
-              className="border-2"
+              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="Bangkok"
             />
             {errors.city && <span>This field is required</span>}
 
-            <label htmlFor="email">email</label>
+            <label htmlFor="email" className="text-left">
+              Email
+            </label>
             <input
               {...register("email", { required: true })}
-              className="border-2"
+              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="name@website.com"
             />
             {errors.email && <span>This field is required</span>}
 
-            <label htmlFor="confirm-password">confirm-password</label>
+            <label htmlFor="confirm-password" className="text-left">
+              Confirm-password
+            </label>
             <input
               {...register("confirm-password", { required: true })}
-              className="border-2"
+              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="At least 8 characters"
             />
             {errors.password && <span>This field is required</span>}
