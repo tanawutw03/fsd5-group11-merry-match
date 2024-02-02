@@ -17,28 +17,27 @@ import { useRef } from "react";
 function TabSteps() {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const isLastTab = activeTabIndex === 2;
-  const formDataRef = useRef({});
+
+  // Use refs to store data for each step
+  const step1DataRef = useRef({});
+  const step2DataRef = useRef({});
+  const step3DataRef = useRef({});
 
   // State to store data entered in each step
   const [step1Data, setStep1Data] = useState({});
   const [step2Data, setStep2Data] = useState({});
   const [step3Data, setStep3Data] = useState({});
 
-  function renderFormByTabIndex(
-    tabIndex,
-    setStep1Data,
-    setStep2Data,
-    setStep3Data
-  ) {
+  function renderFormByTabIndex(tabIndex) {
     switch (tabIndex) {
       case 0:
-        return { form: <Step1Inputs setData={setStep1Data} /> };
+        return <Step1Inputs setData={setStep1Data} />;
       case 1:
-        return { form: <Step2Inputs setData={setStep2Data} /> };
+        return <Step2Inputs setData={setStep2Data} />;
       case 2:
-        return { form: <Step3Inputs setData={setStep3Data} /> };
+        return <Step3Inputs setData={setStep3Data} />;
       default:
-        return { form: null }; // Handle other cases or return null
+        return null; // Handle other cases or return null
     }
   }
 
@@ -50,22 +49,19 @@ function TabSteps() {
   };
 
   const handleNext = () => {
-    if (activeTabIndex === 0) {
-      // Save data from Step 1
-      const step1Data = {
-        name: formDataRef.current.name,
-        location: formDataRef.current.location?.value,
-        username: formDataRef.current.username,
-        password: formDataRef.current.password,
-        dob: formDataRef.current.dob,
-        city: formDataRef.current.city?.value,
-        email: formDataRef.current.email,
-        confirmPassword: formDataRef.current.confirmPassword,
-      };
-      setStep1Data(step1Data);
-    } else if (activeTabIndex === 1) {
-      // Save data from Step 2
-      setStep2Data(/* Extract data from Step 2 component */);
+    // Save data based on the active tab
+    switch (activeTabIndex) {
+      case 0:
+        step1DataRef.current = { ...step1Data };
+        break;
+      case 1:
+        step2DataRef.current = { ...step2Data };
+        break;
+      case 2:
+        step3DataRef.current = { ...step3Data };
+        break;
+      default:
+        break;
     }
 
     // Navigate to the next tab
@@ -77,7 +73,6 @@ function TabSteps() {
     const newIndex = Math.max(0, activeTabIndex - 1);
     setActiveTabIndex(newIndex);
   };
-
   const dummyFunction = () => {};
 
   return (
@@ -117,23 +112,24 @@ function TabSteps() {
 
           <div className="h-screen flex ml-[270px]">
             <TabPanels className="text-md">
-              {[setStep1Data, setStep2Data, setStep3Data].map(
-                (setFunction, i) => (
-                  <TabPanel
-                    key={i}
-                    className="h-screen flex justify-center items-center"
-                  >
-                    {
-                      renderFormByTabIndex(
-                        activeTabIndex,
-                        setStep1Data,
-                        setStep2Data,
-                        setStep3Data
-                      ).form
-                    }{" "}
-                  </TabPanel>
-                )
-              )}
+              <TabPanel
+                key={0}
+                className="h-screen flex justify-center items-center"
+              >
+                {renderFormByTabIndex(0)}
+              </TabPanel>
+              <TabPanel
+                key={1}
+                className="h-screen flex justify-center items-center"
+              >
+                {renderFormByTabIndex(1)}
+              </TabPanel>
+              <TabPanel
+                key={2}
+                className="h-screen flex justify-center items-center"
+              >
+                {renderFormByTabIndex(2)}
+              </TabPanel>
             </TabPanels>
           </div>
         </Tabs>
