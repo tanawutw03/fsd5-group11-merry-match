@@ -22,13 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-<<<<<<< HEAD
 
 # Ignore environment files (modify these names based on your project)
 **/.env
 **/.env.development
 **/.env.prod
-=======
-prisma
-
->>>>>>> 99fd8e4 (fix: conflict)

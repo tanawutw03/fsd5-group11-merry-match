@@ -13,6 +13,8 @@ import {
 import { SmallAddIcon, SmallCloseIcon, DragHandleIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import { supabase } from "../utils/supabaseClient";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function CreatePackage() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -21,11 +23,19 @@ function CreatePackage() {
   const [packageName, setPackageName] = useState("");
   const [merryLimit, setMerryLimit] = useState(0);
   const [price, setPrice] = useState(0);
+  const navigate = useNavigate();
+
+  const handleCancel = () => {
+    // Navigate to the desired path (in this case, '/adminpage')
+    navigate("/adminpage");
+  };
 
   const handleAddDetail = () => {
     if (newDetail.trim() !== "") {
-      setPackageDetails([...packageDetails, newDetail]);
+      const updatedDetails = [...packageDetails, newDetail];
+      setPackageDetails(updatedDetails);
       setNewDetail("");
+      console.log("After Adding Detail - packageDetails:", updatedDetails);
     }
   };
 
@@ -38,7 +48,11 @@ function CreatePackage() {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setSelectedFile(URL.createObjectURL(file));
+      setSelectedFile({
+        file,
+        preview: URL.createObjectURL(file),
+        fileExt: file.name.split(".").pop(),
+      });
     }
   };
 
@@ -46,34 +60,43 @@ function CreatePackage() {
     setSelectedFile(null);
   };
 
-  const handleCreatePackage = async () => {
-    // ... (Existing code)
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      // Redirect to the login page after successful sign-out
+      navigate("/login");
+    } catch (error) {
+      console.error("Error during sign-out:", error);
+      // Handle the error if needed
+    }
+  };
 
-    let iconUrl = null;
-    let iconPath = null;
+  const handleCreatePackage = async () => {
+    console.log("Before Submit - packageDetails:", packageDetails);
+    const { file } = selectedFile;
+    console.log(file);
+
+    console.log(selectedFile);
+    const uniqueIdentifier = file.name.split(".").pop();
+    const fileName = `${Math.random()}.${uniqueIdentifier}`;
+
+    console.log(uniqueIdentifier);
+    const iconPath = `iconPackage/${fileName}`;
+    console.log(iconPath);
 
     // Upload icon to Supabase Storage
     if (selectedFile) {
       try {
         const { data: storageData, error: storageError } =
-          await supabase.storage
-            .from("iconPackage")
-            .upload(
-              `iconPackage/${Date.now()}_${selectedFile.name}`,
-              selectedFile
-            );
+          await supabase.storage.from("iconPackage").upload(iconPath, file);
 
         console.log("Storage Data:", storageData);
-        console.error("Storage Error:", storageError);
 
         if (storageError) {
-          // Handle the error, e.g., show a message to the user
-          return;
+          console.error("Storage Error:", storageError);
         }
 
         // Get the URL and path of the uploaded file
-        iconUrl = storageData[0].url;
-        iconPath = storageData[0].path;
       } catch (error) {
         console.error("Error uploading icon to storage:", error);
         // Handle the error, e.g., show a message to the user
@@ -91,7 +114,10 @@ function CreatePackage() {
           price: price,
           description: packageDetails,
         },
-      ]);
+      ])
+      .select();
+
+    console.log(packageData);
 
     if (packageError) {
       console.error("Error inserting package data:", packageError);
@@ -99,22 +125,24 @@ function CreatePackage() {
       return;
     }
 
-    // Insert icon data into the "icons" table
-    const { data: iconData, error: iconError } = await supabase
-      .from("icons")
-      .insert([
-        {
-          name: packageName, // Set the name based on your requirement
-          path: iconPath,
-          package_id: packageData[0].id, // Assuming the "packages" table has an 'id' column
-        },
-      ]);
+    // // Insert icon data into the "icons" table
+    // const { data: iconData, error: iconError } = await supabase
+    //   .from("icons")
+    //   .insert([
+    //     {
+    //       name: packageName, // Set the name based on your requirement
+    //       path: iconPath,
+    //       package_id: packageData[0].id, // Assuming the "packages" table has an 'id' column
+    //     },
+    //   ]);
 
-    if (iconError) {
-      console.error("Error inserting icon data:", iconError);
-      // Handle the error, e.g., show a message to the user
-      return;
-    }
+    // if (iconError) {
+    //   console.error("Error inserting icon data:", iconError);
+    //   // Handle the error, e.g., show a message to the user
+    //   return;
+    // }
+
+    console.log("After Submit - packageDetails:", packageDetails);
 
     // Reset form fields or redirect to another page after successful creation
     setPackageName("");
@@ -124,7 +152,7 @@ function CreatePackage() {
     setSelectedFile(null);
 
     console.log("Package data inserted successfully:", packageData);
-    console.log("Icon data inserted successfully:", iconData);
+    // console.log("Icon data inserted successfully:", iconData);
   };
   return (
     <div className="flex flex-row justify-stretch min-w-[1440px]">
@@ -138,7 +166,10 @@ function CreatePackage() {
               </div>
             </div>
             <nav className="flex flex-col gap-1 min-w-[240px] p-2 font-sans text-base font-nunito text-gray-700">
-              <button className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+              <button
+                className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                onClick={handleCancel}
+              >
                 <img src={pack} className=" mr-[10px]" />
                 Merry Package
               </button>
@@ -154,7 +185,10 @@ function CreatePackage() {
             </nav>
           </div>
           <div className="relative flex flex-col bg-clip-border rounded-xl bg-utility-white border-r border-solid border-gray-400 text-gray-700 w-full max-w-[20rem] p-4 ">
-            <button className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+            <button
+              className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+              onClick={handleLogout}
+            >
               <img src={logout} className=" mr-[10px]" />
               Log Out
             </button>
@@ -167,7 +201,10 @@ function CreatePackage() {
             Merry Package
           </div>
           <div className="flex flex-row flex-grow-0 justify-between px-2  gap-5">
-            <button className="flex p-3 w-[100px] text-[#95002B]  text-center font-Nunito text-[16px] font-bold leading-6 justify-center items-center space-x-2 rounded-full bg-[#FFE1EA]  shadow-md">
+            <button
+              className="flex p-3 w-[100px] text-[#95002B]  text-center font-Nunito text-[16px] font-bold leading-6 justify-center items-center space-x-2 rounded-full bg-[#FFE1EA]  shadow-md"
+              onClick={handleCancel}
+            >
               Cancel
             </button>
 
@@ -231,7 +268,7 @@ function CreatePackage() {
                 {selectedFile ? (
                   <div className=" relative">
                     <img
-                      src={selectedFile}
+                      src={selectedFile.preview}
                       alt="Uploaded Icon"
                       className="w-[100px] h-[100px] object-cover"
                     />
@@ -254,7 +291,7 @@ function CreatePackage() {
                   type="file"
                   id="avatar"
                   name="avatar"
-                  accept="image/png, image/jpeg"
+                  accept="image/*"
                   className="hidden"
                   onChange={handleFileChange}
                 />
@@ -269,7 +306,7 @@ function CreatePackage() {
                     <DragHandleIcon />
                     <Input
                       value={detail}
-                      onChange={(e) => handleEditDetail(index, e.target.value)}
+                      onChange={(e) => setNewDetail(index, e.target.value)}
                       placeholder="Enter package detail..."
                       className="mr-2"
                     />

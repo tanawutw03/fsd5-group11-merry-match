@@ -5,7 +5,7 @@ import complaint from "../assets/AdminPage/complaint.png";
 import { Tooltip } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftAddon } from "@chakra-ui/react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   Thead,
@@ -19,40 +19,59 @@ import {
 } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { supabase } from "../utils/supabaseClient";
 
-const packages = [
-  {
-    package_id: 1,
-    package_name: "Standard Package",
-    price: 29.99,
-    package_detail: "Basic features with limited merry limit",
-    merry_limit: 50,
-    created_at: "2024-01-31T12:00:00Z",
-    updated_at: "2024-01-31T14:30:00Z",
-  },
-  {
-    package_id: 2,
-    package_name: "Premium Package",
-    price: 49.99,
-    package_detail: "Enhanced features with higher merry limit",
-    merry_limit: 100,
-    created_at: "2024-01-30T15:45:00Z",
-    updated_at: "2024-01-31T16:20:00Z",
-  },
-  {
-    package_id: 3,
-    package_name: "Ultimate Package",
-    price: 79.99,
-    package_detail: "All-inclusive features with unlimited merry limit",
-    merry_limit: 200, // Unlimited
-    created_at: "2024-01-29T09:10:00Z",
-    updated_at: "2024-01-31T18:45:00Z",
-  },
-];
 function AdminPage() {
-  const handleAddPackageClick = () => {
-    return <Navigate to="/createpackage" />;
+  const navigate = useNavigate();
+  const [packageData, setPackageData] = useState([]);
+
+  useEffect(() => {
+    // Fetch data from Supabase or your backend API
+    // Replace this with your actual Supabase query or API call
+    const fetchData = async () => {
+      // Example using Supabase
+
+      const { data, error } = await supabase.from("packages").select("*");
+      if (error) {
+        console.error("Error fetching data:", error);
+      } else {
+        setPackageData(data);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      // Redirect to the login page after successful sign-out
+      navigate("/login");
+    } catch (error) {
+      console.error("Error during sign-out:", error);
+      // Handle the error if needed
+    }
   };
+
+  const handleCancel = () => {
+    navigate("/adminpage");
+  };
+
+  const handleAddPackageClick = () => {
+    navigate("/createpackage");
+  };
+
+  const handleEdit = (packageId) => {
+    // Handle edit functionality based on the packageId
+    console.log("Edit package with ID:", packageId);
+  };
+
+  const handleDelete = (packageId) => {
+    // Handle delete functionality based on the packageId
+    console.log("Delete package with ID:", packageId);
+  };
+
   return (
     <div className="flex flex-row justify-stretch min-w-[1440px]">
       <div className="sidebar">
@@ -65,7 +84,10 @@ function AdminPage() {
               </div>
             </div>
             <nav className="flex flex-col gap-1 min-w-[240px] p-2 font-sans text-base font-nunito text-gray-700">
-              <button className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+              <button
+                className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                onClick={handleCancel}
+              >
                 <img src={pack} className=" mr-[10px]" />
                 Merry Package
               </button>
@@ -81,7 +103,10 @@ function AdminPage() {
             </nav>
           </div>
           <div className="relative flex flex-col bg-clip-border rounded-xl bg-utility-white border-r border-solid border-gray-400 text-gray-700 w-full max-w-[20rem] p-4 ">
-            <button className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+            <button
+              className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+              onClick={handleLogout}
+            >
               <img src={logout} className=" mr-[10px]" />
               Log Out
             </button>
@@ -128,14 +153,14 @@ function AdminPage() {
                 </Tr>
               </Thead>
               <Tbody>
-                {packages.map((packageData) => (
-                  <Tr key={packageData.package_id}>
-                    <Td isNumeric>{packageData.package_id}</Td>
-                    <Td>{packageData.package_name}</Td>
-                    <Td isNumeric>{packageData.price}</Td>
-                    <Td isNumeric>{packageData.merry_limit}</Td>
-                    <Td>{packageData.created_at}</Td>
-                    <Td>{packageData.updated_at}</Td>
+                {packageData.map((packageItem) => (
+                  <Tr key={packageItem.package_id}>
+                    <Td isNumeric>{packageItem.package_id}</Td>
+                    <Td>{packageItem.package_name}</Td>
+                    <Td isNumeric>{packageItem.price}</Td>
+                    <Td isNumeric>{packageItem.merry_limit}</Td>
+                    <Td>{packageItem.created_at}</Td>
+                    <Td>{packageItem.updated_at}</Td>
                     <Td>
                       {/* Edit Button */}
                       <Tooltip
@@ -147,7 +172,7 @@ function AdminPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleEdit(packageData.package_id)}
+                          onClick={() => handleEdit(packageItem.package_id)}
                           color="pink.400"
                         >
                           <EditIcon />
@@ -164,7 +189,7 @@ function AdminPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleDelete(packageData.package_id)}
+                          onClick={() => handleDelete(packageItem.package_id)}
                           color="pink.400"
                         >
                           <DeleteIcon />
