@@ -3,12 +3,22 @@ import NavBar from "../components/common/NavBar";
 import LeftSideMatching from "../components/LeftSideMatching";
 import { Checkbox } from "@chakra-ui/react";
 import SliderAge from "../components/SliderAge";
-
+import { useNavigate } from "react-router-dom";
 function Matching() {
+  const navigate = useNavigate();
   return (
     <>
       <div className=" h-screen w-screen">
-        <NavBar />
+        <NavBar
+          firstMenuName="Start Matching!"
+          secondMenuName="Merry Membership"
+          name="login"
+          color="red"
+          showBell="true"
+          useMenu="true"
+          onClickFirstMenu={() => navigate("/matching")}
+          onClickSecondMenu={() => navigate("/package")}
+        />
         <div className="flex flex-row mt-10 ml-5 ">
           <LeftSideMatching />
           <MerryCards />

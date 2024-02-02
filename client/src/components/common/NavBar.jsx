@@ -86,18 +86,18 @@ const NavBar = (props) => {
               {props.secondMenuName}
             </Button>
           </li>
-          <div className="flex ">
+          <div className="flex  ">
             {props.showBell && (
-              <div className="flex mr-[12px] justify-center items-center w-[48px] h-[48px] bg-[#F6F7FC] rounded-[999px] object-fit object-cover">
+              <div className="flex mr-[10px] mt-5 justify-center items-center w-[48px] h-[48px] bg-[#F6F7FC] rounded-[999px] object-fit object-cover">
                 <li>
                   <img
-                    className="flex-shrink-0 w-[24px] h-[24px] "
+                    className="flex-shrink-0 w-[24px] h-[24px]  "
                     src={bell}
                   />
                 </li>
               </div>
             )}
-            <li className="mr-[160px]">{MenuOrButton}</li>
+            <li className="mr-[160px] mt-5">{MenuOrButton}</li>
           </div>
         </ul>
       </nav>
