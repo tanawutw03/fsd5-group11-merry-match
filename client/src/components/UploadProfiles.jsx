@@ -1,6 +1,13 @@
+import { SimpleGrid, Card, CardBody } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
+import { IconButton } from "@chakra-ui/react";
 import { SimpleGrid, Card, CardBody, IconButton } from "@chakra-ui/react";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { useRef, useState } from "react";
+import { SimpleGrid, Card, CardBody } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
+import { IconButton } from "@chakra-ui/react";
+import { supabase } from "../../src/utils/supabaseClient.js";
 
 function UploadProfiles() {
   const fileInputRef = useRef(null);
@@ -19,13 +26,48 @@ function UploadProfiles() {
     setSelectedFiles(updatedFiles);
   };
 
+  const onSubmit = async () => {
+    try {
+      if (selectedFiles.length < 2) {
+        throw new Error("You must upload at least 2 photos");
+      }
+
+      for (const file of selectedFiles) {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+
+        if (file.size > 5 * 1024 * 1024) {
+          throw new Error("File size must not exceed 5MB");
+        }
+
+        const filePath = `avatars/${fileName}`;
+        const { data, error } = await supabase.storage
+          .from("avatars")
+          .upload(filePath, file, {
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        console.log(data, error);
+      }
+
+      // Reset selected files after successful upload
+      setSelectedFiles([]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
-      <div className="flex flex-col items-center">
-        <div className="ml-48 flex w-screen ml- justify-start items-start mt-40">
+      <div className="w-full h-full flex flex-col justify-center font-nunito">
+        <div className="flex flex-col justify-start items-start mt-32 pb-10">
           <h1 className="text-3xl font-bold text-[#a62d82]">
-            Profile Pictures
+            Profile&nbsp;Pictures
           </h1>
+          <h3 className="text-lg">
+            Upload&nbsp;at&nbsp;least&nbsp;2&nbsp;photos
+          </h3>
         </div>
         <div className="ml-48 flex w-screen ml- justify-start items-start mb-10">
           <h3 className="text-2xl">Upload at least 2 photos</h3>
@@ -81,14 +123,17 @@ function UploadProfiles() {
           ))}
         </SimpleGrid>
 
-        {/* File input hidden for styling */}
         <input
           type="file"
           ref={fileInputRef}
           style={{ display: "none" }}
           onChange={handleFileInputChange}
           multiple
+          accept="image/*"
         />
+
+        {/* Submit button triggers the onSubmit function */}
+        <button onClick={onSubmit}>Upload</button>
       </div>
     </>
   );

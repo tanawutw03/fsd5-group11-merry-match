@@ -10,7 +10,9 @@ function ChakraButton(props) {
   return (
     <Button
       onClick={handleNext}
-      m={10}
+      m={5}
+      variant={props.variant}
+      rounded={props.rounded}
       colorScheme={props.color}
       className={combinedClassName}
     >
@@ -24,5 +26,7 @@ ChakraButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   width: PropTypes.string.isRequired,
   height: PropTypes.string.isRequired,
+  variant: PropTypes.string.isRequired,
+  removeEventListener: PropTypes.func.
 };
 export default ChakraButton;

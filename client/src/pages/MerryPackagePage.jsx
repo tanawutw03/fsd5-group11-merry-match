@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 function MarryPackagePage() {
   const navigate = useNavigate();
+
   return (
     <>
       <NavBar

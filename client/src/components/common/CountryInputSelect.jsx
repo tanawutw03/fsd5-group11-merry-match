@@ -22,7 +22,9 @@ function CountryInputSelect({ control, name, label, onCountryChange }) {
 
   return (
     <>
-      <label htmlFor={name}>{label}</label>
+      <label htmlFor={name} className="text-left">
+        {label}
+      </label>
       <Controller
         name={name}
         control={control}
@@ -44,10 +46,12 @@ function CountryInputSelect({ control, name, label, onCountryChange }) {
                 ? `Loading ${label.toLowerCase()}...`
                 : `Select ${label.toLowerCase()}`
             }
+            className="border-2 mt-[2px] mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82] text-left"
             onChange={(selectedCountry) => {
               field.onChange(selectedCountry);
               onCountryChange(selectedCountry);
             }}
+            className="border-2 mt-[2px] mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82] text-left"
           />
         )}
       />
