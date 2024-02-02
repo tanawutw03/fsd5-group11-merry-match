@@ -25,6 +25,7 @@ dist-ssr
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 # Ignore environment files (modify these names based on your project)
 **/.env
@@ -39,5 +40,8 @@ prisma
 >>>>>>> 99fd8e4 (fix: conflict)
 =======
 prisma
+=======
+.env
+>>>>>>> 5e55b9a (feat:remove unused data)
 
 >>>>>>> 99fd8e4 (fix: conflict)
