@@ -1,6 +1,9 @@
 import { SimpleGrid, Card, CardBody, IconButton } from "@chakra-ui/react";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { useRef, useState } from "react";
+import { SimpleGrid, Card, CardBody } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
+import { IconButton } from "@chakra-ui/react";
 
 function UploadProfiles() {
   const fileInputRef = useRef(null);
@@ -21,11 +24,14 @@ function UploadProfiles() {
 
   return (
     <>
-      <div className="flex flex-col items-center">
-        <div className="ml-48 flex w-screen ml- justify-start items-start mt-40">
+      <div className="w-full h-full flex flex-col justify-center font-nunito">
+        <div className="flex flex-col justify-start items-start mt-32 pb-10">
           <h1 className="text-3xl font-bold text-[#a62d82]">
-            Profile Pictures
+            Profile&nbsp;Pictures
           </h1>
+          <h3 className="text-lg">
+            Upload&nbsp;at&nbsp;least&nbsp;2&nbsp;photos
+          </h3>
         </div>
         <div className="ml-48 flex w-screen ml- justify-start items-start mb-10">
           <h3 className="text-2xl">Upload at least 2 photos</h3>
