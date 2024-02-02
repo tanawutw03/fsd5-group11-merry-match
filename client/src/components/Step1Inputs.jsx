@@ -150,6 +150,19 @@ function Step1Inputs({ setData }) {
               placeholder="01/01/2022"
             />
 
+            <label htmlFor="city" className="text-left">
+              City
+            </label>
+            <input
+              {...register("city", { required: true })}
+              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
+              placeholder="Bangkok"
+            />
+            {errors.city && <span>This field is required</span>}
+
+            <label htmlFor="email" className="text-left">
+              Email
+            </label>
             <CityInputSelect
               label="City"
               name="city"

@@ -1,3 +1,6 @@
+import { SimpleGrid, Card, CardBody } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
+import { IconButton } from "@chakra-ui/react";
 import { SimpleGrid, Card, CardBody, IconButton } from "@chakra-ui/react";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { useRef, useState } from "react";
