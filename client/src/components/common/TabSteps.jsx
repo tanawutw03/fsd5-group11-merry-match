@@ -150,7 +150,7 @@ function TabSteps() {
           color="red"
           rounded="full"
           type={renderButtonType}
-          onClick={isLastTab ? undefined : handleNext}
+          onClick={isLastTab ? handleNext : dummyFunction}
         />
       </div>
     </>
