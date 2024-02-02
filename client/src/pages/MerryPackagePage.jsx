@@ -9,7 +9,7 @@ import facebookIcon from "../assets/merryPackagePage/facebook-circle-fill.svg";
 import instagramIcon from "../assets/merryPackagePage/instagram-fill.svg";
 import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
 
-function MarryPackagePage() {
+function PackagePage() {
   return (
     <>
       <div className="main-container w-screen  p-[80px,161px,160px,160px]">
@@ -257,4 +257,4 @@ function MarryPackagePage() {
   );
 }
 
-export default MarryPackagePage;
+export default PackagePage;
