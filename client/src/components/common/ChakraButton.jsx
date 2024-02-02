@@ -28,5 +28,11 @@ ChakraButton.propTypes = {
   variant: PropTypes.bool,
   width: PropTypes.string.isRequired,
   height: PropTypes.string.isRequired,
+<<<<<<< HEAD
+=======
+
+  variant: PropTypes.string.isRequired,
+  rounded: PropTypes.bool,
+>>>>>>> 1b30dcd (feat:add props to  navbar)
 };
 export default ChakraButton;
