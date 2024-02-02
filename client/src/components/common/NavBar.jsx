@@ -99,7 +99,11 @@ const NavBar = (props) => {
               {props.secondMenuName}
             </Button>
           </li>
+<<<<<<< HEAD
           <div className="flex  ml-[20px]  ">
+=======
+          <div className="flex  ">
+>>>>>>> f474690 (feat:add props to  navbar)
             {props.showBell && (
               <div className="flex mr-[10px] mt-5 justify-center items-center w-[48px] h-[48px] bg-[#F6F7FC] rounded-[999px] object-fit object-cover">
                 <li>
