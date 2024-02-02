@@ -24,6 +24,24 @@ function TabSteps() {
   const [step2Data, setStep2Data] = useState({});
   const [step3Data, setStep3Data] = useState({});
 
+  function renderFormByTabIndex(
+    tabIndex,
+    setStep1Data,
+    setStep2Data,
+    setStep3Data
+  ) {
+    switch (tabIndex) {
+      case 0:
+        return { form: <Step1Inputs setData={setStep1Data} /> };
+      case 1:
+        return { form: <Step2Inputs setData={setStep2Data} /> };
+      case 2:
+        return { form: <Step3Inputs setData={setStep3Data} /> };
+      default:
+        return { form: null }; // Handle other cases or return null
+    }
+  }
+
   const renderButtonLabel = isLastTab ? "Submit" : "Next Step";
   const renderButtonType = isLastTab ? "submit" : "button";
 
@@ -99,14 +117,23 @@ function TabSteps() {
 
           <div className="h-screen flex ml-[270px]">
             <TabPanels className="text-md">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <TabPanel
-                  key={i}
-                  className="h-screen flex justify-center items-center"
-                >
-                  {renderFormByTabIndex(activeTabIndex).form}
-                </TabPanel>
-              ))}
+              {[setStep1Data, setStep2Data, setStep3Data].map(
+                (setFunction, i) => (
+                  <TabPanel
+                    key={i}
+                    className="h-screen flex justify-center items-center"
+                  >
+                    {
+                      renderFormByTabIndex(
+                        activeTabIndex,
+                        setStep1Data,
+                        setStep2Data,
+                        setStep3Data
+                      ).form
+                    }{" "}
+                  </TabPanel>
+                )
+              )}
             </TabPanels>
           </div>
         </Tabs>
@@ -116,14 +143,14 @@ function TabSteps() {
           name="← Back"
           variant="link"
           color="red"
-          onNext={handlePrev}
+          onClick={handlePrev}
         />
         <ChakraButton
           name={renderButtonLabel}
           color="red"
           rounded="full"
           type={renderButtonType}
-          onNext={isLastTab ? undefined : handleNext}
+          onClick={isLastTab ? undefined : handleNext}
         />
       </div>
     </>

@@ -30,7 +30,9 @@ function CityInputSelect({ control, name, label, selectedCountry }) {
 
   return (
     <>
-      <label htmlFor={name}>{label}</label>
+      <label htmlFor={name} className="text-left">
+        {label}
+      </label>
       <Controller
         name={name}
         control={control}

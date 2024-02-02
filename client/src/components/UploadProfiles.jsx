@@ -63,9 +63,6 @@ function UploadProfiles() {
             Upload&nbsp;at&nbsp;least&nbsp;2&nbsp;photos
           </h3>
         </div>
-        <div className="ml-48 flex w-screen ml- justify-start items-start mb-10">
-          <h3 className="text-2xl">Upload at least 2 photos</h3>
-        </div>
 
         <SimpleGrid columns={[1, 2, 3, 4, 5]} spacing={210}>
           {Array.from({ length: 5 }).map((_, index) => (

@@ -51,7 +51,6 @@ function CountryInputSelect({ control, name, label, onCountryChange }) {
               field.onChange(selectedCountry);
               onCountryChange(selectedCountry);
             }}
-            className="border-2 mt-[2px] mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82] text-left"
           />
         )}
       />

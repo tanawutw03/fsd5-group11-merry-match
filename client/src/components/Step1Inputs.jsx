@@ -150,29 +150,18 @@ function Step1Inputs({ setData }) {
               placeholder="01/01/2022"
             />
 
-            <label htmlFor="city" className="text-left">
-              City
-            </label>
-            <input
-              {...register("city", { required: true })}
-              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
-              placeholder="Bangkok"
-            />
-            {errors.city && <span>This field is required</span>}
-
-            <label htmlFor="email" className="text-left">
-              Email
-            </label>
             <CityInputSelect
               label="City"
               name="city"
               control={control}
               selectedCountry={selectedCountry}
-              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
+              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]  "
             />
             {errors.city && <span>This field is required</span>}
 
-            <label htmlFor="mail">Email</label>
+            <label htmlFor="mail" className="text-left mt-8">
+              Email
+            </label>
             <input
               {...register("email", { required: true })}
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
@@ -180,7 +169,9 @@ function Step1Inputs({ setData }) {
             />
             {errors.email && <span>This field is required</span>}
 
-            <label htmlFor="confirmPassword">Confirm password</label>
+            <label htmlFor="confirmPassword" className="text-left">
+              Confirm password
+            </label>
             <input
               {...register("confirmPassword", { required: true })}
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
