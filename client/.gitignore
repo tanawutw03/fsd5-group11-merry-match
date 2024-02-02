@@ -31,6 +31,7 @@ dist-ssr
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> cf589b3 (fix:conflict)
 =======
@@ -68,6 +69,9 @@ prisma
 >>>>>>> 99fd8e4 (fix: conflict)
 =======
 prisma
+=======
+.env
+>>>>>>> 5e55b9a (feat:remove unused data)
 
 >>>>>>> 99fd8e4 (fix: conflict)
 >>>>>>> 7a0ab82 (fix: conflict)
