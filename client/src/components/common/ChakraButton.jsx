@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 function ChakraButton(props) {
   const handleNext = () => {
-    props.onNext();
+    props.onClick();
   };
 
   return (
@@ -22,6 +22,6 @@ function ChakraButton(props) {
 ChakraButton.propTypes = {
   color: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  onNext: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 export default ChakraButton;

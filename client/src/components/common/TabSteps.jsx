@@ -12,51 +12,55 @@ import Step2Inputs from "../Step2Inputs";
 import Step3Inputs from "../Step3Inputs";
 import RegisterWords from "./RegisterWords";
 import ChakraButton from "./ChakraButton";
-import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 
 function TabSteps() {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-  const navigate = useNavigate();
   const isLastTab = activeTabIndex === 2;
+  const formDataRef = useRef({});
+
+  // State to store data entered in each step
+  const [step1Data, setStep1Data] = useState({});
+  const [step2Data, setStep2Data] = useState({});
+  const [step3Data, setStep3Data] = useState({});
 
   const renderButtonLabel = isLastTab ? "Submit" : "Next Step";
   const renderButtonType = isLastTab ? "submit" : "button";
 
   const handleTabChange = (index) => {
-    console.log("Current tab index:", index);
-
-    // Set the active tab index after navigation
     setActiveTabIndex(index);
   };
 
-  const renderFormByTabIndex = (index) => {
-    switch (index) {
-      case 0:
-        return {
-          form: <Step1Inputs />,
-          formName: "Basic Information",
-        };
-      case 1:
-        return {
-          form: <Step2Inputs />,
-          formName: "Identities and Interests",
-        };
-      case 2:
-        return { form: <Step3Inputs />, formName: "Upload Photos" };
-      default:
-        return null;
-    }
-  };
-
   const handleNext = () => {
-    navigate("/register");
-    console.log("Navigating to the next page");
+    if (activeTabIndex === 0) {
+      // Save data from Step 1
+      const step1Data = {
+        name: formDataRef.current.name,
+        location: formDataRef.current.location?.value,
+        username: formDataRef.current.username,
+        password: formDataRef.current.password,
+        dob: formDataRef.current.dob,
+        city: formDataRef.current.city?.value,
+        email: formDataRef.current.email,
+        confirmPassword: formDataRef.current.confirmPassword,
+      };
+      setStep1Data(step1Data);
+    } else if (activeTabIndex === 1) {
+      // Save data from Step 2
+      setStep2Data(/* Extract data from Step 2 component */);
+    }
+
+    // Navigate to the next tab
+    const newIndex = Math.min(2, activeTabIndex + 1);
+    setActiveTabIndex(newIndex);
   };
 
   const handlePrev = () => {
-    navigate("/");
-    console.log("Navigating to the prev page");
+    const newIndex = Math.max(0, activeTabIndex - 1);
+    setActiveTabIndex(newIndex);
   };
+
+  const dummyFunction = () => {};
 
   return (
     <>
@@ -83,16 +87,22 @@ function TabSteps() {
                 bg="blue.500"
                 borderRadius="1px"
               />
-              <p>{renderFormByTabIndex(activeTabIndex).formName}</p>
+              <p>
+                {activeTabIndex === 0
+                  ? "Basic Information"
+                  : activeTabIndex === 1
+                  ? "Identities and Interests"
+                  : "Upload Photos"}
+              </p>
             </div>
           </div>
 
-          <div className="h-screen flex ml-[270px]">
-            <TabPanels className="text-md">
+          <div className="w-screen h-screen">
+            <TabPanels className="text-2xl text-[#A62D82]">
               {Array.from({ length: 3 }).map((_, i) => (
                 <TabPanel
                   key={i}
-                  className="h-screen flex justify-center items-center"
+                  className="w-screen h-screen flex justify-center items-center"
                 >
                   {renderFormByTabIndex(activeTabIndex).form}
                 </TabPanel>
@@ -100,21 +110,15 @@ function TabSteps() {
             </TabPanels>
           </div>
         </Tabs>
-      </div>
-      <div className="bottom-0 w-full h-112 p-5 bg-white shadow-md flex justify-end border-t-2">
-        <ChakraButton
-          name="← Back"
-          variant="link"
-          color="red"
-          onNext={handlePrev}
-        />
-        <ChakraButton
-          name={renderButtonLabel}
-          color="red"
-          rounded="full"
-          type={renderButtonType}
-          onNext={isLastTab ? undefined : handleNext}
-        />
+        <div className="absolute bottom-0 right-0">
+          <ChakraButton name="Back" color="gray" onNext={handlePrev} />
+          <ChakraButton
+            name={renderButtonLabel}
+            color="red"
+            type={renderButtonType}
+            onNext={isLastTab ? undefined : handleNext}
+          />
+        </div>
       </div>
     </>
   );

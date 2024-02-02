@@ -1,5 +1,5 @@
 import MerryCards from "../components/MerryCards";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/common/NavBar";
 import LeftSideMatching from "../components/LeftSideMatching";
 import { Checkbox } from "@chakra-ui/react";
 import SliderAge from "../components/SliderAge";
