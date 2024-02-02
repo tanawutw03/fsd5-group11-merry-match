@@ -58,7 +58,7 @@ function CreatePackage() {
         const { data: storageData, error: storageError } =
           await supabase.storage
             .from("packages")
-            .upload(`packages${fileName}`, selectedFile);
+            .upload(`packages${Date.now()}_${selectedFile.name}`, selectedFile);
 
         console.log("Storage Data:", storageData);
         console.error("Storage Error:", storageError);
