@@ -7,21 +7,24 @@ import ChakraButton from "../common/ChakraButton";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { handleLogout } from "../../app/auth.js";
-import { useState } from "react";
+import { useUser } from "../../app/userContext.js";
 
 const NavBar = (props) => {
-  const [, setUser] = useState(null);
-  const [, setToken] = useState(null);
   const navigate = useNavigate();
+  const { avatarUrl } = useUser();
 
   const handleLogoutClick = async () => {
-    handleLogout(setUser, setToken, navigate);
+    handleLogout(navigate);
   };
 
   const MenuOrButton = props.useMenu ? (
     <Menu>
       <MenuButton>
-        <img className="flex-shrink-0" src={profile} />
+        {avatarUrl ? (
+          <img className="flex-shrink-0" src={avatarUrl} alt="User Avatar" />
+        ) : (
+          <img className="flex-shrink-0" src={profile} alt="Default Avatar" />
+        )}
       </MenuButton>
       <Portal>
         <MenuList>
