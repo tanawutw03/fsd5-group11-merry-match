@@ -9,7 +9,7 @@ import RedDot from "../assets/LoginPage/RedDot.svg";
 import logo from "../assets/merryPackagePage/logo.svg";
 import PropTypes from "prop-types";
 import { Alert, AlertIcon, Stack } from "@chakra-ui/react";
-import { useUser } from "../app/userContext.js";
+import { useUser } from "../app/userContext";
 import { handleLogin } from "../app/auth.js";
 
 const Login = () => {
