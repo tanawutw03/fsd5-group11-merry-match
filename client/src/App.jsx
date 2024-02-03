@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import CreatePackage from "./pages/CreatePackage";
 // import CreatePackage from "./AdmAvatar"
+import { UserProvider, useUser } from "./app/userContext";
 
 const NoMatch = () => {
   return (
@@ -23,10 +24,10 @@ const NoMatch = () => {
 };
 
 const AuthorizedHomePage = () => {
-  const token = JSON.parse(sessionStorage.getItem("token"));
+  // const token = JSON.parse(sessionStorage.getItem("token"));
+  const { user } = useUser();
 
-  if (!token) {
-    // If there is no token, user is not authorized
+  if (!user) {
     return (
       <div className="h-screen text-5xl flex flex-col justify-center items-center gap-5">
         <h1>Not Authorized</h1>
@@ -42,33 +43,46 @@ const AuthorizedHomePage = () => {
 };
 
 function App() {
-  const [token, setToken] = useState(false);
-
-  if (token) {
-    sessionStorage.setItem("token", JSON.stringify(token));
-  }
+  const { user, setUser } = useUser() || {};
 
   useEffect(() => {
-    if (sessionStorage.getItem("token")) {
-      const data = JSON.parse(sessionStorage.getItem("token"));
-      setToken(data);
+    // const storedToken = sessionStorage.getItem("token");
+    const storedUser = sessionStorage.getItem("user");
+
+    // if (storedToken) {
+    //   setToken(JSON.parse(storedToken));
+    // }
+    if (storedUser !== null) {
+      console.log("Stored User:", storedUser);
+      try {
+        const userData = JSON.parse(storedUser);
+        if (userData) {
+          setUser(userData);
+        } else {
+          console.error("User data is undefined:", userData);
+        }
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+      }
     }
-  }, []);
+  }, [user, setUser]);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="*" element={<NoMatch />} />
-        <Route path="/" element={<NonUserHomePage />} />
-        <Route path="/homepage" element={<AuthorizedHomePage />} />
-        <Route path="/adminpage" element={<AdminPage />} />
-        <Route path="/createpackage" element={<CreatePackage />} />
-        <Route path="/login" element={<LoginPage setToken={setToken} />} />
-        <Route path="/matching" element={<Matching />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/package" element={<MerryPackagePage />} />
-      </Routes>
-    </BrowserRouter>
+    <UserProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="*" element={<NoMatch />} />
+          <Route path="/" element={<NonUserHomePage />} />
+          <Route path="/homepage" element={<AuthorizedHomePage />} />
+          <Route path="/adminpage" element={<AdminPage />} />
+          <Route path="/createpackage" element={<CreatePackage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/matching" element={<Matching />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/package" element={<MerryPackagePage />} />
+        </Routes>
+      </BrowserRouter>
+    </UserProvider>
   );
 }
 

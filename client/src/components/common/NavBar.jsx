@@ -5,8 +5,19 @@ import bell from "../../assets/merryPackagePage/Frame.svg";
 import profile from "../../assets/Matching/profile.svg";
 import ChakraButton from "../common/ChakraButton";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
+import { handleLogout } from "../../app/auth.js";
+import { useState } from "react";
 
 const NavBar = (props) => {
+  const [, setUser] = useState(null);
+  const [, setToken] = useState(null);
+  const navigate = useNavigate();
+
+  const handleLogoutClick = async () => {
+    handleLogout(setUser, setToken, navigate);
+  };
+
   const MenuOrButton = props.useMenu ? (
     <Menu>
       <MenuButton>
@@ -17,7 +28,7 @@ const NavBar = (props) => {
           <MenuItem>Menu 1</MenuItem>
           <MenuItem>New Window</MenuItem>
           <MenuItem>Open Closed Tab</MenuItem>
-          <MenuItem>Log out</MenuItem>
+          <MenuItem onClick={handleLogoutClick}>Log out</MenuItem>
         </MenuList>
       </Portal>
     </Menu>
@@ -88,7 +99,7 @@ const NavBar = (props) => {
 };
 
 NavBar.propTypes = {
-  useMenu: PropTypes.bool,
+  useMenu: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
   color: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
@@ -97,6 +108,8 @@ NavBar.propTypes = {
   onClickFirstMenu: PropTypes.func.isRequired,
   onClickSecondMenu: PropTypes.func.isRequired,
   showBell: PropTypes.bool.isRequired,
+  user: PropTypes.object,
+  setUser: PropTypes.func,
 };
 
 export default NavBar;
