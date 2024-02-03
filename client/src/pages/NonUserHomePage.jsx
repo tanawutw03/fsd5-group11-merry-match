@@ -11,8 +11,9 @@ import ig from "../assets/NonUserHomePage/ig.png";
 import tw from "../assets/NonUserHomePage/tw.png";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/common/NavBar";
+import PropTypes from "prop-types";
 
-function NonUserHomePage() {
+function NonUserHomePage({ user, setUser }) {
   const navigate = useNavigate();
 
   const scrollToSection = (sectionId) => {
@@ -26,17 +27,35 @@ function NonUserHomePage() {
 
   return (
     <div className=" min-w-[1440px] bg-white z-auto flex flex-col items-center">
-      <NavBar
-        useMenu={false}
-        name="Login"
-        color="red"
-        onClick={handleClick}
-        firstMenuName="Why Merry Match?"
-        secondMenuName="How to Merry"
-        onClickFirstMenu={() => scrollToSection("WhyMerry")}
-        onClickSecondMenu={() => scrollToSection("HowToMerry")}
-        showBell={false}
-      />
+      {user ? (
+        <NavBar
+          useMenu={user}
+          onClick={handleClick}
+          firstMenuName="Start Matching!"
+          secondMenuName="Merry Membership"
+          onClickFirstMenu={() => navigate("/matching")}
+          onClickSecondMenu={() => navigate("/package")}
+          showBell={true}
+          setUser={setUser}
+          user={user}
+          color=""
+          name="userAvatar"
+        />
+      ) : (
+        <NavBar
+          useMenu={false}
+          name="Login"
+          color="red"
+          onClick={handleClick}
+          firstMenuName="Why Merry Match?"
+          secondMenuName="How to Merry"
+          onClickFirstMenu={() => scrollToSection("WhyMerry")}
+          onClickSecondMenu={() => scrollToSection("HowToMerry")}
+          showBell={false}
+          setUser={setUser}
+          user={user}
+        />
+      )}
       {/* <nav className="bg-white w-[1440px] flex flex-row justify-between items-center h-[88px] font-nunito z-10">
         <img src={logo} className="px-[40px] z-50" />
         <div className=" flex w-1/3 flex-row justify-around items-center font-nunito z-40">
@@ -212,5 +231,10 @@ function NonUserHomePage() {
     </div>
   );
 }
+
+NonUserHomePage.propTypes = {
+  user: PropTypes.object,
+  setUser: PropTypes.func,
+};
 
 export default NonUserHomePage;
