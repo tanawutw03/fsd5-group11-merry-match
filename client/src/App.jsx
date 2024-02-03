@@ -43,29 +43,32 @@ const AuthorizedHomePage = () => {
 };
 
 function App() {
-  const { user, setUser } = useUser() || {};
+  // const { setUser } = useUser() || {};
 
-  useEffect(() => {
-    // const storedToken = sessionStorage.getItem("token");
-    const storedUser = sessionStorage.getItem("user");
+  // useEffect(() => {
+  //   // const storedToken = sessionStorage.getItem("token");
+  //   const storedToken = localStorage.getItem(
+  //     "sb-fzqregkvknbkbhensxqk-auth-token"
+  //   );
+  //   // const storedUser = localStorage.getItem("user");
 
-    // if (storedToken) {
-    //   setToken(JSON.parse(storedToken));
-    // }
-    if (storedUser !== null) {
-      console.log("Stored User:", storedUser);
-      try {
-        const userData = JSON.parse(storedUser);
-        if (userData) {
-          setUser(userData);
-        } else {
-          console.error("User data is undefined:", userData);
-        }
-      } catch (error) {
-        console.error("Error parsing user data:", error);
-      }
-    }
-  }, [user, setUser]);
+  //   // if (storedToken) {
+  //   //   setToken(JSON.parse(storedToken));
+  //   // }
+  //   if (storedToken) {
+  //     // console.log("Stored User:", storedToken);
+  //     try {
+  //       const userData = JSON.parse(storedToken);
+  //       if (userData) {
+  //         setUser(userData);
+  //       } else {
+  //         console.error("User data is undefined:", userData);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error parsing user data:", error);
+  //     }
+  //   }
+  // }, [setUser]);
 
   return (
     <UserProvider>
