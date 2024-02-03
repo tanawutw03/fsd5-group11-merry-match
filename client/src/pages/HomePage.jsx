@@ -1,15 +1,15 @@
-// import { useState } from "react";
 import NonUserHomePage from "./NonUserHomePage";
-import { useUser } from "../app/userContext";
+import { useUser } from "../app/userContext.js";
+import { useEffect } from "react";
 
 function HomePage() {
-  // const [user, setUser] = useState(null);
-  const { user } = useUser();
-  console.log(`user passed to homepage`, user);
+  const { user, avatarUrl } = useUser();
 
-  return <NonUserHomePage user={user} />;
-  // user={user}
-  // setUser = { setUser };
+  useEffect(() => {
+    console.log(`avatar from homepage `, avatarUrl);
+  }, [avatarUrl]);
+
+  return <NonUserHomePage user={user} avatarUrl={avatarUrl} />;
 }
 
 export default HomePage;

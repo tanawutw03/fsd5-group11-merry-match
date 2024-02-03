@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Link } from "react-router-dom";
 import HomePage from "./pages/HomePage";
@@ -10,7 +9,7 @@ import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import CreatePackage from "./pages/CreatePackage";
 // import CreatePackage from "./AdmAvatar"
-import { UserProvider, useUser } from "./app/userContext";
+import { UserProvider, useUser } from "./app/userContext.js";
 
 const NoMatch = () => {
   return (
@@ -24,7 +23,6 @@ const NoMatch = () => {
 };
 
 const AuthorizedHomePage = () => {
-  // const token = JSON.parse(sessionStorage.getItem("token"));
   const { user } = useUser();
 
   if (!user) {
@@ -38,45 +36,19 @@ const AuthorizedHomePage = () => {
     );
   }
 
-  // Render the authorized content
   return <HomePage />;
 };
 
 function App() {
-  // const { setUser } = useUser() || {};
-
-  // useEffect(() => {
-  //   // const storedToken = sessionStorage.getItem("token");
-  //   const storedToken = localStorage.getItem(
-  //     "sb-fzqregkvknbkbhensxqk-auth-token"
-  //   );
-  //   // const storedUser = localStorage.getItem("user");
-
-  //   // if (storedToken) {
-  //   //   setToken(JSON.parse(storedToken));
-  //   // }
-  //   if (storedToken) {
-  //     // console.log("Stored User:", storedToken);
-  //     try {
-  //       const userData = JSON.parse(storedToken);
-  //       if (userData) {
-  //         setUser(userData);
-  //       } else {
-  //         console.error("User data is undefined:", userData);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error parsing user data:", error);
-  //     }
-  //   }
-  // }, [setUser]);
-
   return (
     <UserProvider>
       <BrowserRouter>
         <Routes>
           <Route path="*" element={<NoMatch />} />
           <Route path="/" element={<NonUserHomePage />} />
-          <Route path="/homepage" element={<AuthorizedHomePage />} />
+          <Route path="/homepage" element={<AuthorizedHomePage />}>
+            <Route index element={<HomePage />} />
+          </Route>
           <Route path="/adminpage" element={<AdminPage />} />
           <Route path="/createpackage" element={<CreatePackage />} />
           <Route path="/login" element={<LoginPage />} />

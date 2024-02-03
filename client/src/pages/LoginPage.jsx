@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "@chakra-ui/react";
+import { Avatar, Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
@@ -9,13 +9,14 @@ import RedDot from "../assets/LoginPage/RedDot.svg";
 import logo from "../assets/merryPackagePage/logo.svg";
 import PropTypes from "prop-types";
 import { Alert, AlertIcon, Stack } from "@chakra-ui/react";
-import { useUser } from "../app/userContext";
+import { useUser } from "../app/userContext.js";
 import { handleLogin } from "../app/auth.js";
+import { useEffect } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
   const [loginSuccess, setLoginSuccess] = useState(false);
-  const { setUser, setToken } = useUser();
+  const { setUser } = useUser();
 
   const [formData, setFormData] = useState({
     username: "",
@@ -33,7 +34,6 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(handleSubmit);
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -45,18 +45,9 @@ const Login = () => {
       if (error) {
         throw error;
       }
-      await handleLogin(
-        data.user,
-        data.session.access_token,
-        setUser,
-        setToken
-      );
+      await handleLogin(setUser, navigate);
 
       setLoginSuccess(true);
-
-      setTimeout(() => {
-        navigate("/homepage");
-      }, 1000);
     } catch (error) {
       alert(error.message);
     }
