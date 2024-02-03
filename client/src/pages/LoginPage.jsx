@@ -9,10 +9,13 @@ import RedDot from "../assets/LoginPage/RedDot.svg";
 import logo from "../assets/merryPackagePage/logo.svg";
 import PropTypes from "prop-types";
 import { Alert, AlertIcon, Stack } from "@chakra-ui/react";
+import { useUser } from "../app/userContext.js";
+import { handleLogin } from "../app/auth.js";
 
-const Login = ({ setToken }) => {
+const Login = () => {
   const navigate = useNavigate();
   const [loginSuccess, setLoginSuccess] = useState(false);
+  const { setUser, setToken } = useUser();
 
   const [formData, setFormData] = useState({
     username: "",
@@ -38,13 +41,18 @@ const Login = ({ setToken }) => {
         password: formData.password,
       });
       console.log(data, error);
-
+      console.log("User Data:", data.user);
       if (error) {
         throw error;
       }
-      setLoginSuccess(true);
+      await handleLogin(
+        data.user,
+        data.session.access_token,
+        setUser,
+        setToken
+      );
 
-      setToken(data);
+      setLoginSuccess(true);
 
       setTimeout(() => {
         navigate("/homepage");
@@ -181,7 +189,7 @@ const Login = ({ setToken }) => {
 };
 
 Login.propTypes = {
-  setToken: PropTypes.func.isRequired,
+  setToken: PropTypes.func,
 };
 
 export default Login;
