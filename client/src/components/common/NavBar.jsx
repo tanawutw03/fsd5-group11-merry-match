@@ -11,10 +11,10 @@ import { useUser } from "../../app/userContext.js";
 
 const NavBar = (props) => {
   const navigate = useNavigate();
-  const { avatarUrl } = useUser();
+  const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
 
   const handleLogoutClick = async () => {
-    handleLogout(navigate);
+    handleLogout(user, setUser, avatarUrl, setAvatarUrl, navigate);
   };
 
   const MenuOrButton = props.useMenu ? (

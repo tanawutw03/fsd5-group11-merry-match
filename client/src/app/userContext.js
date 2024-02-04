@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { supabase } from "../utils/supabaseClient.js";
+// import { supabase } from "../utils/supabaseClient.js";
 
 const UserContext = createContext();
 
@@ -13,42 +13,42 @@ export const UserProvider = ({ children }) => {
   });
   const [avatarUrl, setAvatarUrl] = useState();
 
-  useEffect(() => {
-    const fetchUserAvatar = async () => {
-      try {
-        if (user && user.user && user.user.id) {
-          const { data: userData, error: userError } = await supabase
-            .from("profiles")
-            .select("avatar_url")
-            .eq("id", user.user.id);
+  // useEffect(() => {
+  //   const fetchUserAvatar = async () => {
+  //     try {
+  //       if (user && user.user && user.user.id) {
+  //         const { data: userData, error: userError } = await supabase
+  //           .from("profiles")
+  //           .select("avatar_url")
+  //           .eq("id", user.user.id);
 
-          if (userData) {
-            const avatarUrl = userData[0]?.avatar_url;
+  //         if (userData) {
+  //           const avatarUrl = userData[0]?.avatar_url;
 
-            const { data: imageData, error: imageError } =
-              await supabase.storage.from("avatars").download(avatarUrl);
+  //           const { data: imageData, error: imageError } =
+  //             await supabase.storage.from("avatars").download(avatarUrl);
 
-            if (imageData) {
-              const imageUrl = URL.createObjectURL(imageData);
-              setAvatarUrl(imageUrl);
-            } else {
-              console.log(imageError);
-            }
-          } else {
-            console.error("Error fetching user avatar:", userError);
-          }
-        }
-      } catch (error) {
-        console.error("Error while fetching:", error);
-      }
-    };
+  //           if (imageData) {
+  //             const imageUrl = URL.createObjectURL(imageData);
+  //             setAvatarUrl(imageUrl);
+  //           } else {
+  //             console.log(imageError);
+  //           }
+  //         } else {
+  //           console.error("Error fetching user avatar:", userError);
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error("Error while fetching:", error);
+  //     }
+  //   };
 
-    fetchUserAvatar();
-  }, [user]);
+  //   fetchUserAvatar();
+  // }, [user]);
 
   return React.createElement(
     UserContext.Provider,
-    { value: { user, setUser, avatarUrl } },
+    { value: { user, setUser, avatarUrl, setAvatarUrl } },
     children
   );
 };
@@ -58,7 +58,7 @@ UserProvider.propTypes = {
 };
 
 export const useUser = () => {
-  const { user, setUser, avatarUrl } = useContext(UserContext);
+  const { user, setUser, avatarUrl, setAvatarUrl } = useContext(UserContext);
 
-  return { user, setUser, avatarUrl };
+  return { user, setUser, avatarUrl, setAvatarUrl };
 };
