@@ -16,7 +16,7 @@ import { useEffect } from "react";
 const Login = () => {
   const navigate = useNavigate();
   const [loginSuccess, setLoginSuccess] = useState(false);
-  const { setUser } = useUser();
+  const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
 
   const [formData, setFormData] = useState({
     username: "",
@@ -45,7 +45,7 @@ const Login = () => {
       if (error) {
         throw error;
       }
-      await handleLogin(setUser, navigate);
+      await handleLogin(user, setUser, avatarUrl, setAvatarUrl, navigate);
 
       setLoginSuccess(true);
     } catch (error) {
