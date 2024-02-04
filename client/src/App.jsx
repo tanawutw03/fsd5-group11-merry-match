@@ -23,7 +23,9 @@ const NoMatch = () => {
 };
 
 const AuthorizedHomePage = () => {
-  const { user } = useUser();
+  const { user, avatarUrl } = useUser();
+  console.log(`user app`, user);
+  console.log(`avatar app`, avatarUrl);
 
   if (!user) {
     return (
