@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import CountryInputSelect from "./common/CountryInputSelect.jsx";
 import CityInputSelect from "./common/CityInputSelect.jsx";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 
 function Step1Inputs({ onFormChange }) {
@@ -10,9 +10,6 @@ function Step1Inputs({ onFormChange }) {
     formState: { errors },
     control,
   } = useForm();
-  const formDataRef = useRef({});
-  const [selectedCountry, setSelectedCountry] = useState(null);
-  const [selectedCity, setSelectedCity] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -64,7 +61,10 @@ function Step1Inputs({ onFormChange }) {
             Basic Information
           </h1>
         </div>
-        <form className="flex flex-row justify-center gap-10">
+        <form
+          onChange={handleInputChange}
+          className="flex flex-row justify-center mr-4 mt-[300px] gap-10"
+        >
           <div className="flex flex-col w-[453px]">
             <label htmlFor="name" className="text-left">
               Name
