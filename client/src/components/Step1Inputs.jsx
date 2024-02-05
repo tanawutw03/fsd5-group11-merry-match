@@ -12,15 +12,40 @@ function Step1Inputs({ onFormChange }) {
   } = useForm();
 
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+
   const [formData, setFormData] = useState({});
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
     onFormChange(formData); // Pass the updated data to the parent component
+  };
+
+  // Use onCountryChange to update selectedCountry and trigger form change
+  const handleCountryChange = (selectedCountryData) => {
+    setSelectedCountry(selectedCountryData); // Set the selected country data
+    const updatedFormData = {
+      ...formData,
+      location: selectedCountryData ? selectedCountryData.value : "", // Use the selected country value
+    };
+    setFormData(updatedFormData);
+    onFormChange(updatedFormData); // Pass the updated data to the parent component
+  };
+
+  const handleCityChange = (selectedCityData) => {
+    console.log(selectedCityData);
+    setSelectedCity(selectedCityData);
+    const updatedFormData = {
+      ...formData,
+      city: selectedCityData ? selectedCityData.value : "",
+    };
+    setFormData(updatedFormData);
+    onFormChange(updatedFormData);
   };
 
   return (
@@ -55,10 +80,7 @@ function Step1Inputs({ onFormChange }) {
             Basic Information
           </h1>
         </div>
-        <form
-          onChange={handleInputChange}
-          className="flex flex-row justify-center mr-4 mt-[300px] gap-10"
-        >
+        <form className="flex flex-row justify-center mr-4 mt-[300px] gap-10">
           <div className="flex flex-col w-[453px]">
             <label htmlFor="name" className="text-left">
               Name
@@ -68,6 +90,7 @@ function Step1Inputs({ onFormChange }) {
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="John Snow"
               type="text"
+              onChange={handleInputChange}
             />
             {errors.name && (
               <span className="flex justify-start -mt-4 text-[#af2758]">
@@ -79,7 +102,7 @@ function Step1Inputs({ onFormChange }) {
               control={control}
               name="location"
               label="Location"
-              onCountryChange={setSelectedCountry}
+              onCountryChange={handleCountryChange}
             />
             {errors.name && (
               <span className="flex justify-start -mt-4 text-[#af2758]">
@@ -94,6 +117,7 @@ function Step1Inputs({ onFormChange }) {
               {...register("username", { required: true })}
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="At least 6 characters"
+              onChange={handleInputChange}
             />
             {errors.username && (
               <span className="flex justify-start -mt-4 text-[#af2758]">
@@ -108,6 +132,7 @@ function Step1Inputs({ onFormChange }) {
               {...register("password", { required: true })}
               className="border-2 px-3 py-2 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="At least 8 characters"
+              onChange={handleInputChange}
             />
             {errors.password && (
               <span className="flex justify-start mt-1 text-[#af2758]">
@@ -123,6 +148,7 @@ function Step1Inputs({ onFormChange }) {
               {...register("dob", { required: true })}
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="01/01/2022"
+              onChange={handleInputChange}
             />
             {errors.name && (
               <span className="flex justify-start -mt-4 text-[#af2758]">
@@ -136,6 +162,7 @@ function Step1Inputs({ onFormChange }) {
               control={control}
               selectedCountry={selectedCountry}
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82] text-left"
+              onCityChange={handleCityChange}
             />
             {errors.city && (
               <span className="flex justify-start mt-1 -mb-6 text-[#af2758]">
@@ -150,6 +177,7 @@ function Step1Inputs({ onFormChange }) {
               {...register("email", { required: true })}
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="name@website.com"
+              onChange={handleInputChange}
             />
             {errors.email && (
               <span className="flex justify-start -mt-4 text-[#af2758]">
@@ -164,6 +192,7 @@ function Step1Inputs({ onFormChange }) {
               {...register("confirmPassword", { required: true })}
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="At least 8 characters"
+              onChange={handleInputChange}
             />
             {errors.confirmPassword && (
               <span className="flex justify-start -mt-4 text-[#af2758]">
