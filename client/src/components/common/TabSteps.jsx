@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Tabs,
   TabList,
@@ -15,8 +15,10 @@ import ChakraButton from "./ChakraButton";
 import { useRef } from "react";
 import NavBar from "./NavBar";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../../utils/supabaseClient.js";
 
 function TabSteps() {
+  const [userId, setUserId] = useState(null);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const isLastTab = activeTabIndex === 2;
 
@@ -77,11 +79,79 @@ function TabSteps() {
     const newIndex = Math.max(0, activeTabIndex - 1);
     setActiveTabIndex(newIndex);
   };
-  const dummyFunction = () => {};
+  const handleSubmit = async () => {
+    try {
+      const { data: signUpData, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      console.log("Sign-up Response:", { signUpData, error });
+
+      if (error) {
+        console.error("Error signing up:", error.message);
+      } else {
+        console.log("User signed up successfully:", signUpData.user.id);
+
+        setUserId(signUpData.user.id);
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
+  };
 
   const handleClick = () => {
     navigate("/login");
   };
+
+  useEffect(() => {
+    const checkUserAuthentication = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        console.error("User not authenticated");
+        return;
+      }
+
+      if (userId !== null) {
+        console.log("userId:", userId);
+
+        const insertUserData = async () => {
+          try {
+            const { data: insertData, error: insertError } = await supabase
+              .from("profiles")
+              .upsert({
+                id: userId,
+                username: formDataRef.current.username,
+                full_name: formDataRef.current.name,
+                country: formDataRef.current.location?.value,
+                city: formDataRef.current.city?.value,
+                email: formDataRef.current.email,
+                date_of_birth: formDataRef.current.dob,
+                updated_at: new Date(),
+              })
+              .select();
+
+            console.log(insertData, insertError);
+
+            if (insertError) {
+              console.error("Error inserting user data:", insertError.message);
+            } else {
+              console.log("User data inserted successfully:", insertData);
+            }
+          } catch (error) {
+            console.error("Error inserting user data:", error.message);
+          }
+        };
+
+        insertUserData();
+      }
+    };
+
+    checkUserAuthentication();
+  }, [userId]);
 
   return (
     <>
@@ -171,7 +241,7 @@ function TabSteps() {
           color="red"
           rounded="full"
           type={renderButtonType}
-          onClick={isLastTab ? dummyFunction : handleNext}
+          onClick={isLastTab ? handleSubmit : handleNext}
         />
       </div>
     </>
