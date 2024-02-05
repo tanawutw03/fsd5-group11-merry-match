@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Avatar, Button } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,6 @@ import PropTypes from "prop-types";
 import { Alert, AlertIcon, Stack } from "@chakra-ui/react";
 import { useUser } from "../app/userContext.js";
 import { handleLogin } from "../app/auth.js";
-import { useEffect } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -45,9 +44,8 @@ const Login = () => {
       if (error) {
         throw error;
       }
-      await handleLogin(user, setUser, avatarUrl, setAvatarUrl, navigate);
-
       setLoginSuccess(true);
+      await handleLogin(user, setUser, avatarUrl, setAvatarUrl, navigate);
     } catch (error) {
       alert(error.message);
     }
@@ -165,10 +163,8 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Display the success message if login is successful */}
       {loginSuccess && (
         <Stack spacing={3}>
-          {/* Use a Chakra UI Alert for success messages */}
           <Alert status="success">
             <AlertIcon />
             Login successful!
