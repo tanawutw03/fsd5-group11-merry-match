@@ -12,15 +12,40 @@ function Step1Inputs({ onFormChange }) {
   } = useForm();
 
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+
   const [formData, setFormData] = useState({});
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
     onFormChange(formData); // Pass the updated data to the parent component
+  };
+
+  // Use onCountryChange to update selectedCountry and trigger form change
+  const handleCountryChange = (selectedCountryData) => {
+    setSelectedCountry(selectedCountryData); // Set the selected country data
+    const updatedFormData = {
+      ...formData,
+      location: selectedCountryData ? selectedCountryData.value : "", // Use the selected country value
+    };
+    setFormData(updatedFormData);
+    onFormChange(updatedFormData); // Pass the updated data to the parent component
+  };
+
+  const handleCityChange = (selectedCityData) => {
+    console.log(selectedCityData);
+    setSelectedCity(selectedCityData);
+    const updatedFormData = {
+      ...formData,
+      city: selectedCityData ? selectedCityData.value : "",
+    };
+    setFormData(updatedFormData);
+    onFormChange(updatedFormData);
   };
 
   return (
@@ -55,10 +80,7 @@ function Step1Inputs({ onFormChange }) {
             Basic Information
           </h1>
         </div>
-        <form
-          onChange={handleInputChange}
-          className="flex flex-row justify-center mr-4 mt-[300px] gap-10"
-        >
+        <form className="flex flex-row justify-center mr-4 mt-[300px] gap-10">
           <div className="flex flex-col w-[453px]">
             <label htmlFor="name" className="text-left">
               Name
@@ -139,7 +161,7 @@ function Step1Inputs({ onFormChange }) {
               name="city"
               control={control}
               selectedCountry={selectedCountry}
-              className="border-2 px-3 py-2 mt-2 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82] text-left"
+              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82] text-left"
               onCityChange={handleCityChange}
             />
             {errors.city && (
