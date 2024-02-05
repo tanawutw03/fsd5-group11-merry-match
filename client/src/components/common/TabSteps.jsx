@@ -21,6 +21,11 @@ function TabSteps() {
   const [userId, setUserId] = useState(null);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const isLastTab = activeTabIndex === 2;
+  const [formData, setFormData] = useState({});
+
+  const handleFormChange = (newFormData) => {
+    setStep1Data(newFormData); // Update step1Data when input fields change
+  };
 
   // Use refs to store data for each step
   const step1DataRef = useRef({});
@@ -37,11 +42,11 @@ function TabSteps() {
   function renderFormByTabIndex(tabIndex) {
     switch (tabIndex) {
       case 0:
-        return <Step1Inputs setData={setStep1Data} />;
+        return <Step1Inputs onFormChange={setStep1Data} />;
       case 1:
-        return <Step2Inputs setData={setStep2Data} />;
+        return <Step2Inputs />;
       case 2:
-        return <Step3Inputs setData={setStep3Data} />;
+        return <Step3Inputs />;
       default:
         return null; // Handle other cases or return null
     }
@@ -59,12 +64,16 @@ function TabSteps() {
     switch (activeTabIndex) {
       case 0:
         step1DataRef.current = { ...step1Data };
+        console.log(step1Data);
+
         break;
       case 1:
         step2DataRef.current = { ...step2Data };
+
         break;
       case 2:
         step3DataRef.current = { ...step3Data };
+
         break;
       default:
         break;
@@ -207,7 +216,7 @@ function TabSteps() {
                 key={0}
                 className="h-screen flex justify-center items-center"
               >
-                {renderFormByTabIndex(0)}
+                <Step1Inputs onFormChange={handleFormChange} />
               </TabPanel>
               <TabPanel
                 key={1}

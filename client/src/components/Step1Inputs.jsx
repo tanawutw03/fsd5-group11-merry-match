@@ -1,23 +1,26 @@
 import { useForm } from "react-hook-form";
 import CountryInputSelect from "./common/CountryInputSelect.jsx";
 import CityInputSelect from "./common/CityInputSelect.jsx";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 
-function Step1Inputs({ setData }) {
+function Step1Inputs({ onFormChange }) {
   const {
     register,
-    handleSubmit,
     formState: { errors },
     control,
   } = useForm();
-  const formDataRef = useRef({});
-  const [selectedCountry, setSelectedCountry] = useState(null);
 
-  const onSubmit = async (formData) => {
-    console.log(formData);
-    formDataRef.current = formData; // Store formData in the ref
-    setData(formData);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [formData, setFormData] = useState({});
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    onFormChange(formData); // Pass the updated data to the parent component
   };
 
   return (
@@ -53,7 +56,7 @@ function Step1Inputs({ setData }) {
           </h1>
         </div>
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onChange={handleInputChange}
           className="flex flex-row justify-center mr-4 mt-[300px] gap-10"
         >
           <div className="flex flex-col w-[453px]">
@@ -174,7 +177,7 @@ function Step1Inputs({ setData }) {
   );
 }
 Step1Inputs.propTypes = {
-  setData: PropTypes.func.isRequired,
+  onFormChange: PropTypes.func.isRequired,
 };
 
 export default Step1Inputs;
