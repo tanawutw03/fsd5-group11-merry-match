@@ -72,6 +72,8 @@ function CreatePackage() {
   };
 
   const handleCreatePackage = async () => {
+    let iconUrl;
+
     console.log("Before Submit - packageDetails:", packageDetails);
     const { file } = selectedFile;
     console.log(file);
@@ -91,6 +93,16 @@ function CreatePackage() {
           await supabase.storage.from("iconPackage").upload(iconPath, file);
 
         console.log("Storage Data:", storageData);
+        const { data: urlData, error } = await supabase.storage
+          .from("iconPackage")
+          .getPublicUrl(iconPath);
+
+        if (error) {
+          console.error("Error fetching icon URL:", error.message);
+        } else {
+          iconUrl = urlData;
+          console.log("Icon URL:", iconUrl);
+        }
 
         if (storageError) {
           console.error("Storage Error:", storageError);
@@ -113,6 +125,7 @@ function CreatePackage() {
           merry_limit: merryLimit,
           price: price,
           description: packageDetails,
+          iconurl: iconUrl.publicUrl,
         },
       ])
       .select();
