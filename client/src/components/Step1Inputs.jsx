@@ -91,15 +91,15 @@ function Step1Inputs({ setData }) {
 
   return (
     <>
-      <div className="font-nunito">
+      <div className="font-nunito h-screen w-screen mt-10">
         <div>
-          <h1 className="flex justify-start absolute left-[290px] top-[280px] pb-2 2xl:pt-[70px] text-2xl text-[#A62D82] font-bold">
+          <h1 className="flex flex-col items-start mt-[17%] left-72 absolute text-2xl text-[#A62D82] font-bold">
             Basic Information
           </h1>
         </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-row justify-center ml-1 mt-72 gap-10"
+          className="flex flex-row justify-center mr-4 mt-[300px] gap-10"
         >
           <div className="flex flex-col w-[453px]">
             <label htmlFor="name" className="text-left">
@@ -119,6 +119,7 @@ function Step1Inputs({ setData }) {
               label="Location"
               onCountryChange={setSelectedCountry}
             />
+            {errors.name && <span>This field is required</span>}
 
             <label htmlFor="username" className="text-left">
               Username
@@ -149,13 +150,14 @@ function Step1Inputs({ setData }) {
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="01/01/2022"
             />
+            {errors.name && <span>This field is required</span>}
 
             <CityInputSelect
               label="City"
               name="city"
               control={control}
               selectedCountry={selectedCountry}
-              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]  "
+              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82] text-left"
             />
             {errors.city && <span>This field is required</span>}
 
@@ -179,12 +181,16 @@ function Step1Inputs({ setData }) {
             />
             {errors.confirmPassword && <span>This field is required</span>}
           </div>
-          <input type="submit" />
+          <input
+            className="flex justify-end items-center absolute bottom-0"
+            type="submit"
+          />
         </form>
       </div>
     </>
   );
 }
+//<input type="submit" />
 
 Step1Inputs.propTypes = {
   setData: PropTypes.func.isRequired,

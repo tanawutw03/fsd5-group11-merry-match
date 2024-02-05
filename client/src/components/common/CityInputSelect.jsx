@@ -53,6 +53,7 @@ function CityInputSelect({ control, name, label, selectedCountry }) {
                 ? `Loading ${label.toLowerCase()}...`
                 : `Select ${label.toLowerCase()}`
             }
+            className="text-left"
           />
         )}
       />

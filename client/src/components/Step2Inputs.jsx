@@ -46,7 +46,7 @@ function Step2Inputs() {
     <>
       <div>
         <div>
-          <h1 className="flex justify-start left-[290px] top-[290px] 2xl:pb-5 text-2xl text-[#A62D82] font-bold font-nunito">
+          <h1 className="flex justify-start left-[290px] top-[290px] pb-5 text-2xl text-[#A62D82] font-bold font-nunito">
             Identities&nbsp;and&nbsp;Interests
           </h1>
         </div>
@@ -100,8 +100,10 @@ function Step2Inputs() {
             {/* errors will return when field validation fails  */}
             {errors.exampleRequired && <span>This field is required</span>}
           </div>
-          <div className="justify-center absolute w-[946px] h-[53px] pt-3 2xl:mb-[70px] bottom-28 text-left">
-            <h3>Hobbies&nbsp;/&nbsp;Interests&nbsp;(Maximum&nbsp;10)</h3>
+          <div className="justify-center absolute w-[946px] h-[53px] top-3/4 text-left">
+            <h3 className="pt-10">
+              Hobbies&nbsp;/&nbsp;Interests&nbsp;(Maximum&nbsp;10)
+            </h3>
             <TagSelect
               control={control}
               name="hobbies"

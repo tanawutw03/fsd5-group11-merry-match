@@ -54,8 +54,8 @@ function UploadProfiles() {
 
   return (
     <>
-      <div className="w-full h-full flex flex-col justify-center font-nunito">
-        <div className="flex flex-col justify-start items-start mt-32 pb-10">
+      <div className="w-screen h-screen flex flex-col justify-center items-center font-nunito">
+        <div className="flex flex-col items-start left-72 absolute">
           <h1 className="text-3xl font-bold text-[#a62d82]">
             Profile&nbsp;Pictures
           </h1>
@@ -64,20 +64,23 @@ function UploadProfiles() {
           </h3>
         </div>
 
-        <SimpleGrid columns={[1, 2, 3, 4, 5]} spacing={210}>
+        <SimpleGrid
+          columns={[1, 2, 3, 4, 5]}
+          spacing={10}
+          className="w-fit mt-80 ml-10"
+        >
           {Array.from({ length: 5 }).map((_, index) => (
-            <div key={index} style={{ position: "relative" }}>
+            <div key={index}>
               <Card
                 sx={{
-                  w: "176px",
-                  h: "176px",
+                  w: "167px",
+                  h: "167px",
                   rounded: "16px",
-                  position: "relative",
                 }}
                 onClick={() => fileInputRef.current.click()}
                 className="hover:cursor-pointer"
               >
-                <CardBody className="flex flex-col justify-center items-center w-[176px] h-[176px] rounded-[16px] bg-[#f1f2f6]">
+                <CardBody className="flex flex-col justify-center items-center w-[167px] h-[167px] rounded-[16px] bg-[#f1f2f6]">
                   {selectedFiles[index] ? (
                     <>
                       <img

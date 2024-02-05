@@ -13,6 +13,8 @@ import Step3Inputs from "../Step3Inputs";
 import RegisterWords from "./RegisterWords";
 import ChakraButton from "./ChakraButton";
 import { useRef } from "react";
+import NavBar from "./NavBar";
+import { useNavigate } from "react-router-dom";
 
 function TabSteps() {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
@@ -22,6 +24,8 @@ function TabSteps() {
   const step1DataRef = useRef({});
   const step2DataRef = useRef({});
   const step3DataRef = useRef({});
+
+  const navigate = useNavigate();
 
   // State to store data entered in each step
   const [step1Data, setStep1Data] = useState({});
@@ -75,10 +79,27 @@ function TabSteps() {
   };
   const dummyFunction = () => {};
 
+  const handleClick = () => {
+    navigate("/login");
+  };
+
   return (
     <>
+      <div className="flex justify-center">
+        <NavBar
+          useMenu={false}
+          name="Login"
+          color="red"
+          onClick={handleClick}
+          firstMenuName="Why Merry Match?"
+          secondMenuName="How to Merry"
+          onClickFirstMenu={() => navigate("/")}
+          onClickSecondMenu={() => navigate("/")}
+          showBell={false}
+        />
+      </div>
       <RegisterWords />
-      <div className="flex h-screen -px-2 bg-[#fcfcfe] ">
+      <div className="flex w-screen h-screen -px-2 bg-[#fcfcfe]">
         <Tabs
           align="center"
           index={activeTabIndex}
@@ -87,11 +108,11 @@ function TabSteps() {
           colorScheme="purple"
           size="lg"
         >
-          <div className="text-[#A62D82] w-[250px] text-2xl flex flex-col justify-end items-center absolute m-24 top-14 left-2/3">
+          <div className="text-[#A62D82] w-[250px] text-2xl flex flex-col justify-end items-center absolute m-24 left-2/3">
             <TabList>
-              <Tab>1</Tab>
-              <Tab>2</Tab>
-              <Tab>3</Tab>
+              <Tab>Step 1/3</Tab>
+              <Tab>Step 2/3</Tab>
+              <Tab>Step 3/3</Tab>
             </TabList>
             <div className="flex items-start">
               <TabIndicator
@@ -110,7 +131,7 @@ function TabSteps() {
             </div>
           </div>
 
-          <div className="h-screen flex ml-[270px]">
+          <div className="h-screen w-screen flex">
             <TabPanels className="text-md">
               <TabPanel
                 key={0}
@@ -134,7 +155,7 @@ function TabSteps() {
           </div>
         </Tabs>
       </div>
-      <div className="bottom-0 w-full h-112 p-5 bg-white shadow-md flex justify-end border-t-2">
+      <div className="bottom-0 w-screen h-112 p-5 bg-white shadow-md flex justify-end border-t-2">
         <ChakraButton
           name="← Back"
           variant="link"
@@ -146,7 +167,7 @@ function TabSteps() {
           color="red"
           rounded="full"
           type={renderButtonType}
-          onClick={isLastTab ? handleNext : dummyFunction}
+          onClick={isLastTab ? dummyFunction : handleNext}
         />
       </div>
     </>
