@@ -143,8 +143,9 @@ function AdminPage() {
               <TableCaption>Package Information</TableCaption>
               <Thead>
                 <Tr>
-                  <Th>Package ID</Th>
+                  <Th>#</Th>
                   <Th>Package Name</Th>
+                  <Th>Package Icon</Th>
                   <Th>Price</Th>
                   <Th isNumeric>Merry Limit</Th>
                   <Th>Created At</Th>
@@ -153,10 +154,16 @@ function AdminPage() {
                 </Tr>
               </Thead>
               <Tbody>
-                {packageData.map((packageItem) => (
+                {packageData.map((packageItem, index) => (
                   <Tr key={packageItem.package_id}>
-                    <Td isNumeric>{packageItem.package_id}</Td>
-                    <Td>{packageItem.package_name}</Td>
+                    <Td isNumeric>{index + 1}</Td>
+                    <Td>{packageItem.name}</Td>
+                    <Td>
+                      <img
+                        src={packageItem.iconurl}
+                        className=" w-[50px] h-[50px]"
+                      />
+                    </Td>
                     <Td isNumeric>{packageItem.price}</Td>
                     <Td isNumeric>{packageItem.merry_limit}</Td>
                     <Td>{packageItem.created_at}</Td>
