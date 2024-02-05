@@ -165,13 +165,7 @@ function TabSteps() {
     };
 
     checkUserAuthentication();
-  }, [userId, formData]);
-
-  const stepperData = [
-    { id: 1, title: "Basic Information" },
-    { id: 2, title: "Identities and Interests" },
-    { id: 3, title: "Upload Photos" },
-  ];
+  }, [userId]);
 
   return (
     <>

@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import CountryInputSelect from "./common/CountryInputSelect.jsx";
 import CityInputSelect from "./common/CityInputSelect.jsx";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import PropTypes from "prop-types";
 
 function Step1Inputs({ onFormChange }) {
@@ -10,42 +10,14 @@ function Step1Inputs({ onFormChange }) {
     formState: { errors },
     control,
   } = useForm();
-
+  const formDataRef = useRef({});
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
 
-  const [formData, setFormData] = useState({});
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-    onFormChange(formData); // Pass the updated data to the parent component
-  };
-
-  // Use onCountryChange to update selectedCountry and trigger form change
-  const handleCountryChange = (selectedCountryData) => {
-    setSelectedCountry(selectedCountryData); // Set the selected country data
-    const updatedFormData = {
-      ...formData,
-      location: selectedCountryData ? selectedCountryData.value : "", // Use the selected country value
-    };
-    setFormData(updatedFormData);
-    onFormChange(updatedFormData); // Pass the updated data to the parent component
-  };
-
-  const handleCityChange = (selectedCityData) => {
-    console.log(selectedCityData);
-    setSelectedCity(selectedCityData);
-    const updatedFormData = {
-      ...formData,
-      city: selectedCityData ? selectedCityData.value : "",
-    };
-    setFormData(updatedFormData);
-    onFormChange(updatedFormData);
+  const onSubmit = async (formData) => {
+    console.log(formData);
+    formDataRef.current = formData; // Store formData in the ref
+    setData(formData);
   };
 
   return (
