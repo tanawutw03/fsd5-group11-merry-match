@@ -79,7 +79,7 @@ function NonUserHomePage({ user, setUser }) {
           <ChakraButton name="Login" color="red" onNext={handleClick} />
         </div>
       </nav> */}
-      <header className="bg-[#160404] w-[1440px] h-[758px] flex flex-col justify-center items-center font-nunito relative overflow-hidden">
+      <header className="bg-[#160404] w-full h-[758px] flex flex-col justify-center items-center font-nunito relative overflow-hidden">
         <img
           src={image1}
           className=" absolute right-[203px] bottom-[403px] z-auto"
@@ -115,7 +115,7 @@ function NonUserHomePage({ user, setUser }) {
       </header>
       <section
         id="WhyMerry"
-        className=" bg-[#160404] w-[1440px] h-[533px] flex flex-col justify-center items-center font-nunito"
+        className=" bg-[#160404] w-full h-[533px] flex flex-col justify-center items-center font-nunito"
       >
         <div className="flex w-1120 items-center gap-6">
           <div className="flex flex-col justify-between items-start w-[549px] h-full">
@@ -142,7 +142,7 @@ function NonUserHomePage({ user, setUser }) {
       </section>
       <section
         id="HowToMerry"
-        className="bg-[#160404] w-[1440px] flex flex-col h-[622px] px-16 py-20 justify-center items-center"
+        className="bg-[#160404] w-full flex flex-col h-[622px] px-16 py-20 justify-center items-center"
       >
         <div className="text-purple-300 text-center font-nunito text-[46px] font-extrabold leading-125 tracking-tight mb-[48px]">
           How to Merry
@@ -194,7 +194,7 @@ function NonUserHomePage({ user, setUser }) {
           </div>
         </div>
       </section>
-      <section className="bg-[#160404] w-[1440px] flex flex-col h-[570px] px-16 py-20 justify-center items-center">
+      <section className="bg-[#160404] w-full flex flex-col h-[570px] px-16 py-20 justify-center items-center">
         <div className="w-[1120px] h-[369px] rounded-2xl bg-gradient-to-br from-red-900 to-pink-500 flex flex-col justify-evenly items-center relative">
           <div className="w-[588px] text-white text-center font-nunito text-4xl font-extrabold leading-125 tracking-tight">
             Let’s start finding and matching someone new
