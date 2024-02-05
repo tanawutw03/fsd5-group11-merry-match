@@ -66,12 +66,16 @@ function TabSteps() {
     switch (activeTabIndex) {
       case 0:
         step1DataRef.current = { ...step1Data };
+        console.log(step1Data);
+
         break;
       case 1:
         step2DataRef.current = { ...step2Data };
+
         break;
       case 2:
         step3DataRef.current = { ...step3Data };
+
         break;
       default:
         break;
