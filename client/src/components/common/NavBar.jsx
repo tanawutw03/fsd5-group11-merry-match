@@ -21,7 +21,11 @@ const NavBar = (props) => {
     <Menu>
       <MenuButton>
         {avatarUrl ? (
-          <img className="flex-shrink-0" src={avatarUrl} alt="User Avatar" />
+          <img
+            className="flex-shrink-0 w-[50px] h-[50px] rounded"
+            src={avatarUrl}
+            alt="User Avatar"
+          />
         ) : (
           <img className="flex-shrink-0" src={profile} alt="Default Avatar" />
         )}
