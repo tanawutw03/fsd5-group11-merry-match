@@ -1,8 +1,7 @@
 import { useForm } from "react-hook-form";
 import CountryInputSelect from "./common/CountryInputSelect.jsx";
 import CityInputSelect from "./common/CityInputSelect.jsx";
-import { supabase } from "../utils/supabaseClient.js";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import PropTypes from "prop-types";
 
 function Step1Inputs({ setData }) {
@@ -12,7 +11,6 @@ function Step1Inputs({ setData }) {
     formState: { errors },
     control,
   } = useForm();
-  const [userId, setUserId] = useState(null);
   const formDataRef = useRef({});
   const [selectedCountry, setSelectedCountry] = useState(null);
 
@@ -20,74 +18,7 @@ function Step1Inputs({ setData }) {
     console.log(formData);
     formDataRef.current = formData; // Store formData in the ref
     setData(formData);
-    try {
-      const { data: signUpData, error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-      });
-
-      console.log("Sign-up Response:", { signUpData, error });
-
-      if (error) {
-        console.error("Error signing up:", error.message);
-      } else {
-        console.log("User signed up successfully:", signUpData.user.id);
-
-        setUserId(signUpData.user.id);
-      }
-    } catch (error) {
-      console.error("Error:", error.message);
-    }
   };
-
-  useEffect(() => {
-    const checkUserAuthentication = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        console.error("User not authenticated");
-        return;
-      }
-
-      if (userId !== null) {
-        console.log("userId:", userId);
-
-        const insertUserData = async () => {
-          try {
-            const { data: insertData, error: insertError } = await supabase
-              .from("profiles")
-              .upsert({
-                id: userId,
-                username: formDataRef.current.username,
-                full_name: formDataRef.current.name,
-                country: formDataRef.current.location?.value,
-                city: formDataRef.current.city?.value,
-                email: formDataRef.current.email,
-                date_of_birth: formDataRef.current.dob,
-                updated_at: new Date(),
-              })
-              .select();
-
-            console.log(insertData, insertError);
-
-            if (insertError) {
-              console.error("Error inserting user data:", insertError.message);
-            } else {
-              console.log("User data inserted successfully:", insertData);
-            }
-          } catch (error) {
-            console.error("Error inserting user data:", error.message);
-          }
-        };
-
-        insertUserData();
-      }
-    };
-
-    checkUserAuthentication();
-  }, [userId]);
 
   return (
     <>
@@ -181,17 +112,11 @@ function Step1Inputs({ setData }) {
             />
             {errors.confirmPassword && <span>This field is required</span>}
           </div>
-          <input
-            className="flex justify-end items-center absolute bottom-0"
-            type="submit"
-          />
         </form>
       </div>
     </>
   );
 }
-//<input type="submit" />
-
 Step1Inputs.propTypes = {
   setData: PropTypes.func.isRequired,
 };
