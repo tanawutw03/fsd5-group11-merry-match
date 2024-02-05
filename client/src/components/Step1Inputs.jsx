@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import CountryInputSelect from "./common/CountryInputSelect.jsx";
 import CityInputSelect from "./common/CityInputSelect.jsx";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import PropTypes from "prop-types";
 
 function Step1Inputs({ onFormChange }) {
@@ -10,7 +10,7 @@ function Step1Inputs({ onFormChange }) {
     formState: { errors },
     control,
   } = useForm();
-
+  const formDataRef = useRef({});
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
 
