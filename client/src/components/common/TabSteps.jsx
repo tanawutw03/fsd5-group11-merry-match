@@ -26,6 +26,8 @@ function TabSteps() {
 
   const handleFormChange = (newFormData) => {
     setStep1Data(newFormData); // Update step1Data when input fields change
+    setStep2Data(newFormData); // Update step2Data when input fields change
+    setStep3Data(newFormData); // Update step3Data when input fields change
   };
 
   // Use refs to store data for each step
@@ -45,9 +47,9 @@ function TabSteps() {
       case 0:
         return <Step1Inputs onFormChange={setStep1Data} />;
       case 1:
-        return <Step2Inputs />;
+        return <Step2Inputs onFormChange={setStep2Data} />;
       case 2:
-        return <Step3Inputs />;
+        return <Step3Inputs onFormChange={setStep3Data} />;
       default:
         return null; // Handle other cases or return null
     }
@@ -65,15 +67,17 @@ function TabSteps() {
     switch (activeTabIndex) {
       case 0:
         step1DataRef.current = { ...step1Data };
-        console.log(step1Data);
+        console.log(`step1Data:`, step1Data);
 
         break;
       case 1:
         step2DataRef.current = { ...step2Data };
+        console.log(`step2Data:`, step2Data);
 
         break;
       case 2:
         step3DataRef.current = { ...step3Data };
+        console.log(`step3Data:`, step3Data);
 
         break;
       default:
@@ -161,7 +165,7 @@ function TabSteps() {
     };
 
     checkUserAuthentication();
-  }, [userId]);
+  }, [userId, formData]);
 
   const stepperData = [
     { id: 1, title: "Basic Information" },
@@ -241,11 +245,17 @@ function TabSteps() {
               <TabPanel key={0} className="">
                 <Step1Inputs onFormChange={handleFormChange} />
               </TabPanel>
-              <TabPanel key={1} className="">
-                {renderFormByTabIndex(1)}
+              <TabPanel
+                key={1}
+                className="h-screen flex justify-center items-center"
+              >
+                <Step2Inputs onFormChange={handleFormChange} />
               </TabPanel>
-              <TabPanel key={2} className="">
-                {renderFormByTabIndex(2)}
+              <TabPanel
+                key={2}
+                className="h-screen flex justify-center items-center"
+              >
+                <Step3Inputs onFormChange={handleFormChange} />
               </TabPanel>
             </TabPanels>
           </div>

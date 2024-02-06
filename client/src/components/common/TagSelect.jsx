@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { Controller } from "react-hook-form";
 import Select from "react-select";
+<<<<<<< HEAD
 function TagSelect({
   control,
   name,
@@ -9,6 +10,12 @@ function TagSelect({
   onHobbyChange,
   defaultValue,
 }) {
+=======
+import makeAnimated from "react-select/animated";
+function TagSelect({ control, name, label, options, onHobbyChange }) {
+  const animatedComponents = makeAnimated();
+
+>>>>>>> 88d412d (fix(register): formdata state for step2inputs)
   return (
     <>
       <label htmlFor={name}>{label}</label>
