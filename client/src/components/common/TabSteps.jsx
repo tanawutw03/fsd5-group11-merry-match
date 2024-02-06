@@ -25,6 +25,8 @@ function TabSteps() {
 
   const handleFormChange = (newFormData) => {
     setStep1Data(newFormData); // Update step1Data when input fields change
+    setStep2Data(newFormData); // Update step2Data when input fields change
+    setStep3Data(newFormData); // Update step3Data when input fields change
   };
 
   // Use refs to store data for each step
@@ -44,9 +46,9 @@ function TabSteps() {
       case 0:
         return <Step1Inputs onFormChange={setStep1Data} />;
       case 1:
-        return <Step2Inputs />;
+        return <Step2Inputs onFormChange={setStep2Data} />;
       case 2:
-        return <Step3Inputs />;
+        return <Step3Inputs onFormChange={setStep3Data} />;
       default:
         return null; // Handle other cases or return null
     }
@@ -64,15 +66,17 @@ function TabSteps() {
     switch (activeTabIndex) {
       case 0:
         step1DataRef.current = { ...step1Data };
-        console.log(step1Data);
+        console.log(`step1Data:`, step1Data);
 
         break;
       case 1:
         step2DataRef.current = { ...step2Data };
+        console.log(`step2Data:`, step2Data);
 
         break;
       case 2:
         step3DataRef.current = { ...step3Data };
+        console.log(`step3Data:`, step3Data);
 
         break;
       default:
@@ -133,12 +137,12 @@ function TabSteps() {
               .from("profiles")
               .upsert({
                 id: userId,
-                username: formDataRef.current.username,
-                full_name: formDataRef.current.name,
-                country: formDataRef.current.location?.value,
-                city: formDataRef.current.city?.value,
-                email: formDataRef.current.email,
-                date_of_birth: formDataRef.current.dob,
+                username: formData.current.username,
+                full_name: formData.current.name,
+                country: formData.current.location?.value,
+                city: formData.current.city?.value,
+                email: formData.current.email,
+                date_of_birth: formData.current.dob,
                 updated_at: new Date(),
               })
               .select();
@@ -160,7 +164,7 @@ function TabSteps() {
     };
 
     checkUserAuthentication();
-  }, [userId]);
+  }, [userId, formData]);
 
   return (
     <>
@@ -223,13 +227,13 @@ function TabSteps() {
                 key={1}
                 className="h-screen flex justify-center items-center"
               >
-                {renderFormByTabIndex(1)}
+                <Step2Inputs onFormChange={handleFormChange} />
               </TabPanel>
               <TabPanel
                 key={2}
                 className="h-screen flex justify-center items-center"
               >
-                {renderFormByTabIndex(2)}
+                <Step3Inputs onFormChange={handleFormChange} />
               </TabPanel>
             </TabPanels>
           </div>
