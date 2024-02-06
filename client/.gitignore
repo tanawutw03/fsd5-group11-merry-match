@@ -20,8 +20,9 @@ dist-ssr
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
+*.slnn
 *.sw?
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 # Ignore environment files (modify these names based on your project)
@@ -30,5 +31,8 @@ dist-ssr
 **/.env.prod
 =======
 prisma
+=======
+.env
+>>>>>>> 5e55b9a (feat:remove unused data)
 
 >>>>>>> 99fd8e4 (fix: conflict)
