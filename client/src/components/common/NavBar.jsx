@@ -7,6 +7,7 @@ import ChakraButton from "../common/ChakraButton";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { handleLogout } from "../../app/auth.js";
 import { useUser } from "../../app/userContext.js";
 
@@ -26,6 +27,14 @@ const NavBar = (props) => {
     navigate("/login");
   };
 >>>>>>> 6e6004d (feat:edit matching page make  full screen)
+=======
+
+const NavBar = (props) => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    navigate("/login");
+  };
+>>>>>>> 6e6004d45e5e22588bb46b5c3779760ce387fe6c
   const MenuOrButton = props.useMenu ? (
     <Menu>
       <MenuButton>
@@ -45,10 +54,14 @@ const NavBar = (props) => {
           <MenuItem>New Window</MenuItem>
           <MenuItem>Open Closed Tab</MenuItem>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <MenuItem onClick={handleLogoutClick}>Log out</MenuItem>
 =======
           <MenuItem onClick={handleLogout}>Log out</MenuItem>
 >>>>>>> 6e6004d (feat:edit matching page make  full screen)
+=======
+          <MenuItem onClick={handleLogout}>Log out</MenuItem>
+>>>>>>> 6e6004d45e5e22588bb46b5c3779760ce387fe6c
         </MenuList>
       </Portal>
     </Menu>

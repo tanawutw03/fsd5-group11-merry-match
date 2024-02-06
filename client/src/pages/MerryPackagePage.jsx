@@ -9,12 +9,8 @@ import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
 import NavBar from "../components/common/NavBar";
 import { useNavigate } from "react-router-dom";
 
-<<<<<<< HEAD
 function PackagePage() {
-=======
-function MarryPackagePage() {
   const navigate = useNavigate();
->>>>>>> f474690 (feat:add props to  navbar)
   return (
     <>
       <NavBar
