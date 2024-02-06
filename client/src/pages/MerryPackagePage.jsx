@@ -23,6 +23,7 @@ import facebookIcon from "../assets/merryPackagePage/facebook-circle-fill.svg";
 import instagramIcon from "../assets/merryPackagePage/instagram-fill.svg";
 import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 28ad5e8 (feat:fix folder in  merry-package-page solve w-screen)
 
 function PackagePage() {
@@ -32,15 +33,30 @@ function PackagePage() {
 >>>>>>> 99fd8e4 (fix: conflict)
 =======
 import { supabase } from "../utils/supabaseClient";
+=======
+>>>>>>> 7f2faa9 (feat:create server-api package,profile)
 import { useState, useEffect } from "react";
+import axios from "axios";
+import L_UpdatePackage from "../tests/l_UpdatePackage";
 
 function PackagePage() {
-  const [packages, setPackages] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    getPackages();
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:4008/api/package");
+        setData(response.data);
+        console.log(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
   }, []);
 
+<<<<<<< HEAD
   async function getPackages() {
     try {
       const { data, error } = await supabase.from("packages").select("*");
@@ -55,6 +71,10 @@ function PackagePage() {
     }
   }
 >>>>>>> 5214ee2 (feat:update merry-match-page)
+=======
+  const [packages, setPackages] = useState([]);
+
+>>>>>>> 7f2faa9 (feat:create server-api package,profile)
   return (
     <>
 <<<<<<< HEAD
@@ -131,11 +151,14 @@ function PackagePage() {
               </p>
             </div>
 
-            <div className="flex justify-center items-center gap-[24px] mt-[80px]">
-              {packages.map((packages, index) => (
-                <div className="basic-package-con flex flex-col items-start w-[357px] p-[40px] gap-[24px] rounded-[32px] border-[1px] border-solid border-gray-400 bg-[#FFF]">
-                  <ul key={index}>
-                    <div className="basic-package">
+            <div className="flex justify-center items-center max-[1120px]:flex-col gap-[24px] mt-[80px]">
+              {data.map((packages, index) => (
+                <div
+                  key={index}
+                  className="basic-package-con flex flex-col items-start w-[357px] p-[40px] gap-[24px] rounded-[32px] border-[1px] border-solid border-gray-400 bg-[#FFF]"
+                >
+                  <ul>
+                    <div className="basic-packagese">
                       <li className="card-icon mb-[24px]">
                         <img
                           src={packages.iconurl}
@@ -347,6 +370,7 @@ function PackagePage() {
               </ul>
             </div>
           </div>
+<<<<<<< HEAD
         </div>
       </section>
 
@@ -388,6 +412,11 @@ function PackagePage() {
           </div>
         </div>
       </footer>
+=======
+        </footer>
+      </div>
+      <L_UpdatePackage />
+>>>>>>> 7f2faa9 (feat:create server-api package,profile)
     </>
   );
 }
