@@ -44,7 +44,6 @@ export default function Avatar({ url, size, onUpload }) {
       if (uploadError) {
         throw uploadError;
       }
-      
 
       onUpload(event, filePath);
     } catch (error) {
