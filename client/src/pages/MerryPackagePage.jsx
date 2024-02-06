@@ -2,6 +2,7 @@ import logo from "../assets/merryPackagePage/logo.svg";
 <<<<<<< HEAD
 =======
 import bell from "../assets/merryPackagePage/frame.svg";
+<<<<<<< HEAD
 >>>>>>> 28ad5e8 (feat:fix folder in  merry-package-page solve w-screen)
 import basic from "../assets/merryPackagePage/basic.svg";
 import fillCheckbox from "../assets/merryPackagePage/checkbox-circle-fill.svg";
@@ -14,10 +15,14 @@ import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
 import NavBar from "../components/common/NavBar";
 import { useNavigate } from "react-router-dom";
 =======
+=======
+import fillCheckbox from "../assets/merryPackagePage/checkbox-circle-fill.svg";
+>>>>>>> 5214ee2 (feat:update merry-match-page)
 import person01 from "../assets/merryPackagePage/person01.png";
 import facebookIcon from "../assets/merryPackagePage/facebook-circle-fill.svg";
 import instagramIcon from "../assets/merryPackagePage/instagram-fill.svg";
 import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
+<<<<<<< HEAD
 >>>>>>> 28ad5e8 (feat:fix folder in  merry-package-page solve w-screen)
 
 function PackagePage() {
@@ -25,6 +30,31 @@ function PackagePage() {
   const navigate = useNavigate();
 =======
 >>>>>>> 99fd8e4 (fix: conflict)
+=======
+import { supabase } from "../utils/supabaseClient";
+import { useState, useEffect } from "react";
+
+function PackagePage() {
+  const [packages, setPackages] = useState([]);
+
+  useEffect(() => {
+    getPackages();
+  }, []);
+
+  async function getPackages() {
+    try {
+      const { data, error } = await supabase.from("packages").select("*");
+      // .limmit(3);
+      if (error) throw error;
+      if (data != null) {
+        setPackages(data);
+      }
+      console.log(packages);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+>>>>>>> 5214ee2 (feat:update merry-match-page)
   return (
     <>
 <<<<<<< HEAD
@@ -89,6 +119,68 @@ function PackagePage() {
             <p className="font-nunito text-[46px]  text-purple-500">
               to make more Merry!
             </p>
+<<<<<<< HEAD
+=======
+
+            <div className="merry-membership-ads">
+              <p className="font-nunito text-[46px]  text-purple-500">
+                Be part of Merry Membership
+              </p>
+              <p className="font-nunito text-[46px]  text-purple-500">
+                to make more Merry!
+              </p>
+            </div>
+
+            <div className="flex justify-center items-center gap-[24px] mt-[80px]">
+              {packages.map((packages, index) => (
+                <div className="basic-package-con flex flex-col items-start w-[357px] p-[40px] gap-[24px] rounded-[32px] border-[1px] border-solid border-gray-400 bg-[#FFF]">
+                  <ul key={index}>
+                    <div className="basic-package">
+                      <li className="card-icon mb-[24px]">
+                        <img
+                          src={packages.iconurl}
+                          alt=""
+                          className="w-[36px] h-[36px] flex-shrink-0"
+                        />
+                      </li>
+                      <li className="card-category font-nunito text-[32px] font-bold text-purple-800">
+                        {packages.name}
+                      </li>
+                      <li className="card-paid-condition mb-[24px]">
+                        <span className="card-package-price font-nunito text-[20px] font-bold text-gray-900">
+                          THB {packages.price} /month
+                        </span>
+                      </li>
+
+                      <li className="fill-checkbox-icon">
+                        <div className="flex">
+                          <img src={fillCheckbox} alt="" />
+                          <p>‘Merry’ more than a daily limited </p>
+                        </div>
+                        <div className="flex pb-[36px]">
+                          <img src={fillCheckbox} alt="" />
+                          <p>Up to {packages.merry_limit} Merry per day</p>
+                        </div>
+                      </li>
+                      <button
+                        className="choose-package-btn flex justify-center items-center gap-[8px] w-[277px]   
+                           rounded-[99px]  bg-red-100  hover:bg-red-200 active:bg-red-300  shadow-setShadow01 h-12 p-[16px]"
+                        type="button"
+                        disabled
+                      >
+                        <label
+                          className="font-nunito text-center text-[16px] font-bold text-red-600 p-[12px,24px]  "
+                          htmlFor="ChoosePackageSection"
+                        >
+                          Choose Package
+                        </label>
+                      </button>
+                    </div>
+                  </ul>
+                </div>
+              ))}
+            </div>
+>>>>>>> 5214ee2 (feat:update merry-match-page)
           </div>
 
 <<<<<<< HEAD
@@ -116,7 +208,7 @@ function PackagePage() {
 =======
         <footer>
           <div className="flex justify-center items-center">
-            <div className="flex justify-center items-center w-[1440px] h-[371px] p-[48px,160px] bg-gray-100">
+            <div className="flex justify-center items-center w-screen h-[371px] p-[48px,160px] bg-gray-100">
               <ul className="flex  flex-col justify-center items-center w-[1120px] h-[275px] flex-shrink-0">
                 <li className="merry-match-logo ">
                   <img src={logo} />
