@@ -5,8 +5,13 @@ import bell from "../../assets/merryPackagePage/Frame.svg";
 import profile from "../../assets/Matching/profile.svg";
 import ChakraButton from "../common/ChakraButton";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 
 const NavBar = (props) => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    navigate("/login");
+  };
   const MenuOrButton = props.useMenu ? (
     <Menu>
       <MenuButton>
@@ -17,7 +22,7 @@ const NavBar = (props) => {
           <MenuItem>Menu 1</MenuItem>
           <MenuItem>New Window</MenuItem>
           <MenuItem>Open Closed Tab</MenuItem>
-          <MenuItem>Log out</MenuItem>
+          <MenuItem onClick={handleLogout}>Log out</MenuItem>
         </MenuList>
       </Portal>
     </Menu>
@@ -48,7 +53,7 @@ const NavBar = (props) => {
           <li className="merry-math-logo ml-[160px]">
             <img src={logo} />
           </li>
-          <li className="start-matching-link font-nunito  font-bold ml-[360px]">
+          <li className="start-matching-link font-nunito  font-bold ml-[520px]">
             <Button
               variant="link"
               colorScheme="custom"
@@ -58,7 +63,7 @@ const NavBar = (props) => {
               {props.firstMenuName}
             </Button>
           </li>
-          <li className="merry-membership-link font-nunito  font-bold mr-[24px]  ml-[28px]">
+          <li className="merry-membership-link font-nunito  font-bold mr-[24px]  ml-[35px]">
             <Button
               variant="link"
               colorScheme="custom"
@@ -68,7 +73,7 @@ const NavBar = (props) => {
               {props.secondMenuName}
             </Button>
           </li>
-          <div className="flex  ">
+          <div className="flex  ml-[20px]  ">
             {props.showBell && (
               <div className="flex mr-[10px] mt-5 justify-center items-center w-[48px] h-[48px] bg-[#F6F7FC] rounded-[999px] object-fit object-cover">
                 <li>
