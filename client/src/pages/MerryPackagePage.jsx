@@ -107,26 +107,26 @@ function PackagePage() {
         </div>
       </section>
 
-        <footer>
-          <div className="flex justify-center items-center">
-            <div className="flex justify-center items-center w-[1440px] h-[371px] p-[48px,160px] bg-gray-100">
-              <ul className="flex  flex-col justify-center items-center w-[1120px] h-[275px] flex-shrink-0">
-                <li className="merry-match-logo ">
-                  <img src={logo} />
+      <footer>
+        <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center w-[1440px] h-[371px] p-[48px,160px] bg-gray-100">
+            <ul className="flex  flex-col justify-center items-center w-[1120px] h-[275px] flex-shrink-0">
+              <li className="merry-match-logo ">
+                <img src={logo} />
+              </li>
+              <li className="font-nunito text-center text-[20px] text-[#646D89] font-[600px] leading-[30px]">
+                New generation of online dating website for everyone
+              </li>
+              <div className="flex flex-col items-center gap-[24px] pt-[24px] border-t-1 ">
+                <li className="font-nunito text-center text-[14px] text-[#9AA1B9] font-[500px] leading-[30px]">
+                  copyright ©2022 merrymatch.com All rights reserved
                 </li>
-                <li className="font-nunito text-center text-[20px] text-[#646D89] font-[600px] leading-[30px]">
-                  New generation of online dating website for everyone
-                </li>
-                <div className="flex flex-col items-center gap-[24px] pt-[24px] border-t-1 ">
-                  <li className="font-nunito text-center text-[14px] text-[#9AA1B9] font-[500px] leading-[30px]">
-                    copyright ©2022 merrymatch.com All rights reserved
-                  </li>
-                  <div className="flex flex-row gap-[16px] ">
-                    <img
-                      src={facebookIcon}
-                      alt=""
-                      className="p-[12px] rounded-[24px] bg-purple-500"
-                    />
+                <div className="flex flex-row gap-[16px] ">
+                  <img
+                    src={facebookIcon}
+                    alt=""
+                    className="p-[12px] rounded-[24px] bg-purple-500"
+                  />
 
                   <img
                     src={instagramIcon}
