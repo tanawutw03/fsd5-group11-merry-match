@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import CreatePackage from "./pages/CreatePackage";
 import EditPackage from "./pages/EditPackage";
+import { useUser } from "./app/userContext.js";
 
 const NoMatch = () => {
   return (
@@ -23,10 +24,10 @@ const NoMatch = () => {
 };
 
 const AuthorizedHomePage = () => {
-  const token = JSON.parse(sessionStorage.getItem("token"));
+  const { user } = useUser();
 
-  if (!token) {
-    // If there is no token, user is not authorized
+  if (!user) {
+    // If there is no user session, user is not authorized
     return (
       <div className="h-screen text-5xl flex flex-col justify-center items-center gap-5">
         <h1>Not Authorized</h1>
@@ -42,29 +43,18 @@ const AuthorizedHomePage = () => {
 };
 
 function App() {
-  const [token, setToken] = useState(false);
-
-  if (token) {
-    sessionStorage.setItem("token", JSON.stringify(token));
-  }
-
-  useEffect(() => {
-    if (sessionStorage.getItem("token")) {
-      const data = JSON.parse(sessionStorage.getItem("token"));
-      setToken(data);
-    }
-  }, []);
-
   return (
     <BrowserRouter>
       <Routes>
         <Route path="*" element={<NoMatch />} />
         <Route path="/" element={<NonUserHomePage />} />
-        <Route path="/homepage" element={<AuthorizedHomePage />} />
+        <Route path="/homepage" element={<AuthorizedHomePage />}>
+          <Route index element={<HomePage />} />
+        </Route>
         <Route path="/adminpage" element={<AdminPage />} />
         <Route path="/createpackage" element={<CreatePackage />} />
         <Route path="/editpackage/:package_id" element={<EditPackage />} />
-        <Route path="/login" element={<LoginPage setToken={setToken} />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/matching" element={<Matching />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/package" element={<MerryPackagePage />} />
