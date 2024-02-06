@@ -66,15 +66,17 @@ function TabSteps() {
     switch (activeTabIndex) {
       case 0:
         step1DataRef.current = { ...step1Data };
-        console.log(step1Data);
+        console.log(`step1Data:`, step1Data);
 
         break;
       case 1:
         step2DataRef.current = { ...step2Data };
+        console.log(`step2Data:`, step2Data);
 
         break;
       case 2:
         step3DataRef.current = { ...step3Data };
+        console.log(`step3Data:`, step3Data);
 
         break;
       default:
@@ -205,12 +207,6 @@ function TabSteps() {
       navigate("/");
     }
   }, [isDataInserted, areFilesUploaded, navigate]);
-
-  const stepperData = [
-    { id: 1, title: "Basic Information" },
-    { id: 2, title: "Identities and Interests" },
-    { id: 3, title: "Upload Photos" },
-  ];
 
   const stepperData = [
     { id: 1, title: "Basic Information" },
