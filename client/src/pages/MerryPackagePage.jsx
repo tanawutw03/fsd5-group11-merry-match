@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 
 function PackagePage() {
   const navigate = useNavigate();
-
   return (
     <>
       <NavBar

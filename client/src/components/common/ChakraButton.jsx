@@ -27,7 +27,6 @@ ChakraButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   width: PropTypes.string.isRequired,
   height: PropTypes.string.isRequired,
-
   variant: PropTypes.string.isRequired,
   rounded: PropTypes.bool,
 };
