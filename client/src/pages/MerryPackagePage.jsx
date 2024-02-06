@@ -11,11 +11,12 @@ import axios from "axios";
 function PackagePage() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const API_ENDPOINT = "http://localhost:4008";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:4008/api/package");
+        const response = await axios.get(`${API_ENDPOINT}/admin/package`);
         setData(response.data);
       } catch (error) {
         console.error(error);
@@ -26,16 +27,18 @@ function PackagePage() {
   }, []);
   return (
     <>
-      <NavBar
-        firstMenuName="Start Matching!"
-        secondMenuName="Merry Membership"
-        name="login"
-        color="red"
-        showBell="true"
-        useMenu="true"
-        onClickFirstMenu={() => navigate("/matching")}
-        onClickSecondMenu={() => navigate("/package")}
-      />
+      <div className="nav-container flex justify-center items-center">
+        <NavBar
+          firstMenuName="Start Matching!"
+          secondMenuName="Merry Membership"
+          name="login"
+          color="red"
+          showBell="true"
+          useMenu="true"
+          onClickFirstMenu={() => navigate("/matching")}
+          onClickSecondMenu={() => navigate("/package")}
+        />
+      </div>
 
       <section>
         <div className="package-container flex flex-col mt-[80px] mb-[160px] ml-[160px] mr-[160px]">
