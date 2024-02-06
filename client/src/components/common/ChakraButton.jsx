@@ -14,11 +14,7 @@ function ChakraButton(props) {
       variant={props.variant}
       rounded={props.rounded}
       colorScheme={props.color}
-<<<<<<< HEAD
-      className="w-[100px] hover:cursor-pointer"
-=======
       className={combinedClassName}
->>>>>>> f474690 (feat:add props to  navbar)
     >
       {props.name}
     </Button>
@@ -28,12 +24,9 @@ ChakraButton.propTypes = {
   color: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
-<<<<<<< HEAD
   rounded: PropTypes.bool,
   variant: PropTypes.bool,
-=======
   width: PropTypes.string.isRequired,
   height: PropTypes.string.isRequired,
->>>>>>> 214baf6 (feat:add props to  navbar)
 };
 export default ChakraButton;
