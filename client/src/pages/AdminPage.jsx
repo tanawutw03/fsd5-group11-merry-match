@@ -67,9 +67,27 @@ function AdminPage() {
     console.log("Edit package with ID:", packageId);
   };
 
-  const handleDelete = (packageId) => {
-    // Handle delete functionality based on the packageId
-    console.log("Delete package with ID:", packageId);
+  const handleDelete = async (packageId) => {
+    try {
+      // Perform the delete operation using supabase
+      const { error } = await supabase
+        .from("packages")
+        .delete()
+        .eq("package_id", packageId);
+
+      if (error) {
+        console.error("Error deleting package:", error);
+      } else {
+        // Update the state to reflect the changes
+        setPackageData((prevData) =>
+          prevData.filter((item) => item.package_id !== packageId)
+        );
+        console.log("Package deleted successfully!");
+      }
+    } catch (error) {
+      console.error("Error during package deletion:", error);
+      // Handle the error if needed
+    }
   };
 
   return (
