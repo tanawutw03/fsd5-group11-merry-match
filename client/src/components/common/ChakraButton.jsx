@@ -23,5 +23,7 @@ ChakraButton.propTypes = {
   color: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
+  rounded: PropTypes.bool,
+  variant: PropTypes.bool,
 };
 export default ChakraButton;
