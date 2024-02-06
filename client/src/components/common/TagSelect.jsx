@@ -1,10 +1,14 @@
 import PropTypes from "prop-types";
 import { Controller } from "react-hook-form";
 import Select from "react-select";
-import makeAnimated from "react-select/animated";
-function TagSelect({ control, name, label, options, onHobbyChange }) {
-  const animatedComponents = makeAnimated();
-
+function TagSelect({
+  control,
+  name,
+  label,
+  options,
+  onHobbyChange,
+  defaultValue,
+}) {
   return (
     <>
       <label htmlFor={name}>{label}</label>
@@ -12,13 +16,14 @@ function TagSelect({ control, name, label, options, onHobbyChange }) {
         name={name}
         control={control}
         rules={{ required: true }}
+        // defaultValue={defaultValue}
         render={({ field }) => (
           <Select
             {...field}
-            components={animatedComponents}
             closeMenuOnSelect={false}
             isMulti
             options={options}
+            defaultValue={defaultValue}
             onChange={(selectedHobby) => {
               console.log(selectedHobby);
               field.onChange(selectedHobby);
@@ -37,6 +42,7 @@ TagSelect.propTypes = {
   label: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   onHobbyChange: PropTypes.func,
+  defaultValue: PropTypes.array,
 };
 
 export default TagSelect;
