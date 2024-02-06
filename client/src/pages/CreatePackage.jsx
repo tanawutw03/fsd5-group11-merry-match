@@ -13,11 +13,8 @@ import {
 import { SmallAddIcon, SmallCloseIcon, DragHandleIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import { supabase } from "../utils/supabaseClient";
-<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-=======
->>>>>>> 7b9d60f3d41c721025f36dedc8ab735cdf0bfdfd
 
 function CreatePackage() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -26,15 +23,12 @@ function CreatePackage() {
   const [packageName, setPackageName] = useState("");
   const [merryLimit, setMerryLimit] = useState(0);
   const [price, setPrice] = useState(0);
-<<<<<<< HEAD
   const navigate = useNavigate();
 
   const handleCancel = () => {
     // Navigate to the desired path (in this case, '/adminpage')
     navigate("/adminpage");
   };
-=======
->>>>>>> 7b9d60f3d41c721025f36dedc8ab735cdf0bfdfd
 
   const handleAddDetail = () => {
     if (newDetail.trim() !== "") {
@@ -66,8 +60,6 @@ function CreatePackage() {
     setSelectedFile(null);
   };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
@@ -78,11 +70,6 @@ function CreatePackage() {
       // Handle the error if needed
     }
   };
-=======
-  const handleCreatePackage = async (file,fileName) => {
-    // ... (Existing code)
->>>>>>> 5e55b9a (feat:remove unused data)
-
   const handleCreatePackage = async () => {
     let iconUrl;
 
@@ -97,26 +84,12 @@ function CreatePackage() {
     console.log(uniqueIdentifier);
     const iconPath = `iconPackage/${fileName}`;
     console.log(iconPath);
-=======
-  const handleCreatePackage = async (file,fileName) => {
-    // ... (Existing code)
-
-    let iconUrl = null;
-    let iconPath = null;
->>>>>>> 7b9d60f3d41c721025f36dedc8ab735cdf0bfdfd
 
     // Upload icon to Supabase Storage
     if (selectedFile) {
       try {
         const { data: storageData, error: storageError } =
-<<<<<<< HEAD
-<<<<<<< HEAD
           await supabase.storage.from("iconPackage").upload(iconPath, file);
-=======
-          await supabase.storage
-            .from("packages")
-            .upload(`packages${fileName}`, selectedFile);
->>>>>>> 5e55b9a (feat:remove unused data)
 
         console.log("Storage Data:", storageData);
         const { data: urlData, error } = await supabase.storage
@@ -135,23 +108,6 @@ function CreatePackage() {
         }
 
         // Get the URL and path of the uploaded file
-=======
-          await supabase.storage
-            .from("packages")
-            .upload(`packages${fileName}`, selectedFile);
-
-        console.log("Storage Data:", storageData);
-        console.error("Storage Error:", storageError);
-
-        if (storageError) {
-          // Handle the error, e.g., show a message to the user
-          return;
-        }
-
-        // Get the URL and path of the uploaded file
-        iconUrl = storageData[0].url;
-        iconPath = storageData[0].path;
->>>>>>> 7b9d60f3d41c721025f36dedc8ab735cdf0bfdfd
       } catch (error) {
         console.error("Error uploading icon to storage:", error);
         // Handle the error, e.g., show a message to the user
@@ -168,17 +124,12 @@ function CreatePackage() {
           merry_limit: merryLimit,
           price: price,
           description: packageDetails,
-<<<<<<< HEAD
           iconurl: iconUrl.publicUrl,
         },
       ])
       .select();
 
     console.log(packageData);
-=======
-        },
-      ]);
->>>>>>> 7b9d60f3d41c721025f36dedc8ab735cdf0bfdfd
 
     if (packageError) {
       console.error("Error inserting package data:", packageError);
@@ -186,7 +137,6 @@ function CreatePackage() {
       return;
     }
 
-<<<<<<< HEAD
     // // Insert icon data into the "icons" table
     // const { data: iconData, error: iconError } = await supabase
     //   .from("icons")
@@ -205,24 +155,6 @@ function CreatePackage() {
     // }
 
     console.log("After Submit - packageDetails:", packageDetails);
-=======
-    // Insert icon data into the "icons" table
-    const { data: iconData, error: iconError } = await supabase
-      .from("icons")
-      .insert([
-        {
-          name: packageName, // Set the name based on your requirement
-          path: iconPath,
-          package_id: packageData[0].id, // Assuming the "packages" table has an 'id' column
-        },
-      ]);
-
-    if (iconError) {
-      console.error("Error inserting icon data:", iconError);
-      // Handle the error, e.g., show a message to the user
-      return;
-    }
->>>>>>> 7b9d60f3d41c721025f36dedc8ab735cdf0bfdfd
 
     // Reset form fields or redirect to another page after successful creation
     setPackageName("");
@@ -232,11 +164,7 @@ function CreatePackage() {
     setSelectedFile(null);
 
     console.log("Package data inserted successfully:", packageData);
-<<<<<<< HEAD
     // console.log("Icon data inserted successfully:", iconData);
-=======
-    console.log("Icon data inserted successfully:", iconData);
->>>>>>> 7b9d60f3d41c721025f36dedc8ab735cdf0bfdfd
   };
   return (
     <div className="flex flex-row justify-stretch min-w-[1440px]">
@@ -427,3 +355,5 @@ function CreatePackage() {
 }
 
 export default CreatePackage;
+CreatePackage.jsx
+15 KB
