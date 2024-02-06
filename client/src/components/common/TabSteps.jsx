@@ -223,7 +223,8 @@ function TabSteps() {
         />
       </div>
       <RegisterWords />
-      <div className="min-w-[1440px] flex flex-col justify-between item-center bg-[#fcfcfe]  relative">
+
+      <div className="flex w-screen h-screen -px-2 bg-[#fcfcfe]">
         <Tabs
           align="center"
           index={activeTabIndex}
@@ -273,6 +274,21 @@ function TabSteps() {
                 </Tab>
               ))}
             </TabList>
+            <div className="flex items-start">
+              <TabIndicator
+                mt="-15px"
+                height="1px"
+                bg="purple"
+                borderRadius="1px"
+              />
+              <p className="font-bold font-nunito">
+                {activeTabIndex === 0
+                  ? "Basic Information"
+                  : activeTabIndex === 1
+                  ? "Identities and Interests"
+                  : "Upload Photos"}
+              </p>
+            </div>
           </div>
 
           <div className="h-full">
