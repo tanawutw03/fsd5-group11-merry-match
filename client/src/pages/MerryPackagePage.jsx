@@ -1,13 +1,24 @@
 import logo from "../assets/merryPackagePage/logo.svg";
+<<<<<<< HEAD
+=======
+import bell from "../assets/merryPackagePage/frame.svg";
+>>>>>>> 28ad5e8 (feat:fix folder in  merry-package-page solve w-screen)
 import basic from "../assets/merryPackagePage/basic.svg";
 import fillCheckbox from "../assets/merryPackagePage/checkbox-circle-fill.svg";
 import platinum from "../assets/merryPackagePage/platinum.svg";
 import premium from "../assets/merryPackagePage/premium.svg";
+<<<<<<< HEAD
 import facebookIcon from "../assets/merryPackagePage/facebook-circle-fill.svg";
 import instagramIcon from "../assets/merryPackagePage/instagram-fill.svg";
 import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
 import NavBar from "../components/common/NavBar";
 import { useNavigate } from "react-router-dom";
+=======
+import person01 from "../assets/merryPackagePage/person01.png";
+import facebookIcon from "../assets/merryPackagePage/facebook-circle-fill.svg";
+import instagramIcon from "../assets/merryPackagePage/instagram-fill.svg";
+import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
+>>>>>>> 28ad5e8 (feat:fix folder in  merry-package-page solve w-screen)
 
 function PackagePage() {
 <<<<<<< HEAD
@@ -16,6 +27,7 @@ function PackagePage() {
 >>>>>>> 99fd8e4 (fix: conflict)
   return (
     <>
+<<<<<<< HEAD
       <NavBar
         firstMenuName="Start Matching!"
         secondMenuName="Merry Membership"
@@ -32,6 +44,43 @@ function PackagePage() {
           <p className="merry-membership-title  font-nunito text-[14px] text-[#7B4429]">
             MERRY MEMBERSHIP
           </p>
+=======
+      <div className="main-container w-screen  p-[80px,161px,160px,160px]">
+        <div className="nav-container">
+          <ul className="flex justify-between items-center  text-red-400 text-xl  text-center m-[20px]">
+            <li className="merry-math-logo ml-[160px]">
+              <img src={logo} />
+            </li>
+
+            <div className="flex justify-center items-center">
+              <li className="start-matching-link font-nunito text-[16px] text-[#191C77] font-bold mr-[24px]">
+                <a href="">Start Matching</a>
+              </li>
+              <li className="merry-membership-link font-nunito text-[16px] text-[#191C77] font-bold mr-[24px]">
+                <a href="">Merry Membership</a>
+              </li>
+              <div className="flex ">
+                <div className="flex mr-[12px] justify-center items-center w-[48px] h-[48px] bg-[#F6F7FC] rounded-[999px] object-fit object-cover">
+                  <li>
+                    <img
+                      className="flex-shrink-0 w-[24px] h-[24px] "
+                      src={bell}
+                      alt=""
+                    />
+                  </li>
+                </div>
+                <li className="mr-[160px]">
+                  <img
+                    className="w-[48px] h-[48px] rounded-[999px] object-fit object-cover"
+                    src={person01}
+                    alt=""
+                  />
+                </li>
+              </div>
+            </div>
+          </ul>
+        </div>
+>>>>>>> 28ad5e8 (feat:fix folder in  merry-package-page solve w-screen)
 
           <div className="merry-membership-ads">
             <p className="font-nunito text-[46px]  text-purple-500">
@@ -42,6 +91,7 @@ function PackagePage() {
             </p>
           </div>
 
+<<<<<<< HEAD
           <div className="flex justify-center items-center gap-[24px] mt-[80px]">
             <div className="basic-package-con flex flex-col items-start w-[357px] p-[40px] gap-[24px] rounded-[32px] border-[1px] border-solid border-gray-400 bg-[#FFF]">
               <ul>
@@ -63,6 +113,21 @@ function PackagePage() {
                     <span className="card-package-period font-nunito text-[16px] font-bold text-gray-600">
                       /month
                     </span>
+=======
+        <footer>
+          <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center w-[1440px] h-[371px] p-[48px,160px] bg-gray-100">
+              <ul className="flex  flex-col justify-center items-center w-[1120px] h-[275px] flex-shrink-0">
+                <li className="merry-match-logo ">
+                  <img src={logo} />
+                </li>
+                <li className="font-nunito text-center text-[20px] text-[#646D89] font-[600px] leading-[30px]">
+                  New generation of online dating website for everyone
+                </li>
+                <div className="flex flex-col items-center gap-[24px] pt-[24px] border-t-1 ">
+                  <li className="font-nunito text-center text-[14px] text-[#9AA1B9] font-[500px] leading-[30px]">
+                    copyright ©2022 merrymatch.com All rights reserved
+>>>>>>> 28ad5e8 (feat:fix folder in  merry-package-page solve w-screen)
                   </li>
 
                   <li className="fill-checkbox-icon">
