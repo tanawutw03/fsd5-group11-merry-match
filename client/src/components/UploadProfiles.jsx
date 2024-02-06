@@ -54,8 +54,32 @@ function UploadProfiles() {
 
   return (
     <>
-      <div className="w-[930px] h-full flex flex-col justify-center items-start font-nunito mb-[30px] ">
-        <div className="flex flex-col justify-start items-start my-10">
+      <div className="w-screen h-screen flex flex-col justify-center items-center font-nunito">
+        <div className="flex justify-end absolute font-nunito gap-3 right-40 top-28 bg-[#fcfcfe]">
+          <div className="w-20 h-20 border border-gray-300 rounded-2xl flex justify-center items-center">
+            <div className="w-12 h-12 rounded-2xl  bg-gray-200 flex justify-center items-center text-2xl font-bold text-gray-600">
+              1
+            </div>
+          </div>
+          <div className="w-20 h-20 border border-gray-300 rounded-2xl flex justify-center items-center">
+            <div className="w-12 h-12 rounded-2xl  bg-gray-200 flex justify-center items-center text-2xl font-bold text-gray-600">
+              2
+            </div>
+          </div>
+          <div className="h-20 w-[225px] p-4 pr-8 border border-[#A62D82] rounded-2xl flex justify-start items-center space-x-4">
+            <div className="w-12 h-12 rounded-2xl bg-gray-200 flex justify-center items-center text-[#A62D82] text-2xl font-bold">
+              3
+            </div>
+            <div className="flex flex-col items-start">
+              <p className="text-gray-700 text-xs font-medium">Step 3/3</p>
+              <p className="text-[#A62D82] text-base font-extrabold">
+                Upload Photos
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-start left-72 absolute">
           <h1 className="text-3xl font-bold text-[#a62d82]">
             Profile&nbsp;Pictures
           </h1>

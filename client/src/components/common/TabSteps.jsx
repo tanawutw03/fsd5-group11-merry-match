@@ -188,7 +188,8 @@ function TabSteps() {
         />
       </div>
       <RegisterWords />
-      <div className="min-w-[1440px] flex flex-col justify-between item-center bg-[#fcfcfe]  relative">
+
+      <div className="flex w-screen h-screen -px-2 bg-[#fcfcfe]">
         <Tabs
           align="center"
           index={activeTabIndex}
@@ -197,47 +198,27 @@ function TabSteps() {
           colorScheme="purple"
           size="lg"
         >
-          <div className="text-[#A62D82] flex flex-col absolute -mt-[7%] right-[20%] text-2xl font-nunito">
-            <TabList className="gap-5">
-              {stepperData.map((item, index) => (
-                <Tab
-                  key={item.id}
-                  className={`${
-                    selectedTab === index
-                      ? "h-20 w-fit p-4 pr-8 border border-[#A62D82] rounded-2xl flex justify-start items-center space-x-4"
-                      : "w-20 h-20 border border-gray-300 rounded-2xl flex justify-center items-center"
-                  } `}
-                  onClick={() => setSelectedTab(index)} // Set selected tab on click
-                >
-                  <h2
-                    className={`w-12 h-12 rounded-2xl bg-gray-200 flex justify-center items-center text-2xl
-                    font-bold text-${
-                      selectedTab === index ? "#A62D82" : "gray-500"
-                    }`}
-                  >
-                    {item.id}
-                  </h2>
-                  <div
-                    className={`${
-                      selectedTab === index
-                        ? "flex flex-col justify-start"
-                        : "hidden"
-                    }`}
-                  >
-                    <p className="text-gray-700 text-xs font-medium text-left">
-                      Step {item.id}/3
-                    </p>
-                    <p
-                      className={`text-${
-                        selectedTab === index ? "#A62D82" : "gray-700"
-                      } text-base font-extrabold`}
-                    >
-                      {item.title}
-                    </p>
-                  </div>
-                </Tab>
-              ))}
+          <div className="text-[#A62D82] w-[250px] text-2xl flex flex-col justify-end items-center absolute m-24 right-40 font-nunito">
+            <TabList>
+              <Tab>1</Tab>
+              <Tab>2</Tab>
+              <Tab>3</Tab>
             </TabList>
+            <div className="flex items-start">
+              <TabIndicator
+                mt="-15px"
+                height="1px"
+                bg="purple"
+                borderRadius="1px"
+              />
+              <p className="font-bold font-nunito">
+                {activeTabIndex === 0
+                  ? "Basic Information"
+                  : activeTabIndex === 1
+                  ? "Identities and Interests"
+                  : "Upload Photos"}
+              </p>
+            </div>
           </div>
 
           <div className="h-full ">
