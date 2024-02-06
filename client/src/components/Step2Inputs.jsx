@@ -3,6 +3,8 @@ import { Select } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import TagSelect from "./common/TagSelect.jsx";
 import ChakraButton from "./common/ChakraButton.jsx";
+import PropTypes from "prop-types";
+import { useState } from "react";
 
 const hobbiesOptions = [
   { value: "e-sports", label: "E-sports" },
@@ -19,27 +21,43 @@ const hobbiesOptions = [
   { value: "party", label: "Party" },
   { value: "festival", label: "Festival" },
 ];
-
-function Step2Inputs() {
+function Step2Inputs({ onFormChange }) {
   const {
     register,
-    handleSubmit,
     formState: { errors },
     control,
   } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  const [formData, setFormData] = useState({});
+  const [selectedHobby, setSelectedHobby] = useState([{}]);
 
-  const navigate = useNavigate();
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    console.log("handleInputChange - name:", name, "value:", value);
 
-  const handleNext = () => {
-    navigate("/register3");
-    console.log("Navigating to the next page");
+    const updatedFormData = {
+      ...formData,
+      [name]: value,
+    };
+
+    setFormData(updatedFormData);
+    onFormChange(updatedFormData);
+    console.log(formData);
   };
 
-  const handlePrev = () => {
-    navigate("/register1");
-    console.log("Navigating to the prev page");
+  const handleHobbyChange = (selectedHobbyData) => {
+    console.log(selectedHobbyData);
+
+    const hobbyValues = selectedHobbyData.map((hobby) => hobby.value);
+    setSelectedHobby(selectedHobbyData);
+
+    const updatedFormData = {
+      ...formData,
+      hobbies: hobbyValues,
+    };
+
+    setFormData(updatedFormData);
+    onFormChange(updatedFormData);
   };
 
   return (
@@ -58,14 +76,25 @@ function Step2Inputs() {
           {/* First selector column */}
           <div className="h-[48px] w-[453px] flex flex-col justify-center my-[10%]">
             <h3>Sexual&nbsp;Identities</h3>
-            <Select defaultValue="male" {...register("sex")} mb={10}>
+            <Select
+              placeholder="Select option"
+              {...register("sex_identities")}
+              name="sex_identities"
+              mb={10}
+              onChange={handleInputChange}
+            >
               <option value="male">Male</option>
               <option value="female">Female</option>
               <option value="other">Other</option>
             </Select>
 
             <h3>Racial&nbsp;Preferences</h3>
-            <Select defaultValue="asian" {...register("racial_preference")}>
+            <Select
+              placeholder="Select option"
+              {...register("racial_preferences")}
+              name="racial_preferences"
+              onChange={handleInputChange}
+            >
               <option value="asian">Asian</option>
               <option value="black">Black</option>
               <option value="indian">Indian</option>
@@ -81,9 +110,11 @@ function Step2Inputs() {
           <div className="h-[48px] w-[453px] flex flex-col justify-center my-[10%]">
             <h3>Sexual&nbsp;Preferences</h3>
             <Select
-              defaultValue="female"
+              placeholder="Select option"
               {...register("sex_preference")}
               mb={10}
+              name="sex_preferences"
+              onChange={(e) => handleInputChange(e, "sex_identities")}
             >
               <option value="male">Male</option>
               <option value="female">Female</option>
@@ -91,14 +122,20 @@ function Step2Inputs() {
             </Select>
 
             <h3>Meeting&nbsp;Interests</h3>
-            <Select defaultValue="friends" {...register("meeting_interest")}>
+            <Select
+              placeholder="Select option"
+              {...register("meeting_interest")}
+              name="meeting_interest"
+              // onChange={(event) => {
+              //   handleInputChange(event);
+              //   console.log(event.target.value);
+              // }}
+              onChange={handleInputChange}
+            >
               <option value="date">Date</option>
               <option value="friends">Friends</option>
               <option value="other">Other</option>
             </Select>
-
-            {/* errors will return when field validation fails  */}
-            {errors.exampleRequired && <span>This field is required</span>}
           </div>
           <div className=" justify-center item-center w-full  h-[53px]  text-left col-span-2">
             <h3 className="pt-10">
@@ -107,9 +144,9 @@ function Step2Inputs() {
             <TagSelect
               control={control}
               name="hobbies"
+              onHobbyChange={handleHobbyChange}
               label=""
               options={hobbiesOptions}
-              defaultValue={[{ value: "e-sports" }, { value: "series" }]}
               max={10}
             />
           </div>
@@ -118,5 +155,9 @@ function Step2Inputs() {
     </>
   );
 }
+
+Step2Inputs.propTypes = {
+  onFormChange: PropTypes.func.isRequired,
+};
 
 export default Step2Inputs;
