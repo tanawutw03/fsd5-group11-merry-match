@@ -9,10 +9,7 @@ import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import CreatePackage from "./pages/CreatePackage";
 // import CreatePackage from "./AdmAvatar"
-<<<<<<< HEAD
 import { UserProvider, useUser } from "./app/userContext.js";
-=======
->>>>>>> 7b9d60f3d41c721025f36dedc8ab735cdf0bfdfd
 
 const NoMatch = () => {
   return (
@@ -46,7 +43,6 @@ const AuthorizedHomePage = () => {
 
 function App() {
   return (
-<<<<<<< HEAD
     <UserProvider>
       <BrowserRouter>
         <Routes>
@@ -64,23 +60,6 @@ function App() {
         </Routes>
       </BrowserRouter>
     </UserProvider>
-=======
-    <BrowserRouter>
-      <Routes>
-        <Route path="*" element={<NoMatch />} />
-        <Route path="/" element={<NonUserHomePage />} />
-        <Route path="/homepage" element={<AuthorizedHomePage />} />
-        <Route path="/adminpage" element={<AdminPage />} />
-        <Route path="/createpackage" element={<CreatePackage />} />
-        <Route path="/login" element={<LoginPage setToken={setToken} />} />
-        <Route path="/matching" element={<Matching />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/package" element={<MerryPackagePage />} />
-        <Route path="/admin" element={<AdminLoginPage />} />
-        <Route path="/test" element={<AdminPackagePageTest />} />
-      </Routes>
-    </BrowserRouter>
->>>>>>> 99fd8e4 (fix: conflict)
   );
 }
 
