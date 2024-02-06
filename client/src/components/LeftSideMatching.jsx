@@ -5,7 +5,7 @@ import person3 from "../assets/Matching/person3.svg";
 
 const LeftSideMatching = () => {
   return (
-    <div className="w-[314px] h-[500px] flex-col flex mr-5 ">
+    <div className="w-[316px] h-[500px] flex-col flex mr-5 ">
       <div className=" flex flex-col items-center  mt-7 ">
         <div className=" flex  flex-col justify-center items-center w-[282px] h-[187px] border-[#A62D82] border rounded-[16px]">
           <img className="w-[55px] h-[55px]" src={seach} />

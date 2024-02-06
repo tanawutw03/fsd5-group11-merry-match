@@ -8,7 +8,7 @@ function Matching() {
   const navigate = useNavigate();
   return (
     <>
-      <div className=" h-screen w-screen">
+      <div className=" w-max ">
         <NavBar
           firstMenuName="Start Matching!"
           secondMenuName="Merry Membership"
@@ -19,10 +19,15 @@ function Matching() {
           onClickFirstMenu={() => navigate("/matching")}
           onClickSecondMenu={() => navigate("/package")}
         />
-        <div className="flex flex-row mt-10 ml-5 ">
-          <LeftSideMatching />
-          <MerryCards />
-          <div className="w-[314px] h-[500px] flex-col flex ml-[18px] ">
+
+        <div className="flex flex-row">
+          <div>
+            <LeftSideMatching />
+          </div>
+          <div>
+            <MerryCards />
+          </div>
+          <div className="  flex-col flex ml-2  w-[220] h-[900px]  ">
             <p className=" text-[#191C77] text-base font-bold">
               Sex you interest
             </p>

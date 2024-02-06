@@ -5,6 +5,7 @@ function ChakraButton(props) {
   const handleNext = () => {
     props.onClick();
   };
+
   const combinedClassName = `${props.width} ${props.height} hover:cursor-pointer`;
 
   return (
@@ -30,5 +31,10 @@ ChakraButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   width: PropTypes.string.isRequired,
   height: PropTypes.string.isRequired,
+<<<<<<< HEAD
+=======
+  variant: PropTypes.string.isRequired,
+  rounded: PropTypes.bool,
+>>>>>>> 6e6004d (feat:edit matching page make  full screen)
 };
 export default ChakraButton;
