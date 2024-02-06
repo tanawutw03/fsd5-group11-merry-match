@@ -1,26 +1,11 @@
 import { useForm } from "react-hook-form";
 import { Select } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
 import TagSelect from "./common/TagSelect.jsx";
-import ChakraButton from "./common/ChakraButton.jsx";
 import PropTypes from "prop-types";
 import { useState } from "react";
-
-const hobbiesOptions = [
-  { value: "e-sports", label: "E-sports" },
-  { value: "series", label: "Series" },
-  { value: "workout", label: "Workout" },
-  { value: "travel", label: "Travel" },
-  { value: "movies", label: "Movies" },
-  { value: "photography", label: "Photography" },
-  { value: "singing", label: "Singing" },
-  { value: "meditation", label: "Meditation" },
-  { value: "painting", label: "Painting" },
-  { value: "music", label: "Music" },
-  { value: "cafe", label: "Cafe hopping" },
-  { value: "party", label: "Party" },
-  { value: "festival", label: "Festival" },
-];
+import makeAnimated from "react-select/animated";
+import hobbiesOptions from "../data/hobbiesData.js";
+import { useEffect } from "react";
 function Step2Inputs({ onFormChange }) {
   const {
     register,
@@ -29,7 +14,25 @@ function Step2Inputs({ onFormChange }) {
   } = useForm();
 
   const [formData, setFormData] = useState({});
-  const [selectedHobby, setSelectedHobby] = useState([{}]);
+  const [selectedHobby, setSelectedHobby] = useState([]);
+  const animatedComponents = makeAnimated();
+
+  useEffect(() => {
+    // Initialize formData with default values of hobbies
+    const initialHobbies = [
+      hobbiesOptions[0],
+      hobbiesOptions[1],
+      hobbiesOptions[2],
+    ];
+
+    const initialFormData = {
+      ...formData,
+      hobbies: initialHobbies.map((hobby) => hobby.value),
+    };
+
+    setFormData(initialFormData);
+    onFormChange(initialFormData);
+  }, []); // This effect runs once on component mount
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -48,15 +51,13 @@ function Step2Inputs({ onFormChange }) {
   const handleHobbyChange = (selectedHobbyData) => {
     console.log(selectedHobbyData);
 
-    const hobbyValues = selectedHobbyData.map((hobby) => hobby.value);
-    setSelectedHobby(selectedHobbyData);
-
     const updatedFormData = {
       ...formData,
-      hobbies: hobbyValues,
+      hobbies: selectedHobbyData.map((hobby) => hobby.value),
     };
 
     setFormData(updatedFormData);
+    setSelectedHobby(selectedHobbyData);
     onFormChange(updatedFormData);
   };
 
@@ -126,10 +127,6 @@ function Step2Inputs({ onFormChange }) {
               placeholder="Select option"
               {...register("meeting_interest")}
               name="meeting_interest"
-              // onChange={(event) => {
-              //   handleInputChange(event);
-              //   console.log(event.target.value);
-              // }}
               onChange={handleInputChange}
             >
               <option value="date">Date</option>
@@ -147,7 +144,13 @@ function Step2Inputs({ onFormChange }) {
               onHobbyChange={handleHobbyChange}
               label=""
               options={hobbiesOptions}
+              defaultValue={[
+                hobbiesOptions[0],
+                hobbiesOptions[1],
+                hobbiesOptions[2],
+              ]}
               max={10}
+              components={animatedComponents}
             />
           </div>
         </form>
