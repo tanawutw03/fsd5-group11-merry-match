@@ -1,93 +1,52 @@
 import { useForm } from "react-hook-form";
 import CountryInputSelect from "./common/CountryInputSelect.jsx";
 import CityInputSelect from "./common/CityInputSelect.jsx";
-import { supabase } from "../utils/supabaseClient.js";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 
-function Step1Inputs({ setData }) {
+function Step1Inputs({ onFormChange }) {
   const {
     register,
-    handleSubmit,
     formState: { errors },
     control,
   } = useForm();
-  const [userId, setUserId] = useState(null);
-  const formDataRef = useRef({});
+
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
 
-  const onSubmit = async (formData) => {
-    console.log(formData);
-    formDataRef.current = formData; // Store formData in the ref
-    setData(formData);
-    try {
-      const { data: signUpData, error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-      });
+  const [formData, setFormData] = useState({});
 
-      console.log("Sign-up Response:", { signUpData, error });
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
 
-      if (error) {
-        console.error("Error signing up:", error.message);
-      } else {
-        console.log("User signed up successfully:", signUpData.user.id);
-
-        setUserId(signUpData.user.id);
-      }
-    } catch (error) {
-      console.error("Error:", error.message);
-    }
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    onFormChange(formData); // Pass the updated data to the parent component
   };
 
-  useEffect(() => {
-    const checkUserAuthentication = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        console.error("User not authenticated");
-        return;
-      }
-
-      if (userId !== null) {
-        console.log("userId:", userId);
-
-        const insertUserData = async () => {
-          try {
-            const { data: insertData, error: insertError } = await supabase
-              .from("profiles")
-              .upsert({
-                id: userId,
-                username: formDataRef.current.username,
-                full_name: formDataRef.current.name,
-                country: formDataRef.current.location?.value,
-                city: formDataRef.current.city?.value,
-                email: formDataRef.current.email,
-                date_of_birth: formDataRef.current.dob,
-                updated_at: new Date(),
-              })
-              .select();
-
-            console.log(insertData, insertError);
-
-            if (insertError) {
-              console.error("Error inserting user data:", insertError.message);
-            } else {
-              console.log("User data inserted successfully:", insertData);
-            }
-          } catch (error) {
-            console.error("Error inserting user data:", error.message);
-          }
-        };
-
-        insertUserData();
-      }
+  // Use onCountryChange to update selectedCountry and trigger form change
+  const handleCountryChange = (selectedCountryData) => {
+    setSelectedCountry(selectedCountryData); // Set the selected country data
+    const updatedFormData = {
+      ...formData,
+      location: selectedCountryData ? selectedCountryData.value : "", // Use the selected country value
     };
+    setFormData(updatedFormData);
+    onFormChange(updatedFormData); // Pass the updated data to the parent component
+  };
 
-    checkUserAuthentication();
-  }, [userId]);
+  const handleCityChange = (selectedCityData) => {
+    console.log(selectedCityData);
+    setSelectedCity(selectedCityData);
+    const updatedFormData = {
+      ...formData,
+      city: selectedCityData ? selectedCityData.value : "",
+    };
+    setFormData(updatedFormData);
+    onFormChange(updatedFormData);
+  };
 
   return (
     <>
@@ -121,10 +80,7 @@ function Step1Inputs({ setData }) {
             Basic Information
           </h1>
         </div>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-row justify-center mr-4 mt-[300px] gap-10"
-        >
+        <form className="flex flex-row justify-center mr-4 mt-[300px] gap-10">
           <div className="flex flex-col w-[453px]">
             <label htmlFor="name" className="text-left">
               Name
@@ -134,6 +90,7 @@ function Step1Inputs({ setData }) {
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="John Snow"
               type="text"
+              onChange={handleInputChange}
             />
             {errors.name && (
               <span className="flex justify-start -mt-4 text-[#af2758]">
@@ -145,7 +102,7 @@ function Step1Inputs({ setData }) {
               control={control}
               name="location"
               label="Location"
-              onCountryChange={setSelectedCountry}
+              onCountryChange={handleCountryChange}
             />
             {errors.name && (
               <span className="flex justify-start -mt-4 text-[#af2758]">
@@ -160,6 +117,7 @@ function Step1Inputs({ setData }) {
               {...register("username", { required: true })}
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="At least 6 characters"
+              onChange={handleInputChange}
             />
             {errors.username && (
               <span className="flex justify-start -mt-4 text-[#af2758]">
@@ -174,6 +132,7 @@ function Step1Inputs({ setData }) {
               {...register("password", { required: true })}
               className="border-2 px-3 py-2 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="At least 8 characters"
+              onChange={handleInputChange}
             />
             {errors.password && (
               <span className="flex justify-start mt-1 text-[#af2758]">
@@ -189,6 +148,7 @@ function Step1Inputs({ setData }) {
               {...register("dob", { required: true })}
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="01/01/2022"
+              onChange={handleInputChange}
             />
             {errors.name && (
               <span className="flex justify-start -mt-4 text-[#af2758]">
@@ -202,6 +162,7 @@ function Step1Inputs({ setData }) {
               control={control}
               selectedCountry={selectedCountry}
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82] text-left"
+              onCityChange={handleCityChange}
             />
             {errors.city && (
               <span className="flex justify-start mt-1 -mb-6 text-[#af2758]">
@@ -216,6 +177,7 @@ function Step1Inputs({ setData }) {
               {...register("email", { required: true })}
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="name@website.com"
+              onChange={handleInputChange}
             />
             {errors.email && (
               <span className="flex justify-start -mt-4 text-[#af2758]">
@@ -230,6 +192,7 @@ function Step1Inputs({ setData }) {
               {...register("confirmPassword", { required: true })}
               className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="At least 8 characters"
+              onChange={handleInputChange}
             />
             {errors.confirmPassword && (
               <span className="flex justify-start -mt-4 text-[#af2758]">
@@ -237,19 +200,13 @@ function Step1Inputs({ setData }) {
               </span>
             )}
           </div>
-          <input
-            className="flex justify-end items-center absolute bottom-0"
-            type="submit"
-          />
         </form>
       </div>
     </>
   );
 }
-//<input type="submit" />
-
 Step1Inputs.propTypes = {
-  setData: PropTypes.func.isRequired,
+  onFormChange: PropTypes.func.isRequired,
 };
 
 export default Step1Inputs;

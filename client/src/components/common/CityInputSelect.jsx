@@ -4,7 +4,13 @@ import Select from "react-select";
 import { useState, useEffect } from "react";
 import { City } from "country-state-city";
 
-function CityInputSelect({ control, name, label, selectedCountry }) {
+function CityInputSelect({
+  control,
+  name,
+  label,
+  selectedCountry,
+  onCityChange,
+}) {
   const [cities, setCities] = useState([]);
 
   useEffect(() => {
@@ -54,6 +60,10 @@ function CityInputSelect({ control, name, label, selectedCountry }) {
                 : `Select ${label.toLowerCase()}`
             }
             className="text-left"
+            onChange={(selectedCity) => {
+              field.onChange(selectedCity);
+              onCityChange(selectedCity); // Pass the selected city value to the parent component
+            }}
           />
         )}
       />
@@ -66,6 +76,7 @@ CityInputSelect.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   selectedCountry: PropTypes.object,
+  onCityChange: PropTypes.func.isRequired,
 };
 
 export default CityInputSelect;
