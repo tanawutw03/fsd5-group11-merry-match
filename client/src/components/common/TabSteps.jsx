@@ -99,6 +99,7 @@ function TabSteps() {
         />
       </div>
       <RegisterWords />
+
       <div className="flex w-screen h-screen -px-2 bg-[#fcfcfe]">
         <Tabs
           align="center"
@@ -108,20 +109,20 @@ function TabSteps() {
           colorScheme="purple"
           size="lg"
         >
-          <div className="text-[#A62D82] w-[250px] text-2xl flex flex-col justify-end items-center absolute m-24 left-2/3">
+          <div className="text-[#A62D82] w-[250px] text-2xl flex flex-col justify-end items-center absolute m-24 right-40 font-nunito">
             <TabList>
-              <Tab>Step 1/3</Tab>
-              <Tab>Step 2/3</Tab>
-              <Tab>Step 3/3</Tab>
+              <Tab>1</Tab>
+              <Tab>2</Tab>
+              <Tab>3</Tab>
             </TabList>
             <div className="flex items-start">
               <TabIndicator
                 mt="-15px"
-                height="5px"
-                bg="blue.500"
+                height="1px"
+                bg="purple"
                 borderRadius="1px"
               />
-              <p>
+              <p className="font-bold font-nunito">
                 {activeTabIndex === 0
                   ? "Basic Information"
                   : activeTabIndex === 1
@@ -156,6 +157,10 @@ function TabSteps() {
         </Tabs>
       </div>
       <div className="bottom-0 w-screen h-112 p-5 bg-white shadow-md flex justify-end border-t-2">
+        <p className="flex justify-start items-center absolute left-20 bottom-12 text-base font-normal">
+          <span className="text-gray-600">{activeTabIndex + 1}</span>
+          <span className="text-gray-500">/3</span>
+        </p>
         <ChakraButton
           name="← Back"
           variant="link"
