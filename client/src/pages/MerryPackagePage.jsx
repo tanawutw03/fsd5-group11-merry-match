@@ -10,7 +10,10 @@ import NavBar from "../components/common/NavBar";
 import { useNavigate } from "react-router-dom";
 
 function PackagePage() {
+<<<<<<< HEAD
   const navigate = useNavigate();
+=======
+>>>>>>> 99fd8e4 (fix: conflict)
   return (
     <>
       <div className=" w-max">
