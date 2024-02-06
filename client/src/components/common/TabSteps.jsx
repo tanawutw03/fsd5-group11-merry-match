@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Tabs,
   TabList,
@@ -15,10 +15,17 @@ import ChakraButton from "./ChakraButton";
 import { useRef } from "react";
 import NavBar from "./NavBar";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../../utils/supabaseClient.js";
 
 function TabSteps() {
+  const [userId, setUserId] = useState(null);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const isLastTab = activeTabIndex === 2;
+  const [formData, setFormData] = useState({});
+
+  const handleFormChange = (newFormData) => {
+    setStep1Data(newFormData); // Update step1Data when input fields change
+  };
 
   // Use refs to store data for each step
   const step1DataRef = useRef({});
@@ -35,11 +42,11 @@ function TabSteps() {
   function renderFormByTabIndex(tabIndex) {
     switch (tabIndex) {
       case 0:
-        return <Step1Inputs setData={setStep1Data} />;
+        return <Step1Inputs onFormChange={setStep1Data} />;
       case 1:
-        return <Step2Inputs setData={setStep2Data} />;
+        return <Step2Inputs />;
       case 2:
-        return <Step3Inputs setData={setStep3Data} />;
+        return <Step3Inputs />;
       default:
         return null; // Handle other cases or return null
     }
@@ -57,12 +64,16 @@ function TabSteps() {
     switch (activeTabIndex) {
       case 0:
         step1DataRef.current = { ...step1Data };
+        console.log(step1Data);
+
         break;
       case 1:
         step2DataRef.current = { ...step2Data };
+
         break;
       case 2:
         step3DataRef.current = { ...step3Data };
+
         break;
       default:
         break;
@@ -77,11 +88,79 @@ function TabSteps() {
     const newIndex = Math.max(0, activeTabIndex - 1);
     setActiveTabIndex(newIndex);
   };
-  const dummyFunction = () => {};
+  const handleSubmit = async () => {
+    try {
+      const { data: signUpData, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      console.log("Sign-up Response:", { signUpData, error });
+
+      if (error) {
+        console.error("Error signing up:", error.message);
+      } else {
+        console.log("User signed up successfully:", signUpData.user.id);
+
+        setUserId(signUpData.user.id);
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
+  };
 
   const handleClick = () => {
     navigate("/login");
   };
+
+  useEffect(() => {
+    const checkUserAuthentication = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        console.error("User not authenticated");
+        return;
+      }
+
+      if (userId !== null) {
+        console.log("userId:", userId);
+
+        const insertUserData = async () => {
+          try {
+            const { data: insertData, error: insertError } = await supabase
+              .from("profiles")
+              .upsert({
+                id: userId,
+                username: formDataRef.current.username,
+                full_name: formDataRef.current.name,
+                country: formDataRef.current.location?.value,
+                city: formDataRef.current.city?.value,
+                email: formDataRef.current.email,
+                date_of_birth: formDataRef.current.dob,
+                updated_at: new Date(),
+              })
+              .select();
+
+            console.log(insertData, insertError);
+
+            if (insertError) {
+              console.error("Error inserting user data:", insertError.message);
+            } else {
+              console.log("User data inserted successfully:", insertData);
+            }
+          } catch (error) {
+            console.error("Error inserting user data:", error.message);
+          }
+        };
+
+        insertUserData();
+      }
+    };
+
+    checkUserAuthentication();
+  }, [userId]);
 
   return (
     <>
@@ -99,6 +178,7 @@ function TabSteps() {
         />
       </div>
       <RegisterWords />
+
       <div className="flex w-screen h-screen -px-2 bg-[#fcfcfe]">
         <Tabs
           align="center"
@@ -108,20 +188,20 @@ function TabSteps() {
           colorScheme="purple"
           size="lg"
         >
-          <div className="text-[#A62D82] w-[250px] text-2xl flex flex-col justify-end items-center absolute m-24 left-2/3">
+          <div className="text-[#A62D82] w-[250px] text-2xl flex flex-col justify-end items-center absolute m-24 right-40 font-nunito">
             <TabList>
-              <Tab>Step 1/3</Tab>
-              <Tab>Step 2/3</Tab>
-              <Tab>Step 3/3</Tab>
+              <Tab>1</Tab>
+              <Tab>2</Tab>
+              <Tab>3</Tab>
             </TabList>
             <div className="flex items-start">
               <TabIndicator
                 mt="-15px"
-                height="5px"
-                bg="blue.500"
+                height="1px"
+                bg="purple"
                 borderRadius="1px"
               />
-              <p>
+              <p className="font-bold font-nunito">
                 {activeTabIndex === 0
                   ? "Basic Information"
                   : activeTabIndex === 1
@@ -137,7 +217,7 @@ function TabSteps() {
                 key={0}
                 className="h-screen flex justify-center items-center"
               >
-                {renderFormByTabIndex(0)}
+                <Step1Inputs onFormChange={handleFormChange} />
               </TabPanel>
               <TabPanel
                 key={1}
@@ -156,6 +236,10 @@ function TabSteps() {
         </Tabs>
       </div>
       <div className="bottom-0 w-screen h-112 p-5 bg-white shadow-md flex justify-end border-t-2">
+        <p className="flex justify-start items-center absolute left-20 bottom-12 text-base font-normal">
+          <span className="text-gray-600">{activeTabIndex + 1}</span>
+          <span className="text-gray-500">/3</span>
+        </p>
         <ChakraButton
           name="← Back"
           variant="link"
@@ -167,7 +251,7 @@ function TabSteps() {
           color="red"
           rounded="full"
           type={renderButtonType}
-          onClick={isLastTab ? dummyFunction : handleNext}
+          onClick={isLastTab ? handleSubmit : handleNext}
         />
       </div>
     </>

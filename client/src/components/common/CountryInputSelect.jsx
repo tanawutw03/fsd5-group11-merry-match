@@ -48,6 +48,7 @@ function CountryInputSelect({ control, name, label, onCountryChange }) {
             }
             className="border-2 mt-[2px] mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82] text-left"
             onChange={(selectedCountry) => {
+              console.log(selectedCountry); // Add this line
               field.onChange(selectedCountry);
               onCountryChange(selectedCountry);
             }}
