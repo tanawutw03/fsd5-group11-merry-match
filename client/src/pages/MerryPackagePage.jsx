@@ -5,29 +5,29 @@ import person01 from "../assets/merryPackagePage/person01.png";
 import facebookIcon from "../assets/merryPackagePage/facebook-circle-fill.svg";
 import instagramIcon from "../assets/merryPackagePage/instagram-fill.svg";
 import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
-import { supabase } from "../utils/supabaseClient";
 import { useState, useEffect } from "react";
+import axios from "axios";
+import L_UpdatePackage from "../tests/l_UpdatePackage";
 
 function PackagePage() {
-  const [packages, setPackages] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    getPackages();
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:4008/api/package");
+        setData(response.data);
+        console.log(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  async function getPackages() {
-    try {
-      const { data, error } = await supabase.from("packages").select("*");
-      // .limmit(3);
-      if (error) throw error;
-      if (data != null) {
-        setPackages(data);
-      }
-      console.log(packages);
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
+  const [packages, setPackages] = useState([]);
+
   return (
     <>
       <div className="main-container w-screen  p-[80px,161px,160px,160px]">
@@ -81,11 +81,14 @@ function PackagePage() {
               </p>
             </div>
 
-            <div className="flex justify-center items-center gap-[24px] mt-[80px]">
-              {packages.map((packages, index) => (
-                <div className="basic-package-con flex flex-col items-start w-[357px] p-[40px] gap-[24px] rounded-[32px] border-[1px] border-solid border-gray-400 bg-[#FFF]">
-                  <ul key={index}>
-                    <div className="basic-package">
+            <div className="flex justify-center items-center max-[1120px]:flex-col gap-[24px] mt-[80px]">
+              {data.map((packages, index) => (
+                <div
+                  key={index}
+                  className="basic-package-con flex flex-col items-start w-[357px] p-[40px] gap-[24px] rounded-[32px] border-[1px] border-solid border-gray-400 bg-[#FFF]"
+                >
+                  <ul>
+                    <div className="basic-packagese">
                       <li className="card-icon mb-[24px]">
                         <img
                           src={packages.iconurl}
@@ -172,6 +175,7 @@ function PackagePage() {
           </div>
         </footer>
       </div>
+      <L_UpdatePackage />
     </>
   );
 }
