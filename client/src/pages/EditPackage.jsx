@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { SmallAddIcon, SmallCloseIcon, DragHandleIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 function EditPackage() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -32,56 +33,46 @@ function EditPackage() {
   useEffect(() => {
     async function fetchNewComplaintCount() {
       try {
-        const { data: newComplaints, error } = await supabase
-          .from("complaints")
-          .select("*")
-          .eq("status", "new");
-
-        if (error) {
-          console.error("Error fetching new complaints:", error.message);
-          return;
-        } else {
-          setNewComplaintCount(newComplaints.length);
-        }
+        const response = await axios.get(
+          "http://localhost:4008/admin/complaint/news"
+        );
+        setNewComplaintCount(response.data.newComplaintCount);
       } catch (error) {
         console.error("Error fetching new complaints:", error.message);
       }
     }
+
     fetchNewComplaintCount();
   }, []);
 
-  // useEffect(() => {
-  //   async function fetchPackageData() {
-  //     try {
-  //       const { data, error } = await supabase
-  //         .from("packages")
-  //         .select("*")
-  //         .eq("package_id", parseInt(package_id))
-  //         .single();
+  useEffect(() => {
+    async function fetchPackageData() {
+      try {
+        // Make a GET request to fetch package data by ID from your Express.js server
+        const response = await axios.get(
+          `http://localhost:4008/admin/package/${package_id}`
+        );
+        const packData = response.data; // Assuming the response contains the package data
+        const name = packData.name;
+        const price = packData.price;
+        const merryLimit = packData.merry_limit;
+        const description = packData.description;
+        const iconUrl = packData.iconurl;
+        // Update component state with fetched package data
+        setPackageName(name);
+        setMerryLimit(merryLimit);
+        setPackageDetails(description);
+        setPrice(price);
+        setSelectedFile({
+          preview: iconUrl,
+        });
+      } catch (error) {
+        console.error("Error fetching package data:", error.message);
+      }
+    }
 
-  //       if (error) {
-  //         console.error("Error fetching package data:", error.message);
-  //         return;
-  //       } else {
-  //         const packData = data;
-  //         console.log("Package Data:", packData);
-  //         // Call updatePackageState after setting dataFetch
-  //         setPackageName(packData.name);
-  //         setMerryLimit(packData.merry_limit);
-  //         setPrice(packData.price);
-  //         setPackageDetails(packData.description);
-  //         setSelectedFile({
-  //           preview: packData.iconurl,
-  //         });
-  //         console.log("Package update:", price); // Log packData.price instead of price
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching package data:", error.message);
-  //     }
-  //   }
-
-  //   fetchPackageData();
-  // }, [package_id]);
+    fetchPackageData();
+  }, [package_id]);
 
   const handleCancel = () => {
     navigate("/adminpage");
@@ -127,25 +118,58 @@ function EditPackage() {
 
   const handleEditPackage = async () => {
     try {
-      const { data, error } = await supabase
-        .from("packages")
-        .update({
-          name: packageName,
-          merry_limit: merryLimit,
-          price: price,
-          description: packageDetails,
-          iconurl: selectedFile?.preview,
-        })
-        .eq("package_id", parseInt(package_id)) // Ensure package_id is parsed to integer
-        .single();
-      if (error) {
-        console.error("Error updating package data:", error.message);
-        return;
+      let iconUrl;
+      const { file } = selectedFile;
+      const uniqueIdentifier = file.name.split(".").pop();
+      const fileName = `${Math.random()}.${uniqueIdentifier}`;
+      const iconPath = `iconPackage/${fileName}`;
+
+      // Upload icon to Supabase Storage
+      if (selectedFile) {
+        try {
+          const { data: storageData, error: storageError } =
+            await supabase.storage.from("iconPackage").upload(iconPath, file);
+
+          if (storageError) {
+            console.error("Storage Error:", storageError);
+            // Handle storage error, if any
+          } else {
+            // Get public URL of the uploaded icon
+            const { data: urlData, error } = await supabase.storage
+              .from("iconPackage")
+              .getPublicUrl(iconPath);
+
+            if (error) {
+              console.error("Error fetching icon URL:", error.message);
+              // Handle URL fetching error, if any
+            } else {
+              iconUrl = urlData.publicUrl;
+            }
+          }
+        } catch (error) {
+          console.error("Error uploading icon to storage:", error);
+          // Handle the error, e.g., show a message to the user
+          return;
+        }
       }
-      console.log("Package data updated successfully:", data);
+      const updatedPackageData = {
+        name: packageName,
+        merry_limit: merryLimit,
+        price: price,
+        description: packageDetails,
+        iconurl: iconUrl,
+      };
+
+      const response = await axios.put(
+        `http://localhost:4008/admin/package/${package_id}`,
+        updatedPackageData
+      );
+      console.log("Package updated successfully:", response.data);
+      // Optionally, you can perform further actions after successful update
       navigate("/adminpage");
     } catch (error) {
-      console.error("Error updating package data:", error.message);
+      console.error("Error updating package:", error.message);
+      // Optionally, handle the error or display an error message to the user
     }
   };
   return (
