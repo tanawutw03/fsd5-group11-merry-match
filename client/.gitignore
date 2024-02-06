@@ -20,7 +20,7 @@ dist-ssr
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
+*.slnn
 *.sw?
 
 # Ignore environment files (modify these names based on your project)
