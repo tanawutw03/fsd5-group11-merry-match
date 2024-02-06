@@ -13,9 +13,6 @@ import {
 import { SmallAddIcon, SmallCloseIcon, DragHandleIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import { supabase } from "../utils/supabaseClient";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import axios from "axios";
 
 function CreatePackage() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -24,35 +21,11 @@ function CreatePackage() {
   const [packageName, setPackageName] = useState("");
   const [merryLimit, setMerryLimit] = useState(0);
   const [price, setPrice] = useState(0);
-  const navigate = useNavigate();
-  const [newComplaintCount, setNewComplaintCount] = useState(0);
-
-  useEffect(() => {
-    async function fetchNewComplaintCount() {
-      try {
-        const response = await axios.get(
-          "http://localhost:4008/admin/complaint/news"
-        );
-        setNewComplaintCount(response.data.newComplaintCount);
-      } catch (error) {
-        console.error("Error fetching new complaints:", error.message);
-      }
-    }
-
-    fetchNewComplaintCount();
-  }, []);
-
-  const handleCancel = () => {
-    // Navigate to the desired path (in this case, '/adminpage')
-    navigate("/adminpage");
-  };
 
   const handleAddDetail = () => {
     if (newDetail.trim() !== "") {
-      const updatedDetails = [...packageDetails, newDetail];
-      setPackageDetails(updatedDetails);
+      setPackageDetails([...packageDetails, newDetail]);
       setNewDetail("");
-      console.log("After Adding Detail - packageDetails:", updatedDetails);
     }
   };
 
@@ -65,11 +38,7 @@ function CreatePackage() {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setSelectedFile({
-        file,
-        preview: URL.createObjectURL(file),
-        fileExt: file.name.split(".").pop(),
-      });
+      setSelectedFile(URL.createObjectURL(file));
     }
   };
 
@@ -77,44 +46,31 @@ function CreatePackage() {
     setSelectedFile(null);
   };
 
-  const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut();
-      // Redirect to the login page after successful sign-out
-      navigate("/login");
-    } catch (error) {
-      console.error("Error during sign-out:", error);
-      // Handle the error if needed
-    }
-  };
-  const handleCreatePackage = async () => {
-    let iconUrl;
-    const { file } = selectedFile;
-    const uniqueIdentifier = file.name.split(".").pop();
-    const fileName = `${Math.random()}.${uniqueIdentifier}`;
-    const iconPath = `iconPackage/${fileName}`;
+  const handleCreatePackage = async (file,fileName) => {
+    // ... (Existing code)
+
+    let iconUrl = null;
+    let iconPath = null;
+
     // Upload icon to Supabase Storage
     if (selectedFile) {
       try {
         const { data: storageData, error: storageError } =
-          await supabase.storage.from("iconPackage").upload(iconPath, file);
+          await supabase.storage
+            .from("packages")
+            .upload(`packages${Date.now()}_${selectedFile.name}`, selectedFile);
 
         console.log("Storage Data:", storageData);
-        const { data: urlData, error } = await supabase.storage
-          .from("iconPackage")
-          .getPublicUrl(iconPath);
-
-        if (error) {
-          console.error("Error fetching icon URL:", error.message);
-        } else {
-          iconUrl = urlData.publicUrl;
-        }
+        console.error("Storage Error:", storageError);
 
         if (storageError) {
-          console.error("Storage Error:", storageError);
+          // Handle the error, e.g., show a message to the user
+          return;
         }
 
         // Get the URL and path of the uploaded file
+        iconUrl = storageData[0].url;
+        iconPath = storageData[0].path;
       } catch (error) {
         console.error("Error uploading icon to storage:", error);
         // Handle the error, e.g., show a message to the user
@@ -122,30 +78,50 @@ function CreatePackage() {
       }
     }
 
-    const createPackageData = {
-      name: packageName,
-      merry_limit: merryLimit,
-      price: price,
-      description: packageDetails,
-      iconurl: iconUrl,
-    };
     // Insert package data into the database
-    try {
-      const response = await axios.post(
-        "http://localhost:4008/admin/create/package",
-        createPackageData
-      );
-      // Reset form fields or redirect to another page after successful creation
-      setPackageName("");
-      setMerryLimit(0);
-      setPrice(0);
-      setPackageDetails([]);
-      setSelectedFile(null);
-      navigate("/adminpage");
-    } catch (error) {
-      console.error("Error inserting package data:", error.message);
+    const { data: packageData, error: packageError } = await supabase
+      .from("packages")
+      .insert([
+        {
+          name: packageName,
+          merry_limit: merryLimit,
+          price: price,
+          description: packageDetails,
+        },
+      ]);
+
+    if (packageError) {
+      console.error("Error inserting package data:", packageError);
       // Handle the error, e.g., show a message to the user
+      return;
     }
+
+    // Insert icon data into the "icons" table
+    const { data: iconData, error: iconError } = await supabase
+      .from("icons")
+      .insert([
+        {
+          name: packageName, // Set the name based on your requirement
+          path: iconPath,
+          package_id: packageData[0].id, // Assuming the "packages" table has an 'id' column
+        },
+      ]);
+
+    if (iconError) {
+      console.error("Error inserting icon data:", iconError);
+      // Handle the error, e.g., show a message to the user
+      return;
+    }
+
+    // Reset form fields or redirect to another page after successful creation
+    setPackageName("");
+    setMerryLimit(0);
+    setPrice(0);
+    setPackageDetails([]);
+    setSelectedFile(null);
+
+    console.log("Package data inserted successfully:", packageData);
+    console.log("Icon data inserted successfully:", iconData);
   };
   return (
     <div className="flex flex-row justify-stretch min-w-[1440px]">
@@ -159,10 +135,7 @@ function CreatePackage() {
               </div>
             </div>
             <nav className="flex flex-col gap-1 min-w-[240px] p-2 font-sans text-base font-nunito text-gray-700">
-              <button
-                className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
-                onClick={handleCancel}
-              >
+              <button className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                 <img src={pack} className=" mr-[10px]" />
                 Merry Package
               </button>
@@ -171,17 +144,14 @@ function CreatePackage() {
                 Complaint{" "}
                 <div className="grid place-items-center ml-auto justify-self-end">
                   <div className="relative grid items-center font-nunito font-bold uppercase whitespace-nowrap select-none bg-blue-500/20 text-blue-900 py-1 px-2 text-xs rounded-full">
-                    <span className="">{newComplaintCount}</span>
+                    <span className="">14</span>
                   </div>
                 </div>
               </button>
             </nav>
           </div>
           <div className="relative flex flex-col bg-clip-border rounded-xl bg-utility-white border-r border-solid border-gray-400 text-gray-700 w-full max-w-[20rem] p-4 ">
-            <button
-              className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
-              onClick={handleLogout}
-            >
+            <button className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
               <img src={logout} className=" mr-[10px]" />
               Log Out
             </button>
@@ -194,10 +164,7 @@ function CreatePackage() {
             Merry Package
           </div>
           <div className="flex flex-row flex-grow-0 justify-between px-2  gap-5">
-            <button
-              className="flex p-3 w-[100px] text-[#95002B]  text-center font-Nunito text-[16px] font-bold leading-6 justify-center items-center space-x-2 rounded-full bg-[#FFE1EA]  shadow-md"
-              onClick={handleCancel}
-            >
+            <button className="flex p-3 w-[100px] text-[#95002B]  text-center font-Nunito text-[16px] font-bold leading-6 justify-center items-center space-x-2 rounded-full bg-[#FFE1EA]  shadow-md">
               Cancel
             </button>
 
@@ -261,7 +228,7 @@ function CreatePackage() {
                 {selectedFile ? (
                   <div className=" relative">
                     <img
-                      src={selectedFile.preview}
+                      src={selectedFile}
                       alt="Uploaded Icon"
                       className="w-[100px] h-[100px] object-cover"
                     />
@@ -284,7 +251,7 @@ function CreatePackage() {
                   type="file"
                   id="avatar"
                   name="avatar"
-                  accept="image/*"
+                  accept="image/png, image/jpeg"
                   className="hidden"
                   onChange={handleFileChange}
                 />
@@ -299,7 +266,7 @@ function CreatePackage() {
                     <DragHandleIcon />
                     <Input
                       value={detail}
-                      onChange={(e) => setNewDetail(index, e.target.value)}
+                      onChange={(e) => handleEditDetail(index, e.target.value)}
                       placeholder="Enter package detail..."
                       className="mr-2"
                     />
