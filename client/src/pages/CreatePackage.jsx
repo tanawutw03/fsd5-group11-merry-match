@@ -13,11 +13,8 @@ import {
 import { SmallAddIcon, SmallCloseIcon, DragHandleIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import { supabase } from "../utils/supabaseClient";
-<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-=======
->>>>>>> 7b9d60f3d41c721025f36dedc8ab735cdf0bfdfd
 
 function CreatePackage() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -26,15 +23,12 @@ function CreatePackage() {
   const [packageName, setPackageName] = useState("");
   const [merryLimit, setMerryLimit] = useState(0);
   const [price, setPrice] = useState(0);
-<<<<<<< HEAD
   const navigate = useNavigate();
 
   const handleCancel = () => {
     // Navigate to the desired path (in this case, '/adminpage')
     navigate("/adminpage");
   };
-=======
->>>>>>> 7b9d60f3d41c721025f36dedc8ab735cdf0bfdfd
 
   const handleAddDetail = () => {
     if (newDetail.trim() !== "") {
