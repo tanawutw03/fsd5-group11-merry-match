@@ -9,7 +9,10 @@ import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import CreatePackage from "./pages/CreatePackage";
 // import CreatePackage from "./AdmAvatar"
+<<<<<<< HEAD
 import { UserProvider, useUser } from "./app/userContext.js";
+=======
+>>>>>>> 7b9d60f3d41c721025f36dedc8ab735cdf0bfdfd
 
 const NoMatch = () => {
   return (

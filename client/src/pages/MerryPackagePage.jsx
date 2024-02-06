@@ -3,6 +3,7 @@ import logo from "../assets/merryPackagePage/logo.svg";
 =======
 import bell from "../assets/merryPackagePage/frame.svg";
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 28ad5e8 (feat:fix folder in  merry-package-page solve w-screen)
 import basic from "../assets/merryPackagePage/basic.svg";
 import fillCheckbox from "../assets/merryPackagePage/checkbox-circle-fill.svg";
@@ -18,10 +19,14 @@ import { useNavigate } from "react-router-dom";
 =======
 import fillCheckbox from "../assets/merryPackagePage/checkbox-circle-fill.svg";
 >>>>>>> 5214ee2 (feat:update merry-match-page)
+=======
+import fillCheckbox from "../assets/merryPackagePage/checkbox-circle-fill.svg";
+>>>>>>> 7b9d60f3d41c721025f36dedc8ab735cdf0bfdfd
 import person01 from "../assets/merryPackagePage/person01.png";
 import facebookIcon from "../assets/merryPackagePage/facebook-circle-fill.svg";
 import instagramIcon from "../assets/merryPackagePage/instagram-fill.svg";
 import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 28ad5e8 (feat:fix folder in  merry-package-page solve w-screen)
@@ -75,6 +80,31 @@ function PackagePage() {
   const [packages, setPackages] = useState([]);
 
 >>>>>>> 7f2faa9 (feat:create server-api package,profile)
+=======
+import { useState, useEffect } from "react";
+import axios from "axios";
+import L_UpdatePackage from "../tests/l_UpdatePackage";
+
+function PackagePage() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:4008/api/package");
+        setData(response.data);
+        console.log(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const [packages, setPackages] = useState([]);
+
+>>>>>>> 7b9d60f3d41c721025f36dedc8ab735cdf0bfdfd
   return (
     <>
 <<<<<<< HEAD
@@ -416,7 +446,10 @@ function PackagePage() {
         </footer>
       </div>
       <L_UpdatePackage />
+<<<<<<< HEAD
 >>>>>>> 7f2faa9 (feat:create server-api package,profile)
+=======
+>>>>>>> 7b9d60f3d41c721025f36dedc8ab735cdf0bfdfd
     </>
   );
 }
