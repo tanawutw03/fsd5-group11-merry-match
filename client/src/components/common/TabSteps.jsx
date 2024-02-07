@@ -25,9 +25,7 @@ function TabSteps() {
   const [selectedTab, setSelectedTab] = useState(0);
 
   const handleFormChange = (newFormData) => {
-    setStep1Data(newFormData); // Update step1Data when input fields change
-    setStep2Data(newFormData); // Update step2Data when input fields change
-    setStep3Data(newFormData); // Update step3Data when input fields change
+    setFormData((prevFormData) => ({ ...prevFormData, ...newFormData }));
   };
 
   // Use refs to store data for each step
@@ -42,19 +40,6 @@ function TabSteps() {
   const [step2Data, setStep2Data] = useState({});
   const [step3Data, setStep3Data] = useState({});
 
-  function renderFormByTabIndex(tabIndex) {
-    switch (tabIndex) {
-      case 0:
-        return <Step1Inputs onFormChange={setStep1Data} />;
-      case 1:
-        return <Step2Inputs onFormChange={setStep2Data} />;
-      case 2:
-        return <Step3Inputs onFormChange={setStep3Data} />;
-      default:
-        return null; // Handle other cases or return null
-    }
-  }
-
   const renderButtonLabel = isLastTab ? "Submit" : "Next Step";
   const renderButtonType = isLastTab ? "submit" : "button";
 
@@ -63,22 +48,17 @@ function TabSteps() {
   };
 
   const handleNext = () => {
+    console.log(formData);
     // Save data based on the active tab
     switch (activeTabIndex) {
       case 0:
         step1DataRef.current = { ...step1Data };
-        console.log(`step1Data:`, step1Data);
-
         break;
       case 1:
         step2DataRef.current = { ...step2Data };
-        console.log(`step2Data:`, step2Data);
-
         break;
       case 2:
         step3DataRef.current = { ...step3Data };
-        console.log(`step3Data:`, step3Data);
-
         break;
       default:
         break;
@@ -95,6 +75,8 @@ function TabSteps() {
   };
   const handleSubmit = async () => {
     try {
+      console.log("Form Data:", formData);
+
       const { data: signUpData, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -131,20 +113,25 @@ function TabSteps() {
 
       if (userId !== null) {
         console.log("userId:", userId);
-
         const insertUserData = async () => {
           try {
             const { data: insertData, error: insertError } = await supabase
               .from("profiles")
               .upsert({
                 id: userId,
-                username: formData.current.username,
-                full_name: formData.current.name,
-                country: formData.current.location?.value,
-                city: formData.current.city?.value,
-                email: formData.current.email,
-                date_of_birth: formData.current.dob,
                 updated_at: new Date(),
+                username: formData.username,
+                full_name: formData.name,
+                avatar_url: formData.avatar_url,
+                country: formData.location,
+                city: formData.city,
+                email: formData.email,
+                sex_identities: formData.sex_identities,
+                sex_preferences: formData.sex_preferences,
+                racial_preferences: formData.racial_preferences,
+                meeting_interest: formData.meeting_interest,
+                hobbies: formData.hobbies,
+                date_of_birth: formData.dob,
               })
               .select();
 
@@ -165,7 +152,7 @@ function TabSteps() {
     };
 
     checkUserAuthentication();
-  }, [userId, formData]);
+  }, [userId]);
 
   const stepperData = [
     { id: 1, title: "Basic Information" },
@@ -242,20 +229,35 @@ function TabSteps() {
 
           <div className="h-full ">
             <TabPanels className="text-md">
-              <TabPanel key={0} className="">
-                <Step1Inputs onFormChange={handleFormChange} />
+              <TabPanel
+                key={0}
+                className="h-screen flex justify-center items-center"
+              >
+                <Step1Inputs
+                  formData={formData}
+                  setFormData={setFormData}
+                  onFormChange={handleFormChange}
+                />
               </TabPanel>
               <TabPanel
                 key={1}
                 className="h-screen flex justify-center items-center"
               >
-                <Step2Inputs onFormChange={handleFormChange} />
+                <Step2Inputs
+                  formData={formData}
+                  setFormData={setFormData}
+                  onFormChange={handleFormChange}
+                />
               </TabPanel>
               <TabPanel
                 key={2}
                 className="h-screen flex justify-center items-center"
               >
-                <Step3Inputs onFormChange={handleFormChange} />
+                <Step3Inputs
+                  formData={formData}
+                  setFormData={setFormData}
+                  onFormChange={handleFormChange}
+                />
               </TabPanel>
             </TabPanels>
           </div>
