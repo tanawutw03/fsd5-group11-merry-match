@@ -25,7 +25,7 @@ ChakraButton.propTypes = {
   colorScheme: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
-  rounded: PropTypes.bool,
+  rounded: PropTypes.string,
   variant: PropTypes.bool,
   width: PropTypes.string.isRequired,
   height: PropTypes.string.isRequired,
