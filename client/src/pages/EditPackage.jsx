@@ -2,8 +2,13 @@ import logo from "../assets/AdminPage/logo.png";
 import pack from "../assets/AdminPage/package.png";
 import logout from "../assets/AdminPage/logout.png";
 import complaint from "../assets/AdminPage/complaint.png";
-import { FormControl, FormLabel, Input } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { supabase } from "../utils/supabaseClient";
+import { useNavigate } from "react-router-dom";
 import {
+  FormControl,
+  FormLabel,
+  Input,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -11,10 +16,7 @@ import {
   NumberDecrementStepper,
 } from "@chakra-ui/react";
 import { SmallAddIcon, SmallCloseIcon, DragHandleIcon } from "@chakra-ui/icons";
-import { useState } from "react";
-import { supabase } from "../utils/supabaseClient";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 function EditPackage() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -24,9 +26,49 @@ function EditPackage() {
   const [merryLimit, setMerryLimit] = useState(0);
   const [price, setPrice] = useState(0);
   const navigate = useNavigate();
+  const { package_id } = useParams();
+
+  //   useEffect(() => {
+  //     async function fetchPackageData() {
+  //       try {
+  //         const { data, error } = await supabase
+  //           .from("packages")
+  //           .select("*")
+  //           .eq("package_id", parseInt(package_id))
+  //           .single();
+
+  //         if (error) {
+  //           console.error("Error fetching package data:", error.message);
+  //           return;
+  //         }
+  //         const packData = data;
+  //         console.log("Package Data:", packData);
+  //         if (packData) {
+  //           updatePackageState(packData);
+  //         }
+  //         // Update state with fetched data
+  //       } catch (error) {
+  //         console.error("Error fetching package data:", error.message);
+  //       }
+  //     }
+  //     fetchPackageData();
+  //   }, [package_id]);
+
+  //   function updatePackageState(packData) {
+  //     setPackageName(packData.name);
+  //     setMerryLimit(packData.merry_limit);
+  //     setPrice(packData.price);
+  //     setPackageDetails(packData.description);
+  //     setSelectedFile({
+  //       preview: packData.iconurl,
+  //     });
+  //   }
+
+  //   useEffect(() => {
+  //     console.log("Updated packageName:", packageName);
+  //   }, [packageName]);
 
   const handleCancel = () => {
-    // Navigate to the desired path (in this case, '/adminpage')
     navigate("/adminpage");
   };
 
@@ -35,7 +77,6 @@ function EditPackage() {
       const updatedDetails = [...packageDetails, newDetail];
       setPackageDetails(updatedDetails);
       setNewDetail("");
-      console.log("After Adding Detail - packageDetails:", updatedDetails);
     }
   };
 
@@ -60,88 +101,37 @@ function EditPackage() {
     setSelectedFile(null);
   };
 
-  const handleCreatePackage = async (file,fileName) => {
-    // ... (Existing code)
-
-  const handleCreatePackage = async () => {
-    let iconUrl;
-
-    console.log("Before Submit - packageDetails:", packageDetails);
-    const { file } = selectedFile;
-    console.log(file);
-
-    console.log(selectedFile);
-    const uniqueIdentifier = file.name.split(".").pop();
-    const fileName = `${Math.random()}.${uniqueIdentifier}`;
-
-    console.log(uniqueIdentifier);
-    const iconPath = `iconPackage/${fileName}`;
-    console.log(iconPath);
-
-    // Upload icon to Supabase Storage
-    if (selectedFile) {
-      try {
-        const { data: storageData, error: storageError } =
-          await supabase.storage.from("iconPackage").upload(iconPath, file);
-
-        console.log("Storage Data:", storageData);
-        const { data: urlData, error } = await supabase.storage
-          .from("iconPackage")
-          .getPublicUrl(iconPath);
-
-        if (error) {
-          console.error("Error fetching icon URL:", error.message);
-        } else {
-          iconUrl = urlData;
-          console.log("Icon URL:", iconUrl);
-        }
-
-        if (storageError) {
-          console.error("Storage Error:", storageError);
-        }
-
-        // Get the URL and path of the uploaded file
-      } catch (error) {
-        console.error("Error uploading icon to storage:", error);
-        // Handle the error, e.g., show a message to the user
-        return;
-      }
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigate("/login");
+    } catch (error) {
+      console.error("Error during sign-out:", error);
     }
+  };
 
-    // Insert package data into the database
-    const { data: packageData, error: packageError } = await supabase
-      .from("packages")
-      .insert([
-        {
+  const handleEditPackage = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("packages")
+        .update({
           name: packageName,
           merry_limit: merryLimit,
           price: price,
           description: packageDetails,
-          iconurl: iconUrl.publicUrl,
-        },
-      ])
-      .select();
-
-    console.log(packageData);
-
-    if (packageError) {
-      console.error("Error inserting package data:", packageError);
-      // Handle the error, e.g., show a message to the user
-      return;
+          iconurl: selectedFile?.preview,
+        })
+        .eq("package_id", parseInt(package_id)) // Ensure package_id is parsed to integer
+        .single();
+      if (error) {
+        console.error("Error updating package data:", error.message);
+        return;
+      }
+      console.log("Package data updated successfully:", data);
+      navigate("/adminpage");
+    } catch (error) {
+      console.error("Error updating package data:", error.message);
     }
-
-    
-    console.log("After Submit - packageDetails:", packageDetails);
-
-    // Reset form fields or redirect to another page after successful creation
-    setPackageName("");
-    setMerryLimit(0);
-    setPrice(0);
-    setPackageDetails([]);
-    setSelectedFile(null);
-
-    console.log("Package data inserted successfully:", packageData);
-    // console.log("Icon data inserted successfully:", iconData);
   };
   return (
     <div className="flex flex-row justify-stretch min-w-[1440px]">
@@ -199,9 +189,9 @@ function EditPackage() {
 
             <button
               className="flex p-3 w-[100px]  text-white text-center font-Nunito text-[16px] font-bold leading-6 justify-center items-center space-x-2 rounded-full bg-[#C70039] shadow-md "
-              onClick={handleCreatePackage}
+              onClick={handleEditPackage}
             >
-              Create
+              Edit
             </button>
           </div>
         </nav>
@@ -295,7 +285,11 @@ function EditPackage() {
                     <DragHandleIcon />
                     <Input
                       value={detail}
-                      onChange={(e) => setNewDetail(index, e.target.value)}
+                      onChange={(e) => {
+                        const updatedDetails = [...packageDetails];
+                        updatedDetails[index] = e.target.value;
+                        setPackageDetails(updatedDetails);
+                      }}
                       placeholder="Enter package detail..."
                       className="mr-2"
                     />
