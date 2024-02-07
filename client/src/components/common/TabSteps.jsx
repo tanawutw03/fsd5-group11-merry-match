@@ -22,7 +22,11 @@ function TabSteps() {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const isLastTab = activeTabIndex === 2;
   const [formData, setFormData] = useState({});
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [randomFileNames, setRandomFileNames] = useState([]);
+
+  const handleRandomFileNames = (names) => {
+    setRandomFileNames(names);
+  };
 
   const handleFormChange = (newFormData) => {
     setFormData((prevFormData) => ({ ...prevFormData, ...newFormData }));
@@ -73,6 +77,88 @@ function TabSteps() {
     const newIndex = Math.max(0, activeTabIndex - 1);
     setActiveTabIndex(newIndex);
   };
+
+  const handleClick = () => {
+    navigate("/login");
+  };
+
+  useEffect(() => {
+    const checkUserAuthentication = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        console.error("User not authenticated");
+        return;
+      }
+
+      if (userId !== null) {
+        console.log("userId:", userId);
+        try {
+          const { data: insertData, error: insertError } = await supabase
+            .from("profiles")
+            .upsert({
+              id: userId,
+              updated_at: new Date(),
+              username: formData.username,
+              full_name: formData.name,
+              avatar_url: formData.avatar_url,
+              country: formData.location,
+              city: formData.city,
+              email: formData.email,
+              sex_identities: formData.sex_identities,
+              sex_preferences: formData.sex_preferences,
+              racial_preferences: formData.racial_preferences,
+              meeting_interest: formData.meeting_interest,
+              hobbies: formData.hobbies,
+              date_of_birth: formData.dob,
+            })
+            .select();
+
+          if (insertError) {
+            console.error("Error inserting user data:", insertError.message);
+          } else {
+            console.log("User data inserted successfully:", insertData);
+            // Upload avatars
+
+            if (randomFileNames.length > 0) {
+              console.log(`randomFileNames`, randomFileNames);
+              for (const { file, name: fileName } of randomFileNames) {
+                console.log("Final file name:", fileName); // Log file name
+
+                if (!file) {
+                  console.error(`File not found for ${fileName}`);
+                  continue; // Skip to the next iteration
+                }
+
+                const filePath = `${userId}/${fileName}`;
+                const { data: uploadData, error: uploadError } =
+                  await supabase.storage
+                    .from("avatars")
+                    .upload(filePath, file, {
+                      cacheControl: "3600",
+                      upsert: false,
+                    });
+
+                console.log(`User avatar upload successfully:`, uploadData);
+                if (uploadError) {
+                  console.error("Error uploading avatar:", uploadError.message);
+                } else {
+                  console.log("Avatar uploaded successfully:", uploadData);
+                }
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Error inserting user data:", error.message);
+        }
+      }
+    };
+
+    checkUserAuthentication();
+  }, [userId, randomFileNames, formData]);
+
   const handleSubmit = async () => {
     try {
       console.log("Form Data:", formData);
@@ -95,70 +181,6 @@ function TabSteps() {
       console.error("Error:", error.message);
     }
   };
-
-  const handleClick = () => {
-    navigate("/login");
-  };
-
-  useEffect(() => {
-    const checkUserAuthentication = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        console.error("User not authenticated");
-        return;
-      }
-
-      if (userId !== null) {
-        console.log("userId:", userId);
-        const insertUserData = async () => {
-          try {
-            const { data: insertData, error: insertError } = await supabase
-              .from("profiles")
-              .upsert({
-                id: userId,
-                updated_at: new Date(),
-                username: formData.username,
-                full_name: formData.name,
-                avatar_url: formData.avatar_url,
-                country: formData.location,
-                city: formData.city,
-                email: formData.email,
-                sex_identities: formData.sex_identities,
-                sex_preferences: formData.sex_preferences,
-                racial_preferences: formData.racial_preferences,
-                meeting_interest: formData.meeting_interest,
-                hobbies: formData.hobbies,
-                date_of_birth: formData.dob,
-              })
-              .select();
-
-            console.log(insertData, insertError);
-
-            if (insertError) {
-              console.error("Error inserting user data:", insertError.message);
-            } else {
-              console.log("User data inserted successfully:", insertData);
-            }
-          } catch (error) {
-            console.error("Error inserting user data:", error.message);
-          }
-        };
-
-        insertUserData();
-      }
-    };
-
-    checkUserAuthentication();
-  }, [userId]);
-
-  const stepperData = [
-    { id: 1, title: "Basic Information" },
-    { id: 2, title: "Identities and Interests" },
-    { id: 3, title: "Upload Photos" },
-  ];
 
   return (
     <>
@@ -258,6 +280,7 @@ function TabSteps() {
                   formData={formData}
                   setFormData={setFormData}
                   onFormChange={handleFormChange}
+                  onRandomFileNames={handleRandomFileNames}
                 />
               </TabPanel>
             </TabPanels>
