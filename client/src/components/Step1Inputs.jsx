@@ -50,37 +50,13 @@ function Step1Inputs({ onFormChange }) {
 
   return (
     <>
-      <div className="font-nunito h-screen w-screen mt-10">
-        <div className="flex justify-end absolute font-nunito gap-3 right-40 top-28 bg-[#fcfcfe]">
-          <div className="h-20 w-[250px] p-4 pr-8 border border-[#A62D82] rounded-2xl flex justify-start items-center space-x-4">
-            <div className="w-12 h-12 rounded-2xl bg-gray-200 flex justify-center items-center text-[#A62D82] text-2xl font-bold">
-              1
-            </div>
-            <div className="flex flex-col items-start">
-              <p className="text-gray-700 text-xs font-medium">Step 1/3</p>
-              <p className="text-[#A62D82] text-base font-extrabold">
-                Basic Information
-              </p>
-            </div>
-          </div>
-          <div className="w-20 h-20 border border-gray-300 rounded-2xl flex justify-center items-center">
-            <div className="w-12 h-12 rounded-2xl  bg-gray-200 flex justify-center items-center text-2xl font-bold text-gray-600">
-              2
-            </div>
-          </div>
-          <div className="w-20 h-20 border border-gray-300 rounded-2xl flex justify-center items-center">
-            <div className="w-12 h-12 rounded-2xl  bg-gray-200 flex justify-center items-center text-2xl font-bold text-gray-600">
-              3
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h1 className="flex flex-col items-start mt-[17%] left-72 absolute text-2xl text-[#A62D82] font-bold">
+      <div className="font-nunito justify-between item-center flex flex-col h-full  w-[930px] ">
+        <div className="flex justify-start item-center mt-10 mb-2">
+          <h1 className="text-2xl text-[#A62D82] font-bold">
             Basic Information
           </h1>
         </div>
-        <form className="flex flex-row justify-center mr-4 mt-[300px] gap-10">
+        <form className="flex flex-row justify-center gap-10">
           <div className="flex flex-col w-[453px]">
             <label htmlFor="name" className="text-left">
               Name
@@ -146,7 +122,7 @@ function Step1Inputs({ onFormChange }) {
             </label>
             <input
               {...register("dob", { required: true })}
-              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
+              className="border-2 px-3 py-2 mb-7 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="01/01/2022"
               onChange={handleInputChange}
             />
@@ -161,7 +137,7 @@ function Step1Inputs({ onFormChange }) {
               name="city"
               control={control}
               selectedCountry={selectedCountry}
-              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82] text-left"
+              className="border-2 px-3 py-2 mt-2 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82] text-left"
               onCityChange={handleCityChange}
             />
             {errors.city && (
@@ -170,7 +146,7 @@ function Step1Inputs({ onFormChange }) {
               </span>
             )}
 
-            <label htmlFor="mail" className="text-left mt-8">
+            <label htmlFor="mail" className="text-left mt-6">
               Email
             </label>
             <input
