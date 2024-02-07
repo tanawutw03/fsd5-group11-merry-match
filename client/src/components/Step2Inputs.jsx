@@ -63,34 +63,9 @@ function Step2Inputs({ onFormChange }) {
 
   return (
     <>
-      <div>
-        <div className="flex justify-end absolute font-nunito gap-3 right-40 top-28 bg-[#fcfcfe]">
-          <div className="w-20 h-20 border border-gray-300 rounded-2xl flex justify-center items-center">
-            <div className="w-12 h-12 rounded-2xl  bg-gray-200 flex justify-center items-center text-2xl font-bold text-gray-600">
-              1
-            </div>
-          </div>
-          <div className="h-20 w-[288px] p-4 pr-8 border border-[#A62D82] rounded-2xl flex justify-start items-center space-x-4">
-            <div className="w-12 h-12 rounded-2xl bg-gray-200 flex justify-center items-center text-[#A62D82] text-2xl font-bold">
-              2
-            </div>
-            <div className="flex flex-col items-start">
-              <p className="text-gray-700 text-xs font-medium">Step 2/3</p>
-              <p className="text-[#A62D82] text-base font-extrabold">
-                Identities and Interests
-              </p>
-            </div>
-          </div>
-
-          <div className="w-20 h-20 border border-gray-300 rounded-2xl flex justify-center items-center">
-            <div className="w-12 h-12 rounded-2xl  bg-gray-200 flex justify-center items-center text-2xl font-bold text-gray-600">
-              3
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h1 className="flex justify-start left-[290px] top-[290px] pb-5 text-2xl text-[#A62D82] font-bold font-nunito">
+      <div className="flex flex-col justify-between item-center w-[930px] h-full font-nunito bg-[#fcfcfe] mb-[100px]">
+        <div className="flex justify-start my-[30px]">
+          <h1 className="text-2xl text-[#A62D82] font-bold">
             Identities&nbsp;and&nbsp;Interests
           </h1>
         </div>
