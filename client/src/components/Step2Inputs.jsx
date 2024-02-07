@@ -44,44 +44,19 @@ function Step2Inputs() {
 
   return (
     <>
-      <div>
-        <div className="flex justify-end absolute font-nunito gap-3 right-40 top-28 bg-[#fcfcfe]">
-          <div className="w-20 h-20 border border-gray-300 rounded-2xl flex justify-center items-center">
-            <div className="w-12 h-12 rounded-2xl  bg-gray-200 flex justify-center items-center text-2xl font-bold text-gray-600">
-              1
-            </div>
-          </div>
-          <div className="h-20 w-[288px] p-4 pr-8 border border-[#A62D82] rounded-2xl flex justify-start items-center space-x-4">
-            <div className="w-12 h-12 rounded-2xl bg-gray-200 flex justify-center items-center text-[#A62D82] text-2xl font-bold">
-              2
-            </div>
-            <div className="flex flex-col items-start">
-              <p className="text-gray-700 text-xs font-medium">Step 2/3</p>
-              <p className="text-[#A62D82] text-base font-extrabold">
-                Identities and Interests
-              </p>
-            </div>
-          </div>
-
-          <div className="w-20 h-20 border border-gray-300 rounded-2xl flex justify-center items-center">
-            <div className="w-12 h-12 rounded-2xl  bg-gray-200 flex justify-center items-center text-2xl font-bold text-gray-600">
-              3
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h1 className="flex justify-start left-[290px] top-[290px] pb-5 text-2xl text-[#A62D82] font-bold font-nunito">
+      <div className="flex flex-col justify-between item-center w-[930px] h-full font-nunito bg-[#fcfcfe] mb-[100px]">
+        <div className="flex justify-start my-[30px]">
+          <h1 className="text-2xl text-[#A62D82] font-bold">
             Identities&nbsp;and&nbsp;Interests
           </h1>
         </div>
         {/* "handleSubmit" will validate your inputs before invoking "onSubmit" */}
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="grid grid-cols-2 gap-10 text-left "
+          className="grid grid-cols-2  text-left item-center "
         >
           {/* First selector column */}
-          <div className="h-[48px] w-[453px] flex flex-col">
+          <div className="h-[48px] w-[453px] flex flex-col justify-center my-[10%]">
             <h3>Sexual&nbsp;Identities</h3>
             <Select defaultValue="male" {...register("sex")} mb={10}>
               <option value="male">Male</option>
@@ -103,7 +78,7 @@ function Step2Inputs() {
           </div>
 
           {/* Second selector column */}
-          <div className="h-[48px] w-[453px] flex flex-col">
+          <div className="h-[48px] w-[453px] flex flex-col justify-center my-[10%]">
             <h3>Sexual&nbsp;Preferences</h3>
             <Select
               defaultValue="female"
@@ -125,7 +100,7 @@ function Step2Inputs() {
             {/* errors will return when field validation fails  */}
             {errors.exampleRequired && <span>This field is required</span>}
           </div>
-          <div className="justify-center absolute w-[946px] h-[53px] top-3/4 text-left">
+          <div className=" justify-center item-center w-full  h-[53px]  text-left col-span-2">
             <h3 className="pt-10">
               Hobbies&nbsp;/&nbsp;Interests&nbsp;(Maximum&nbsp;10)
             </h3>
