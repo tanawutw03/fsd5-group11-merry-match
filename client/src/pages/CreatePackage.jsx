@@ -164,6 +164,7 @@ function CreatePackage() {
     setSelectedFile(null);
 
     console.log("Package data inserted successfully:", packageData);
+    navigate("/adminpage");
     // console.log("Icon data inserted successfully:", iconData);
   };
   return (

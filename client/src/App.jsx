@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Link } from "react-router-dom";
 import HomePage from "./pages/HomePage";
@@ -8,8 +9,7 @@ import MerryPackagePage from "./pages/MerryPackagePage";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import CreatePackage from "./pages/CreatePackage";
-// import CreatePackage from "./AdmAvatar"
-import { UserProvider, useUser } from "./app/userContext.js";
+import EditPackage from "./pages/EditPackage";
 
 const NoMatch = () => {
   return (
@@ -23,11 +23,10 @@ const NoMatch = () => {
 };
 
 const AuthorizedHomePage = () => {
-  const { user, avatarUrl } = useUser();
-  console.log(`user app`, user);
-  console.log(`avatar app`, avatarUrl);
+  const token = JSON.parse(sessionStorage.getItem("token"));
 
-  if (!user) {
+  if (!token) {
+    // If there is no token, user is not authorized
     return (
       <div className="h-screen text-5xl flex flex-col justify-center items-center gap-5">
         <h1>Not Authorized</h1>
@@ -38,28 +37,39 @@ const AuthorizedHomePage = () => {
     );
   }
 
+  // Render the authorized content
   return <HomePage />;
 };
 
 function App() {
+  const [token, setToken] = useState(false);
+
+  if (token) {
+    sessionStorage.setItem("token", JSON.stringify(token));
+  }
+
+  useEffect(() => {
+    if (sessionStorage.getItem("token")) {
+      const data = JSON.parse(sessionStorage.getItem("token"));
+      setToken(data);
+    }
+  }, []);
+
   return (
-    <UserProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="*" element={<NoMatch />} />
-          <Route path="/" element={<NonUserHomePage />} />
-          <Route path="/homepage" element={<AuthorizedHomePage />}>
-            <Route index element={<HomePage />} />
-          </Route>
-          <Route path="/adminpage" element={<AdminPage />} />
-          <Route path="/createpackage" element={<CreatePackage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/matching" element={<Matching />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/package" element={<MerryPackagePage />} />
-        </Routes>
-      </BrowserRouter>
-    </UserProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="*" element={<NoMatch />} />
+        <Route path="/" element={<NonUserHomePage />} />
+        <Route path="/homepage" element={<AuthorizedHomePage />} />
+        <Route path="/adminpage" element={<AdminPage />} />
+        <Route path="/createpackage" element={<CreatePackage />} />
+        <Route path="/editpackage/:package_id" element={<EditPackage />} />
+        <Route path="/login" element={<LoginPage setToken={setToken} />} />
+        <Route path="/matching" element={<Matching />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/package" element={<MerryPackagePage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

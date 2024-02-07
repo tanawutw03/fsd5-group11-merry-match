@@ -5,7 +5,7 @@ import complaint from "../assets/AdminPage/complaint.png";
 import { Tooltip } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftAddon } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Table,
   Thead,
@@ -64,7 +64,7 @@ function AdminPage() {
 
   const handleEdit = (packageId) => {
     // Handle edit functionality based on the packageId
-    console.log("Edit package with ID:", packageId);
+    navigate(`/editpackage/${packageId}`);
   };
 
   const handleDelete = async (packageId) => {
@@ -194,14 +194,11 @@ function AdminPage() {
                         bg="gray.300"
                         color="black"
                       >
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEdit(packageItem.package_id)}
-                          color="pink.400"
-                        >
-                          <EditIcon />
-                        </Button>
+                        <Link to={`/editpackage/${packageItem.package_id}`}>
+                          <Button variant="ghost" size="sm" color="pink.400">
+                            <EditIcon />
+                          </Button>
+                        </Link>
                       </Tooltip>
 
                       {/* Delete Button */}
