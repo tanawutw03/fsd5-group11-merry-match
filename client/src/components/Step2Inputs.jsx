@@ -1,45 +1,64 @@
 import { useForm } from "react-hook-form";
 import { Select } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
 import TagSelect from "./common/TagSelect.jsx";
-import ChakraButton from "./common/ChakraButton.jsx";
-
-const hobbiesOptions = [
-  { value: "e-sports", label: "E-sports" },
-  { value: "series", label: "Series" },
-  { value: "workout", label: "Workout" },
-  { value: "travel", label: "Travel" },
-  { value: "movies", label: "Movies" },
-  { value: "photography", label: "Photography" },
-  { value: "singing", label: "Singing" },
-  { value: "meditation", label: "Meditation" },
-  { value: "painting", label: "Painting" },
-  { value: "music", label: "Music" },
-  { value: "cafe", label: "Cafe hopping" },
-  { value: "party", label: "Party" },
-  { value: "festival", label: "Festival" },
-];
-
-function Step2Inputs() {
+import PropTypes from "prop-types";
+import { useState } from "react";
+import makeAnimated from "react-select/animated";
+import hobbiesOptions from "../data/hobbiesData.js";
+import { useEffect } from "react";
+function Step2Inputs({ onFormChange }) {
   const {
     register,
-    handleSubmit,
     formState: { errors },
     control,
   } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  const [formData, setFormData] = useState({});
+  const [selectedHobby, setSelectedHobby] = useState([]);
+  const animatedComponents = makeAnimated();
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    // Initialize formData with default values of hobbies
+    const initialHobbies = [
+      hobbiesOptions[0],
+      hobbiesOptions[1],
+      hobbiesOptions[2],
+    ];
 
-  const handleNext = () => {
-    navigate("/register3");
-    console.log("Navigating to the next page");
+    const initialFormData = {
+      ...formData,
+      hobbies: initialHobbies.map((hobby) => hobby.value),
+    };
+
+    setFormData(initialFormData);
+    onFormChange(initialFormData);
+  }, []); // This effect runs once on component mount
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    console.log("handleInputChange - name:", name, "value:", value);
+
+    const updatedFormData = {
+      ...formData,
+      [name]: value,
+    };
+
+    setFormData(updatedFormData);
+    onFormChange(updatedFormData);
+    console.log(formData);
   };
 
-  const handlePrev = () => {
-    navigate("/register1");
-    console.log("Navigating to the prev page");
+  const handleHobbyChange = (selectedHobbyData) => {
+    console.log(selectedHobbyData);
+
+    const updatedFormData = {
+      ...formData,
+      hobbies: selectedHobbyData.map((hobby) => hobby.value),
+    };
+
+    setFormData(updatedFormData);
+    setSelectedHobby(selectedHobbyData);
+    onFormChange(updatedFormData);
   };
 
   return (
@@ -58,14 +77,25 @@ function Step2Inputs() {
           {/* First selector column */}
           <div className="h-[48px] w-[453px] flex flex-col justify-center my-[10%]">
             <h3>Sexual&nbsp;Identities</h3>
-            <Select defaultValue="male" {...register("sex")} mb={10}>
+            <Select
+              placeholder="Select option"
+              {...register("sex_identities")}
+              name="sex_identities"
+              mb={10}
+              onChange={handleInputChange}
+            >
               <option value="male">Male</option>
               <option value="female">Female</option>
               <option value="other">Other</option>
             </Select>
 
             <h3>Racial&nbsp;Preferences</h3>
-            <Select defaultValue="asian" {...register("racial_preference")}>
+            <Select
+              placeholder="Select option"
+              {...register("racial_preferences")}
+              name="racial_preferences"
+              onChange={handleInputChange}
+            >
               <option value="asian">Asian</option>
               <option value="black">Black</option>
               <option value="indian">Indian</option>
@@ -81,9 +111,11 @@ function Step2Inputs() {
           <div className="h-[48px] w-[453px] flex flex-col justify-center my-[10%]">
             <h3>Sexual&nbsp;Preferences</h3>
             <Select
-              defaultValue="female"
+              placeholder="Select option"
               {...register("sex_preference")}
               mb={10}
+              name="sex_preferences"
+              onChange={(e) => handleInputChange(e, "sex_identities")}
             >
               <option value="male">Male</option>
               <option value="female">Female</option>
@@ -91,14 +123,16 @@ function Step2Inputs() {
             </Select>
 
             <h3>Meeting&nbsp;Interests</h3>
-            <Select defaultValue="friends" {...register("meeting_interest")}>
+            <Select
+              placeholder="Select option"
+              {...register("meeting_interest")}
+              name="meeting_interest"
+              onChange={handleInputChange}
+            >
               <option value="date">Date</option>
               <option value="friends">Friends</option>
               <option value="other">Other</option>
             </Select>
-
-            {/* errors will return when field validation fails  */}
-            {errors.exampleRequired && <span>This field is required</span>}
           </div>
           <div className=" justify-center item-center w-full  h-[53px]  text-left col-span-2">
             <h3 className="pt-10">
@@ -107,10 +141,16 @@ function Step2Inputs() {
             <TagSelect
               control={control}
               name="hobbies"
+              onHobbyChange={handleHobbyChange}
               label=""
               options={hobbiesOptions}
-              defaultValue={[{ value: "e-sports" }, { value: "series" }]}
+              defaultValue={[
+                hobbiesOptions[0],
+                hobbiesOptions[1],
+                hobbiesOptions[2],
+              ]}
               max={10}
+              components={animatedComponents}
             />
           </div>
         </form>
@@ -118,5 +158,9 @@ function Step2Inputs() {
     </>
   );
 }
+
+Step2Inputs.propTypes = {
+  onFormChange: PropTypes.func.isRequired,
+};
 
 export default Step2Inputs;

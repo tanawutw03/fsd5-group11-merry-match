@@ -80,7 +80,7 @@ function Step1Inputs({ onFormChange }) {
               label="Location"
               onCountryChange={handleCountryChange}
             />
-            {errors.name && (
+            {errors.location && (
               <span className="flex justify-start -mt-4 text-[#af2758]">
                 This field is required
               </span>
