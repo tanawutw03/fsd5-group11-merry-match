@@ -2,8 +2,9 @@ import { SimpleGrid, Card, CardBody, IconButton } from "@chakra-ui/react";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { useRef, useState } from "react";
 import { supabase } from "../../src/utils/supabaseClient.js";
+import PropTypes from "prop-types";
 
-function UploadProfiles() {
+function UploadProfiles({ onFormChange }) {
   const fileInputRef = useRef(null);
   const [selectedFiles, setSelectedFiles] = useState([]);
 
@@ -11,6 +12,13 @@ function UploadProfiles() {
     const files = Array.from(fileInputRef.current.files);
     const newSelectedFiles = files.slice(0, 5);
     setSelectedFiles([...selectedFiles, ...newSelectedFiles]);
+
+    // Extract file names
+    const fileNames = newSelectedFiles.map((file) => file.name);
+    // Pass file names to the parent component
+    onFormChange({ avatar_url: fileNames });
+
+    console.log(newSelectedFiles);
   };
 
   const handleDeleteFile = (index, event) => {
@@ -125,12 +133,13 @@ function UploadProfiles() {
           multiple
           accept="image/*"
         />
-
-        {/* Submit button triggers the onSubmit function */}
-        <button onClick={onSubmit}>Upload</button>
       </div>
     </>
   );
 }
+
+UploadProfiles.propTypes = {
+  onFormChange: PropTypes.func.isRequired,
+};
 
 export default UploadProfiles;
