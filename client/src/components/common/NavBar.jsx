@@ -1,14 +1,28 @@
 import { Button } from "@chakra-ui/react";
-import { Menu, MenuButton, MenuList, MenuItem, Portal } from "@chakra-ui/react";
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Portal,
+  MenuDivider,
+} from "@chakra-ui/react";
 import logo from "../../assets/merryPackagePage/logo.svg";
-import bell from "../../assets/merryPackagePage/Frame.svg";
+import bell from "../../assets/MenuButton/bell.svg";
 import profile from "../../assets/Matching/profile.svg";
 import ChakraButton from "../common/ChakraButton";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { handleLogout } from "../../app/auth.js";
 import { useUser } from "../../app/userContext.js";
-
+import { extendTheme } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
+import star from "../../assets/MenuButton/star.svg";
+import person from "../../assets/MenuButton/Frame.svg";
+import heart from "../../assets/MenuButton/hart.svg";
+import box from "../../assets/MenuButton/box.svg";
+import warn from "../../assets/MenuButton/warn.svg";
+import logout from "../../assets/MenuButton/logout.svg";
 const NavBar = (props) => {
   const navigate = useNavigate();
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
@@ -16,35 +30,70 @@ const NavBar = (props) => {
   const handleLogoutClick = async () => {
     handleLogout(user, setUser, avatarUrl, setAvatarUrl, navigate);
   };
-
+  const theme = extendTheme({
+    colors: {
+      login: {
+        500: "#C70039",
+      },
+    },
+  });
+  const handleClick = () => {
+    navigate("/package");
+  };
+  const images = [
+    { src: person, name: "Profile" },
+    { src: heart, name: "Merry list" },
+    { src: box, name: "Merry Membership" },
+    { src: warn, name: "Compliant" },
+  ];
   const MenuOrButton = props.useMenu ? (
-    <Menu>
+    <Menu className=" mt-5">
       <MenuButton>
         {avatarUrl ? (
           <img
-            className="flex-shrink-0 w-[50px] h-[50px] rounded"
+            className=" w-[50px] h-[50px] rounded-full  "
             src={avatarUrl}
             alt="User Avatar"
           />
         ) : (
-          <img className="flex-shrink-0" src={profile} alt="Default Avatar" />
+          <img src={profile} alt="Default Avatar" />
         )}
       </MenuButton>
       <Portal>
-        <MenuList>
-          <MenuItem>Menu 1</MenuItem>
-          <MenuItem>New Window</MenuItem>
-          <MenuItem>Open Closed Tab</MenuItem>
-          <MenuItem onClick={handleLogoutClick}>Log out</MenuItem>
+        <MenuList w="198px" h="258px">
+          <MenuItem display="flex" alignItems="center" justifyContent="center">
+            <Button onClick={handleClick} colorScheme="whiteAlpha">
+              <div className="w-[179px] h-[41px]  rounded-full bg-gradient-to-r from-[#742138] to-[#A878BF] flex flex-row justify-center items-center">
+                <img className=" w-4 h-4 mr-2  " src={star} />
+                <span className=" text-white  text-sm">More limit Merry!</span>
+              </div>
+            </Button>
+          </MenuItem>
+          {images.map((image, index) => (
+            <MenuItem key={index}>
+              <img className="w-4 h-4 mr-2 " src={image.src} alt={image.name} />
+              <span className="text-[#646D89] text-sm">{image.name}</span>
+            </MenuItem>
+          ))}
+          <MenuDivider />
+          <MenuItem onClick={handleLogoutClick}>
+            <img className="w-4 h-4 mr-2" src={logout} alt="Logout" />
+            <span>Log out</span>
+          </MenuItem>
         </MenuList>
       </Portal>
     </Menu>
   ) : (
-    <ChakraButton
-      name={props.name}
-      color={props.color}
-      onClick={props.onClick}
-    />
+    <ChakraProvider theme={theme}>
+      <ChakraButton
+        colorScheme="login"
+        name={props.name}
+        onClick={props.onClick}
+        rounded="99px"
+        width="90px"
+        height="48px"
+      />
+    </ChakraProvider>
   );
 
   const handleFirstMenuClick = () => {
@@ -62,11 +111,11 @@ const NavBar = (props) => {
   return (
     <>
       <nav>
-        <ul className="nav-container flex  items-center  text-red-400 text-xl  text-center m-[20px]">
-          <li className="merry-math-logo ml-[160px]">
+        <ul className=" flex  items-center  text-red-400 text-xl  text-center m-[20px]">
+          <li className=" ml-[60px]">
             <img src={logo} />
           </li>
-          <li className="start-matching-link font-nunito  font-bold ml-[520px]">
+          <li className=" font-nunito  font-bold ml-[520px]">
             <Button
               variant="link"
               colorScheme="custom"
@@ -76,7 +125,7 @@ const NavBar = (props) => {
               {props.firstMenuName}
             </Button>
           </li>
-          <li className="merry-membership-link font-nunito  font-bold mr-[24px]  ml-[35px]">
+          <li className=" font-nunito  font-bold mr-[24px]  ml-[35px]">
             <Button
               variant="link"
               colorScheme="custom"
@@ -88,16 +137,16 @@ const NavBar = (props) => {
           </li>
           <div className="flex  ml-[20px]  ">
             {props.showBell && (
-              <div className="flex mr-[10px] mt-5 justify-center items-center w-[48px] h-[48px] bg-[#F6F7FC] rounded-[999px] object-fit object-cover">
-                <li>
-                  <img
-                    className="flex-shrink-0 w-[24px] h-[24px]  "
-                    src={bell}
-                  />
-                </li>
+              <div className="flex mr-[10px]  ">
+                <Menu>
+                  <MenuButton>
+                    <img className=" w-[48px] h-[48px]  " src={bell} />
+                  </MenuButton>
+                  <MenuList></MenuList>
+                </Menu>
               </div>
             )}
-            <li className="mr-[160px] mt-5">{MenuOrButton}</li>
+            <li className="mr-[160px]  ]">{MenuOrButton}</li>
           </div>
         </ul>
       </nav>
@@ -107,7 +156,6 @@ const NavBar = (props) => {
 
 NavBar.propTypes = {
   useMenu: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
-  color: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   firstMenuName: PropTypes.string.isRequired,

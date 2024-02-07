@@ -14,7 +14,7 @@ function ChakraButton(props) {
       m={5}
       variant={props.variant}
       rounded={props.rounded}
-      colorScheme={props.color}
+      colorScheme={props.colorScheme}
       className={combinedClassName}
     >
       {props.name}
@@ -22,7 +22,7 @@ function ChakraButton(props) {
   );
 }
 ChakraButton.propTypes = {
-  color: PropTypes.string.isRequired,
+  colorScheme: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   rounded: PropTypes.bool,

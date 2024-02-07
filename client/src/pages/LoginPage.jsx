@@ -1,16 +1,15 @@
 import { useState } from "react";
-import { Button } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import LoginBanner from "../assets/LoginPage/LoginBanner.svg";
 import PinkCircle from "../assets/LoginPage/PinkCircle.svg";
 import RedDot from "../assets/LoginPage/RedDot.svg";
-import logo from "../assets/merryPackagePage/logo.svg";
 import PropTypes from "prop-types";
 import { Alert, AlertIcon, Stack } from "@chakra-ui/react";
 import { useUser } from "../app/userContext.js";
 import { handleLogin } from "../app/auth.js";
+import { Link } from "react-router-dom";
+import NavBar from "../components/common/NavBar.jsx";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -50,44 +49,26 @@ const Login = () => {
       alert(error.message);
     }
   };
+  const handleClick = () => {
+    navigate("/login");
+  };
 
   return (
     <>
-      <div className="fixed">
-        <nav className="bg-white w-screen flex flex-row justify-between items-center h-[88px] shadow-md fixed font-nunito z-10">
-          <a href="/">
-            <img src={logo} className="px-[40px] z-50" />
-          </a>
-          <div className=" flex w-1/3 flex-row justify-around items-center font-nunito z-40">
-            <Button
-              colorScheme="custom"
-              color="#191C77"
-              variant="link"
-              onClick={() => navigate("/")}
-            >
-              Why Marry Match?
-            </Button>
-            <Button
-              colorScheme="custom"
-              color="#191C77"
-              variant="link"
-              onClick={() => navigate("/")}
-            >
-              How To Marry
-            </Button>
-            <Button
-              colorScheme="custom"
-              bg="#C70039"
-              _hover={{ bg: "#ff1659" }}
-              variant="solid"
-              rounded="full"
-              onClick={() => navigate("/login")}
-            >
-              Login
-            </Button>
-          </div>
-        </nav>
-
+      <div>
+        <NavBar
+          useMenu={false}
+          name="Login"
+          color="facebook"
+          onClick={handleClick}
+          firstMenuName="Why Merry Match?"
+          secondMenuName="How to Merry"
+          onClickFirstMenu={() => navigate("/")}
+          onClickSecondMenu={() => navigate("/")}
+          showBell={false}
+          setUser={setUser}
+          user={user}
+        />
         <div className="flex flex-col">
           <img
             src={PinkCircle}

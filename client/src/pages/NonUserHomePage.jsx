@@ -26,7 +26,7 @@ function NonUserHomePage({ user, setUser }) {
   };
 
   return (
-    <div className=" min-w-[1440px] bg-white z-auto flex flex-col items-center">
+    <div className=" w-max  ">
       {user ? (
         <NavBar
           useMenu={user}
@@ -38,14 +38,12 @@ function NonUserHomePage({ user, setUser }) {
           showBell={true}
           setUser={setUser}
           user={user}
-          color=""
           name="userAvatar"
         />
       ) : (
         <NavBar
           useMenu={false}
           name="Login"
-          color="red"
           onClick={handleClick}
           firstMenuName="Why Merry Match?"
           secondMenuName="How to Merry"
