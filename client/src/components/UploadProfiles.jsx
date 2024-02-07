@@ -1,16 +1,38 @@
 import { SimpleGrid, Card, CardBody, IconButton } from "@chakra-ui/react";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { useRef, useState } from "react";
-import { supabase } from "../../src/utils/supabaseClient.js";
+import PropTypes from "prop-types";
 
-function UploadProfiles() {
+function UploadProfiles({ onFormChange, onRandomFileNames }) {
   const fileInputRef = useRef(null);
   const [selectedFiles, setSelectedFiles] = useState([]);
 
   const handleFileInputChange = () => {
     const files = Array.from(fileInputRef.current.files);
     const newSelectedFiles = files.slice(0, 5);
-    setSelectedFiles([...selectedFiles, ...newSelectedFiles]);
+
+    // Generate random file names for new selected files
+    const randomFileNames = newSelectedFiles.map((file) => {
+      const fileExt = file.name.split(".").pop();
+      const randomString = Math.random().toString(36).substring(7);
+      const randomFileName = `${randomString}.${fileExt}`;
+
+      // Return an object containing both the file and its name
+      return { file, name: randomFileName };
+    });
+
+    // Pass file names to the parent component
+    onFormChange({ avatar_url: randomFileNames.map((file) => file.name) });
+
+    onRandomFileNames(randomFileNames);
+
+    // Update the state with file objects and names
+    setSelectedFiles((prevSelectedFiles) => [
+      ...prevSelectedFiles,
+      ...randomFileNames,
+    ]);
+
+    console.log(randomFileNames);
   };
 
   const handleDeleteFile = (index, event) => {
@@ -18,38 +40,6 @@ function UploadProfiles() {
 
     const updatedFiles = selectedFiles.filter((_, i) => i !== index);
     setSelectedFiles(updatedFiles);
-  };
-
-  const onSubmit = async () => {
-    try {
-      if (selectedFiles.length < 2) {
-        throw new Error("You must upload at least 2 photos");
-      }
-
-      for (const file of selectedFiles) {
-        const fileExt = file.name.split(".").pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-
-        if (file.size > 5 * 1024 * 1024) {
-          throw new Error("File size must not exceed 5MB");
-        }
-
-        const filePath = `avatars/${fileName}`;
-        const { data, error } = await supabase.storage
-          .from("avatars")
-          .upload(filePath, file, {
-            cacheControl: "3600",
-            upsert: false,
-          });
-
-        console.log(data, error);
-      }
-
-      // Reset selected files after successful upload
-      setSelectedFiles([]);
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   return (
@@ -84,7 +74,7 @@ function UploadProfiles() {
                   {selectedFiles[index] ? (
                     <>
                       <img
-                        src={URL.createObjectURL(selectedFiles[index])}
+                        src={URL.createObjectURL(selectedFiles[index].file)}
                         alt={`Thumbnail ${index}`}
                         className="w-full h-full object-cover rounded-[16px]"
                       />
@@ -125,12 +115,14 @@ function UploadProfiles() {
           multiple
           accept="image/*"
         />
-
-        {/* Submit button triggers the onSubmit function */}
-        <button onClick={onSubmit}>Upload</button>
       </div>
     </>
   );
 }
+
+UploadProfiles.propTypes = {
+  onFormChange: PropTypes.func.isRequired,
+  onRandomFileNames: PropTypes.func,
+};
 
 export default UploadProfiles;

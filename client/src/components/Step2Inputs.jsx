@@ -13,7 +13,7 @@ function Step2Inputs({ onFormChange }) {
     control,
   } = useForm();
 
-  const [formData, setFormData] = useState({});
+  // const [formData, setFormData] = useState({});
   const [selectedHobby, setSelectedHobby] = useState([]);
   const animatedComponents = makeAnimated();
 
@@ -26,39 +26,22 @@ function Step2Inputs({ onFormChange }) {
     ];
 
     const initialFormData = {
-      ...formData,
+      ...selectedHobby,
       hobbies: initialHobbies.map((hobby) => hobby.value),
     };
-
-    setFormData(initialFormData);
+    setSelectedHobby(initialHobbies);
     onFormChange(initialFormData);
   }, []); // This effect runs once on component mount
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log("handleInputChange - name:", name, "value:", value);
-
-    const updatedFormData = {
-      ...formData,
-      [name]: value,
-    };
-
-    setFormData(updatedFormData);
-    onFormChange(updatedFormData);
-    console.log(formData);
+    onFormChange({ [name]: value });
   };
 
   const handleHobbyChange = (selectedHobbyData) => {
-    console.log(selectedHobbyData);
-
-    const updatedFormData = {
-      ...formData,
-      hobbies: selectedHobbyData.map((hobby) => hobby.value),
-    };
-
-    setFormData(updatedFormData);
     setSelectedHobby(selectedHobbyData);
-    onFormChange(updatedFormData);
+    const hobbies = selectedHobbyData.map((hobby) => hobby.value);
+    onFormChange({ hobbies });
   };
 
   return (

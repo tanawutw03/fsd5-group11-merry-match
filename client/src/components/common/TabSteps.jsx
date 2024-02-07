@@ -22,12 +22,14 @@ function TabSteps() {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const isLastTab = activeTabIndex === 2;
   const [formData, setFormData] = useState({});
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [randomFileNames, setRandomFileNames] = useState([]);
+
+  const handleRandomFileNames = (names) => {
+    setRandomFileNames(names);
+  };
 
   const handleFormChange = (newFormData) => {
-    setStep1Data(newFormData); // Update step1Data when input fields change
-    setStep2Data(newFormData); // Update step2Data when input fields change
-    setStep3Data(newFormData); // Update step3Data when input fields change
+    setFormData((prevFormData) => ({ ...prevFormData, ...newFormData }));
   };
 
   // Use refs to store data for each step
@@ -42,19 +44,6 @@ function TabSteps() {
   const [step2Data, setStep2Data] = useState({});
   const [step3Data, setStep3Data] = useState({});
 
-  function renderFormByTabIndex(tabIndex) {
-    switch (tabIndex) {
-      case 0:
-        return <Step1Inputs onFormChange={setStep1Data} />;
-      case 1:
-        return <Step2Inputs onFormChange={setStep2Data} />;
-      case 2:
-        return <Step3Inputs onFormChange={setStep3Data} />;
-      default:
-        return null; // Handle other cases or return null
-    }
-  }
-
   const renderButtonLabel = isLastTab ? "Submit" : "Next Step";
   const renderButtonType = isLastTab ? "submit" : "button";
 
@@ -63,22 +52,17 @@ function TabSteps() {
   };
 
   const handleNext = () => {
+    console.log(formData);
     // Save data based on the active tab
     switch (activeTabIndex) {
       case 0:
         step1DataRef.current = { ...step1Data };
-        console.log(`step1Data:`, step1Data);
-
         break;
       case 1:
         step2DataRef.current = { ...step2Data };
-        console.log(`step2Data:`, step2Data);
-
         break;
       case 2:
         step3DataRef.current = { ...step3Data };
-        console.log(`step3Data:`, step3Data);
-
         break;
       default:
         break;
@@ -92,26 +76,6 @@ function TabSteps() {
   const handlePrev = () => {
     const newIndex = Math.max(0, activeTabIndex - 1);
     setActiveTabIndex(newIndex);
-  };
-  const handleSubmit = async () => {
-    try {
-      const { data: signUpData, error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-      });
-
-      console.log("Sign-up Response:", { signUpData, error });
-
-      if (error) {
-        console.error("Error signing up:", error.message);
-      } else {
-        console.log("User signed up successfully:", signUpData.user.id);
-
-        setUserId(signUpData.user.id);
-      }
-    } catch (error) {
-      console.error("Error:", error.message);
-    }
   };
 
   const handleClick = () => {
@@ -131,47 +95,94 @@ function TabSteps() {
 
       if (userId !== null) {
         console.log("userId:", userId);
+        try {
+          const { data: insertData, error: insertError } = await supabase
+            .from("profiles")
+            .upsert({
+              id: userId,
+              updated_at: new Date(),
+              username: formData.username,
+              full_name: formData.name,
+              avatar_url: formData.avatar_url,
+              country: formData.location,
+              city: formData.city,
+              email: formData.email,
+              sex_identities: formData.sex_identities,
+              sex_preferences: formData.sex_preferences,
+              racial_preferences: formData.racial_preferences,
+              meeting_interest: formData.meeting_interest,
+              hobbies: formData.hobbies,
+              date_of_birth: formData.dob,
+            })
+            .select();
 
-        const insertUserData = async () => {
-          try {
-            const { data: insertData, error: insertError } = await supabase
-              .from("profiles")
-              .upsert({
-                id: userId,
-                username: formData.current.username,
-                full_name: formData.current.name,
-                country: formData.current.location?.value,
-                city: formData.current.city?.value,
-                email: formData.current.email,
-                date_of_birth: formData.current.dob,
-                updated_at: new Date(),
-              })
-              .select();
+          if (insertError) {
+            console.error("Error inserting user data:", insertError.message);
+          } else {
+            console.log("User data inserted successfully:", insertData);
+            // Upload avatars
 
-            console.log(insertData, insertError);
+            if (randomFileNames.length > 0) {
+              console.log(`randomFileNames`, randomFileNames);
+              for (const { file, name: fileName } of randomFileNames) {
+                console.log("Final file name:", fileName); // Log file name
 
-            if (insertError) {
-              console.error("Error inserting user data:", insertError.message);
-            } else {
-              console.log("User data inserted successfully:", insertData);
+                if (!file) {
+                  console.error(`File not found for ${fileName}`);
+                  continue; // Skip to the next iteration
+                }
+
+                const filePath = `${userId}/${fileName}`;
+                const { data: uploadData, error: uploadError } =
+                  await supabase.storage
+                    .from("avatars")
+                    .upload(filePath, file, {
+                      cacheControl: "3600",
+                      upsert: false,
+                    });
+
+                console.log(`User avatar upload successfully:`, uploadData);
+                if (uploadError) {
+                  console.error("Error uploading avatar:", uploadError.message);
+                } else {
+                  console.log("Avatar uploaded successfully:", uploadData);
+                }
+              }
             }
-          } catch (error) {
-            console.error("Error inserting user data:", error.message);
           }
-        };
-
-        insertUserData();
+        } catch (error) {
+          console.error("Error inserting user data:", error.message);
+        }
       }
     };
 
     checkUserAuthentication();
-  }, [userId, formData]);
+  }, [userId, randomFileNames, formData]);
 
-  const stepperData = [
-    { id: 1, title: "Basic Information" },
-    { id: 2, title: "Identities and Interests" },
-    { id: 3, title: "Upload Photos" },
-  ];
+  const handleSubmit = async () => {
+    try {
+      console.log("Form Data:", formData);
+
+      const { data: signUpData, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      console.log("Sign-up Response:", { signUpData, error });
+
+      if (error) {
+        console.error("Error signing up:", error.message);
+      } else {
+        console.log("User signed up successfully:", signUpData.user.id);
+
+        setUserId(signUpData.user.id);
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
+    alert("Registeration Successfully");
+    navigate("/");
+  };
 
   return (
     <>
@@ -242,20 +253,36 @@ function TabSteps() {
 
           <div className="h-full ">
             <TabPanels className="text-md">
-              <TabPanel key={0} className="">
-                <Step1Inputs onFormChange={handleFormChange} />
+              <TabPanel
+                key={0}
+                className="h-screen flex justify-center items-center"
+              >
+                <Step1Inputs
+                  formData={formData}
+                  setFormData={setFormData}
+                  onFormChange={handleFormChange}
+                />
               </TabPanel>
               <TabPanel
                 key={1}
                 className="h-screen flex justify-center items-center"
               >
-                <Step2Inputs onFormChange={handleFormChange} />
+                <Step2Inputs
+                  formData={formData}
+                  setFormData={setFormData}
+                  onFormChange={handleFormChange}
+                />
               </TabPanel>
               <TabPanel
                 key={2}
                 className="h-screen flex justify-center items-center"
               >
-                <Step3Inputs onFormChange={handleFormChange} />
+                <Step3Inputs
+                  formData={formData}
+                  setFormData={setFormData}
+                  onFormChange={handleFormChange}
+                  onRandomFileNames={handleRandomFileNames}
+                />
               </TabPanel>
             </TabPanels>
           </div>

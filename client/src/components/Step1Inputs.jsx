@@ -14,38 +14,22 @@ function Step1Inputs({ onFormChange }) {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
 
-  const [formData, setFormData] = useState({});
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-    onFormChange(formData); // Pass the updated data to the parent component
+    onFormChange({ [name]: value }); // Pass the updated data to the parent component
   };
 
   // Use onCountryChange to update selectedCountry and trigger form change
   const handleCountryChange = (selectedCountryData) => {
     setSelectedCountry(selectedCountryData); // Set the selected country data
-    const updatedFormData = {
-      ...formData,
-      location: selectedCountryData ? selectedCountryData.value : "", // Use the selected country value
-    };
-    setFormData(updatedFormData);
-    onFormChange(updatedFormData); // Pass the updated data to the parent component
+    onFormChange({
+      location: selectedCountryData ? selectedCountryData.value : "",
+    }); // Pass the updated data to the parent component
   };
 
   const handleCityChange = (selectedCityData) => {
-    console.log(selectedCityData);
     setSelectedCity(selectedCityData);
-    const updatedFormData = {
-      ...formData,
-      city: selectedCityData ? selectedCityData.value : "",
-    };
-    setFormData(updatedFormData);
-    onFormChange(updatedFormData);
+    onFormChange({ city: selectedCityData ? selectedCityData.value : "" }); // Pass the updated data to the parent component
   };
 
   return (
