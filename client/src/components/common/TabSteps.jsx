@@ -180,6 +180,8 @@ function TabSteps() {
     } catch (error) {
       console.error("Error:", error.message);
     }
+    alert("Registeration Successfully");
+    navigate("/");
   };
 
   return (

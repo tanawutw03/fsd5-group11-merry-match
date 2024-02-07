@@ -26,14 +26,17 @@ export const handleLogin = async (
             .select("avatar_url")
             .eq("id", retriveUser.user.id);
 
+          console.log(userData);
           if (userData && userData.length > 0) {
-            const avatarUrl = userData[0].avatar_url;
+            const avatarUrl = userData[0].avatar_url[0];
             console.log("User Profile Data:", userData);
             console.log("Avatar URL:", avatarUrl);
             console.log("Error fetching user data", userDataError);
-
+            console.log(`User ID:`, retriveUser.user.id);
             const { data: imageData, error: imageError } =
-              await supabase.storage.from("avatars").download(avatarUrl);
+              await supabase.storage
+                .from("avatars")
+                .download(`${retriveUser.user.id}/${avatarUrl}`);
 
             if (imageData) {
               const imageUrl = URL.createObjectURL(imageData);
