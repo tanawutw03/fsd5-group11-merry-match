@@ -85,11 +85,10 @@ function TabSteps() {
 
   return (
     <>
-      <div className="flex justify-center">
+      <div className=" w-max">
         <NavBar
           useMenu={false}
           name="Login"
-          color="red"
           onClick={handleClick}
           firstMenuName="Why Merry Match?"
           secondMenuName="How to Merry"
