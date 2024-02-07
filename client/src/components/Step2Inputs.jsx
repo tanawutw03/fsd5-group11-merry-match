@@ -53,10 +53,7 @@ function Step2Inputs({ onFormChange }) {
           </h1>
         </div>
         {/* "handleSubmit" will validate your inputs before invoking "onSubmit" */}
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="grid grid-cols-2  text-left item-center "
-        >
+        <form className="grid grid-cols-2  text-left item-center ">
           {/* First selector column */}
           <div className="h-[48px] w-[453px] flex flex-col justify-center my-[10%]">
             <h3>Sexual&nbsp;Identities</h3>
