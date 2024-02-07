@@ -28,45 +28,38 @@ function EditPackage() {
   const navigate = useNavigate();
   const { package_id } = useParams();
 
-  //   useEffect(() => {
-  //     async function fetchPackageData() {
-  //       try {
-  //         const { data, error } = await supabase
-  //           .from("packages")
-  //           .select("*")
-  //           .eq("package_id", parseInt(package_id))
-  //           .single();
+  // useEffect(() => {
+  //   async function fetchPackageData() {
+  //     try {
+  //       const { data, error } = await supabase
+  //         .from("packages")
+  //         .select("*")
+  //         .eq("package_id", parseInt(package_id))
+  //         .single();
 
-  //         if (error) {
-  //           console.error("Error fetching package data:", error.message);
-  //           return;
-  //         }
+  //       if (error) {
+  //         console.error("Error fetching package data:", error.message);
+  //         return;
+  //       } else {
   //         const packData = data;
   //         console.log("Package Data:", packData);
-  //         if (packData) {
-  //           updatePackageState(packData);
-  //         }
-  //         // Update state with fetched data
-  //       } catch (error) {
-  //         console.error("Error fetching package data:", error.message);
+  //         // Call updatePackageState after setting dataFetch
+  //         setPackageName(packData.name);
+  //         setMerryLimit(packData.merry_limit);
+  //         setPrice(packData.price);
+  //         setPackageDetails(packData.description);
+  //         setSelectedFile({
+  //           preview: packData.iconurl,
+  //         });
+  //         console.log("Package update:", price); // Log packData.price instead of price
   //       }
+  //     } catch (error) {
+  //       console.error("Error fetching package data:", error.message);
   //     }
-  //     fetchPackageData();
-  //   }, [package_id]);
-
-  //   function updatePackageState(packData) {
-  //     setPackageName(packData.name);
-  //     setMerryLimit(packData.merry_limit);
-  //     setPrice(packData.price);
-  //     setPackageDetails(packData.description);
-  //     setSelectedFile({
-  //       preview: packData.iconurl,
-  //     });
   //   }
 
-  //   useEffect(() => {
-  //     console.log("Updated packageName:", packageName);
-  //   }, [packageName]);
+  //   fetchPackageData();
+  // }, [package_id]);
 
   const handleCancel = () => {
     navigate("/adminpage");
