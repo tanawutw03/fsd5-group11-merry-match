@@ -182,7 +182,7 @@ function TabSteps() {
       console.error("Error:", error.message);
     }
     alert("Registeration Successfully");
-    navigate("/");
+    // navigate("/");
   };
 
   const stepperData = [
