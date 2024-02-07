@@ -24,13 +24,22 @@ function TabSteps() {
   const [formData, setFormData] = useState({});
   const [randomFileNames, setRandomFileNames] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
+  const [isDataInserted, setIsDataInserted] = useState(false);
+  const [areFilesUploaded, setAreFilesUploaded] = useState(false);
 
   const handleRandomFileNames = (names) => {
     setRandomFileNames(names);
   };
 
   const handleFormChange = (newFormData) => {
-    setFormData((prevFormData) => ({ ...prevFormData, ...newFormData }));
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      ...newFormData,
+      avatar_url: [
+        ...(prevFormData.avatar_url || []), // Ensure it's an array even if undefined
+        ...(newFormData.avatar_url || []),
+      ],
+    }));
   };
 
   // Use refs to store data for each step
@@ -95,6 +104,8 @@ function TabSteps() {
       }
 
       if (userId !== null) {
+        setIsDataInserted(true);
+        setAreFilesUploaded(true);
         console.log("userId:", userId);
         try {
           const { data: insertData, error: insertError } = await supabase
@@ -177,13 +188,20 @@ function TabSteps() {
         console.log("User signed up successfully:", signUpData.user.id);
 
         setUserId(signUpData.user.id);
+        setIsDataInserted(false);
+        setAreFilesUploaded(false);
       }
     } catch (error) {
       console.error("Error:", error.message);
     }
-    alert("Registeration Successfully");
-    // navigate("/");
   };
+
+  useEffect(() => {
+    if (isDataInserted && areFilesUploaded) {
+      alert("Registration Successful");
+      navigate("/");
+    }
+  }, [isDataInserted, areFilesUploaded, navigate]);
 
   const stepperData = [
     { id: 1, title: "Basic Information" },
