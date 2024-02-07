@@ -23,6 +23,7 @@ function TabSteps() {
   const isLastTab = activeTabIndex === 2;
   const [formData, setFormData] = useState({});
   const [randomFileNames, setRandomFileNames] = useState([]);
+  const [selectedTab, setSelectedTab] = useState(0);
 
   const handleRandomFileNames = (names) => {
     setRandomFileNames(names);
@@ -183,6 +184,12 @@ function TabSteps() {
     alert("Registeration Successfully");
     navigate("/");
   };
+
+  const stepperData = [
+    { id: 1, title: "Basic Information" },
+    { id: 2, title: "Identities and Interests" },
+    { id: 3, title: "Upload Photos" },
+  ];
 
   return (
     <>
