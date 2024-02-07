@@ -212,9 +212,15 @@ function TabSteps() {
     { id: 3, title: "Upload Photos" },
   ];
 
+  const stepperData = [
+    { id: 1, title: "Basic Information" },
+    { id: 2, title: "Identities and Interests" },
+    { id: 3, title: "Upload Photos" },
+  ];
+
   return (
     <>
-      <div className=" w-max">
+      <div className="flex justify-center w-full">
         <NavBar
           useMenu={false}
           name="Login"
@@ -227,8 +233,7 @@ function TabSteps() {
         />
       </div>
       <RegisterWords />
-
-      <div className="flex w-screen h-screen -px-2 bg-[#fcfcfe]">
+      <div className="min-w-[1440px] flex flex-col justify-between item-center bg-[#fcfcfe]  relative">
         <Tabs
           align="center"
           index={activeTabIndex}
@@ -278,21 +283,6 @@ function TabSteps() {
                 </Tab>
               ))}
             </TabList>
-            <div className="flex items-start">
-              <TabIndicator
-                mt="-15px"
-                height="1px"
-                bg="purple"
-                borderRadius="1px"
-              />
-              <p className="font-bold font-nunito">
-                {activeTabIndex === 0
-                  ? "Basic Information"
-                  : activeTabIndex === 1
-                  ? "Identities and Interests"
-                  : "Upload Photos"}
-              </p>
-            </div>
           </div>
 
           <div className="h-full">
