@@ -17,7 +17,6 @@ function PackagePage() {
       try {
         const response = await axios.get("http://localhost:4008/api/package");
         setData(response.data);
-        console.log(response);
       } catch (error) {
         console.error(error);
       }
@@ -109,7 +108,7 @@ function PackagePage() {
 
       <footer>
         <div className="flex justify-center items-center">
-          <div className="flex justify-center items-center w-[1440px] h-[371px] p-[48px,160px] bg-gray-100">
+          <div className="flex justify-center items-center w-screen h-[371px] p-[48px,160px] bg-gray-100">
             <ul className="flex  flex-col justify-center items-center w-[1120px] h-[275px] flex-shrink-0">
               <li className="merry-match-logo ">
                 <img src={logo} />
