@@ -23,7 +23,6 @@ function TabSteps() {
   const isLastTab = activeTabIndex === 2;
   const [formData, setFormData] = useState({});
   const [randomFileNames, setRandomFileNames] = useState([]);
-  const [selectedTab, setSelectedTab] = useState(0);
   const [isDataInserted, setIsDataInserted] = useState(false);
   const [areFilesUploaded, setAreFilesUploaded] = useState(false);
 
@@ -239,23 +238,23 @@ function TabSteps() {
                 <Tab
                   key={item.id}
                   className={`${
-                    selectedTab === index
+                    activeTabIndex === index
                       ? "h-20 w-fit p-4 pr-8 border border-[#A62D82] rounded-2xl flex justify-start items-center space-x-4"
                       : "w-20 h-20 border border-gray-300 rounded-2xl flex justify-center items-center"
                   } `}
-                  onClick={() => setSelectedTab(index)} // Set selected tab on click
+                  onClick={() => setActiveTabIndex(index)} // Set selected tab on click
                 >
                   <h2
                     className={`w-12 h-12 rounded-2xl bg-gray-200 flex justify-center items-center text-2xl
                     font-bold text-${
-                      selectedTab === index ? "#A62D82" : "gray-500"
+                      activeTabIndex === index ? "#A62D82" : "gray-500"
                     }`}
                   >
                     {item.id}
                   </h2>
                   <div
                     className={`${
-                      selectedTab === index
+                      activeTabIndex === index
                         ? "flex flex-col justify-start"
                         : "hidden"
                     }`}
@@ -265,7 +264,7 @@ function TabSteps() {
                     </p>
                     <p
                       className={`text-${
-                        selectedTab === index ? "#A62D82" : "gray-700"
+                        activeTabIndex === index ? "#A62D82" : "gray-700"
                       } text-base font-extrabold`}
                     >
                       {item.title}
@@ -276,7 +275,7 @@ function TabSteps() {
             </TabList>
           </div>
 
-          <div className="h-full ">
+          <div className="h-full">
             <TabPanels className="text-md">
               <TabPanel
                 key={0}
