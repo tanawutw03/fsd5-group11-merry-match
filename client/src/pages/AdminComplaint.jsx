@@ -25,6 +25,8 @@ function AdminComplaint() {
   const navigate = useNavigate();
   const [complaintData, setComplainData] = useState([]);
   const [newComplaintCount, setNewComplaintCount] = useState(0);
+  const [selectedStatus, setSelectedStatus] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleRowClick = async (complaintId) => {
     const { data, error } = await supabase
@@ -91,6 +93,14 @@ function AdminComplaint() {
     navigate("/adminpage");
   };
 
+  const handleStatusChange = (event) => {
+    setSelectedStatus(event.target.value);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
   return (
     <div className="flex flex-row justify-stretch min-w-[1440px]">
       <div className="sidebar">
@@ -145,15 +155,21 @@ function AdminComplaint() {
                     <SearchIcon />
                   </Tooltip>
                 </InputLeftAddon>
-                <Input type="tel" placeholder="Search.." />
+                <Input
+                  type="tel"
+                  placeholder="Search.."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                />
               </InputGroup>
             </div>
             <div className="w-1/3">
-              <Select placeholder="All status">
+              <Select value={selectedStatus} onChange={handleStatusChange}>
+                <option value="All">All Status</option>
                 <option value="new">New</option>
-                <option value="panding">Pending</option>
-                <option value="resloved">Resloved</option>
-                <option value="Cancel">Cancel</option>
+                <option value="pending">Pending</option>
+                <option value="resolved">Resloved</option>
+                <option value="cancel">Cancel</option>
               </Select>
             </div>
           </div>
@@ -173,33 +189,52 @@ function AdminComplaint() {
                 </Tr>
               </Thead>
               <Tbody>
-                {complaintData.map((complaintItem, index) => (
-                  <Tr
-                    key={complaintItem.id}
-                    onClick={() => handleRowClick(complaintItem.id)}
-                  >
-                    <Td isNumeric>{index + 1}</Td>
-                    <Td>{complaintItem.fullname}</Td>
-                    <Td>{complaintItem.issue}</Td>
-                    <Td>{complaintItem.description}</Td>
-                    <Td>{complaintItem.date_submitted}</Td>
-                    <Td>
-                      <Badge
-                        colorScheme={
-                          complaintItem.status === "new"
-                            ? "red"
-                            : complaintItem.status === "pending"
-                            ? "yellow"
-                            : complaintItem.status === "resolved"
-                            ? "green"
-                            : "gray"
-                        }
-                      >
-                        {complaintItem.status}
-                      </Badge>
-                    </Td>
-                  </Tr>
-                ))}
+                {complaintData
+                  .filter(
+                    (complaintItem) =>
+                      (selectedStatus === "All" ||
+                        complaintItem.status === selectedStatus) &&
+                      (searchTerm === "" ||
+                        complaintItem.fullname
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        complaintItem.issue
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        complaintItem.description
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        complaintItem.date_submitted
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()))
+                  )
+                  .map((complaintItem, index) => (
+                    <Tr
+                      key={complaintItem.id}
+                      onClick={() => handleRowClick(complaintItem.id)}
+                    >
+                      <Td isNumeric>{index + 1}</Td>
+                      <Td>{complaintItem.fullname}</Td>
+                      <Td>{complaintItem.issue}</Td>
+                      <Td>{complaintItem.description}</Td>
+                      <Td>{complaintItem.date_submitted}</Td>
+                      <Td>
+                        <Badge
+                          colorScheme={
+                            complaintItem.status === "new"
+                              ? "red"
+                              : complaintItem.status === "pending"
+                              ? "yellow"
+                              : complaintItem.status === "resolved"
+                              ? "green"
+                              : "gray"
+                          }
+                        >
+                          {complaintItem.status}
+                        </Badge>
+                      </Td>
+                    </Tr>
+                  ))}
               </Tbody>
             </Table>
           </TableContainer>
