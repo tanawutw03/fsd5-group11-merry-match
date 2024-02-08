@@ -11,6 +11,9 @@ import AdminPage from "./pages/AdminPage";
 import CreatePackage from "./pages/CreatePackage";
 import EditPackage from "./pages/EditPackage";
 import { useUser } from "./app/userContext.js";
+import UserComplaint from "./pages/Usercomplaint";
+import AdminComplaint from "./pages/AdminComplaint.jsx";
+import ComplaintPage from "./pages/Complaint.jsx";
 
 const NoMatch = () => {
   return (
@@ -58,6 +61,9 @@ function App() {
         <Route path="/matching" element={<Matching />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/package" element={<MerryPackagePage />} />
+        <Route path="/usercomplaint" element={<UserComplaint />} />
+        <Route path="/admincomplaint" element={<AdminComplaint />} />
+        <Route path="/complaint/:complaint_Id" element={<ComplaintPage />} />
       </Routes>
     </BrowserRouter>
   );
