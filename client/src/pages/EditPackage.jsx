@@ -27,6 +27,28 @@ function EditPackage() {
   const [price, setPrice] = useState(0);
   const navigate = useNavigate();
   const { package_id } = useParams();
+  const [newComplaintCount, setNewComplaintCount] = useState(0);
+
+  useEffect(() => {
+    async function fetchNewComplaintCount() {
+      try {
+        const { data: newComplaints, error } = await supabase
+          .from("complaints")
+          .select("*")
+          .eq("status", "new");
+
+        if (error) {
+          console.error("Error fetching new complaints:", error.message);
+          return;
+        } else {
+          setNewComplaintCount(newComplaints.length);
+        }
+      } catch (error) {
+        console.error("Error fetching new complaints:", error.message);
+      }
+    }
+    fetchNewComplaintCount();
+  }, []);
 
   // useEffect(() => {
   //   async function fetchPackageData() {
@@ -150,7 +172,7 @@ function EditPackage() {
                 Complaint{" "}
                 <div className="grid place-items-center ml-auto justify-self-end">
                   <div className="relative grid items-center font-nunito font-bold uppercase whitespace-nowrap select-none bg-blue-500/20 text-blue-900 py-1 px-2 text-xs rounded-full">
-                    <span className="">14</span>
+                    <span className="">{newComplaintCount}</span>
                   </div>
                 </div>
               </button>
