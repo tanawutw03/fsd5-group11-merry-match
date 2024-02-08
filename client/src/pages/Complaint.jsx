@@ -8,12 +8,23 @@ import { useNavigate } from "react-router-dom";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";
 import { Badge } from "@chakra-ui/react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from "@chakra-ui/react";
 
 function ComplaintPage() {
   const navigate = useNavigate();
   const { complaint_Id } = useParams();
   const [complaintData, setComplaintData] = useState([]);
   const [newComplaintCount, setNewComplaintCount] = useState(0);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showResolveModal, setShowResolveModal] = useState(false);
 
   useEffect(() => {
     async function fetchComplaintData() {
@@ -55,6 +66,22 @@ function ComplaintPage() {
     fetchComplaintData();
   }, [complaint_Id]);
 
+  const handleOpenCancelModal = () => {
+    setShowCancelModal(true);
+  };
+
+  const handleCloseCancelModal = () => {
+    setShowCancelModal(false);
+  };
+
+  const handleOpenResolveModal = () => {
+    setShowResolveModal(true);
+  };
+
+  const handleCloseResolveModal = () => {
+    setShowResolveModal(false);
+  };
+
   const handleCancel = () => {
     navigate("/adminpage");
   };
@@ -69,6 +96,7 @@ function ComplaintPage() {
   };
 
   const handleCancelComplaint = async (complaintId) => {
+    handleCloseCancelModal();
     const { data, error } = await supabase
       .from("complaints")
       .update({ status: "cancel" })
@@ -84,6 +112,7 @@ function ComplaintPage() {
   };
 
   const handleResolveComplaint = async (complaintId) => {
+    handleCloseResolveModal();
     const { data, error } = await supabase
       .from("complaints")
       .update({ status: "resolved" })
@@ -174,14 +203,14 @@ function ComplaintPage() {
           <div className="flex flex-row flex-grow-0 justify-between px-2  gap-5">
             <button
               className="flex p-3 w-[200px] text-[#95002B]  text-center font-Nunito text-[16px] font-bold leading-6 justify-center items-center space-x-2 rounded-full bg-white  "
-              onClick={() => handleCancelComplaint(complaint_Id)}
+              onClick={handleOpenCancelModal}
             >
               Cancel Complaint
             </button>
 
             <button
               className="flex p-3 w-[200px]  text-white text-center font-Nunito text-[16px] font-bold leading-6 justify-center items-center space-x-2 rounded-full bg-[#C70039] shadow-md "
-              onClick={() => handleResolveComplaint(complaint_Id)}
+              onClick={handleOpenResolveModal}
             >
               Resolve Complaint
             </button>
@@ -221,6 +250,66 @@ function ComplaintPage() {
           </div>
         </div>
       </div>
+      {/* Modal for canceling complaint */}
+      <Modal
+        isOpen={showCancelModal}
+        onClose={handleCloseCancelModal}
+        size="lg"
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Cancel Complaint</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>Do you sure to cancel this conplaint?</ModalBody>
+          <ModalFooter>
+            <div className="flex flex-row  justify-evenly w-full">
+              <button
+                className="flex p-3 w-fit  text-white text-center font-Nunito text-[16px] font-bold leading-6 justify-center items-center space-x-2 rounded-full bg-[#C70039] shadow-md "
+                onClick={() => handleCancelComplaint(complaint_Id)}
+              >
+                Yes, cancel this complaint
+              </button>
+
+              <button
+                className="flex p-3 w-fit text-[#95002B]  text-center font-Nunito text-[16px] font-bold leading-6 justify-center items-center space-x-2 rounded-full bg-[#FFE1EA]  shadow-md "
+                onClick={handleCloseCancelModal}
+              >
+                No, give me more time
+              </button>
+            </div>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      {/* Modal for resolving complaint */}
+      <Modal
+        isOpen={showResolveModal}
+        onClose={handleCloseResolveModal}
+        size="lg"
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Resolve Complaint</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>This complaint is resolved?</ModalBody>
+          <ModalFooter>
+            <div className="flex flex-row  justify-evenly w-full">
+              <button
+                className="flex p-3 w-fit  text-white text-center font-Nunito text-[16px] font-bold leading-6 justify-center items-center space-x-2 rounded-full bg-[#C70039] shadow-md "
+                onClick={() => handleResolveComplaint(complaint_Id)}
+              >
+                Yes, it has been resolved
+              </button>
+
+              <button
+                className="flex p-3 w-fit text-[#95002B]  text-center font-Nunito text-[16px] font-bold leading-6 justify-center items-center space-x-2 rounded-full bg-[#FFE1EA]  shadow-md "
+                onClick={handleCloseResolveModal}
+              >
+                No, it’s not
+              </button>
+            </div>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
