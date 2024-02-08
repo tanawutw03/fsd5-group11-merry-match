@@ -110,7 +110,7 @@ const NavBar = (props) => {
 
   return (
     <>
-      <nav>
+      <nav className="w-screen flex justify-center">
         <ul className=" flex  items-center  text-red-400 text-xl  text-center m-[20px]">
           <li className=" ml-[60px]">
             <img src={logo} />

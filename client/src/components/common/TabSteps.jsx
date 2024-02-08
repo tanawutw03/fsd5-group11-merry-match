@@ -124,6 +124,7 @@ function TabSteps() {
               meeting_interest: formData.meeting_interest,
               hobbies: formData.hobbies,
               date_of_birth: formData.dob,
+              description: formData.description,
             })
             .select();
 
@@ -168,7 +169,7 @@ function TabSteps() {
     };
 
     checkUserAuthentication();
-  }, [userId, randomFileNames, formData]);
+  }, [userId, randomFileNames]);
 
   const handleSubmit = async () => {
     try {
@@ -210,7 +211,7 @@ function TabSteps() {
 
   return (
     <>
-      <div className=" w-max">
+      <div className="w-screen h-screen">
         <NavBar
           useMenu={false}
           name="Login"
@@ -221,116 +222,108 @@ function TabSteps() {
           onClickSecondMenu={() => navigate("/")}
           showBell={false}
         />
-      </div>
-      <RegisterWords />
-      <div className="min-w-[1440px] flex flex-col justify-between item-center bg-[#fcfcfe]  relative">
-        <Tabs
-          align="center"
-          index={activeTabIndex}
-          onChange={(index) => handleTabChange(index)}
-          variant="unstyled"
-          colorScheme="purple"
-          size="lg"
-        >
-          <div className="text-[#A62D82] flex flex-col absolute -mt-[7%] right-[20%] text-2xl font-nunito">
-            <TabList className="gap-5">
-              {stepperData.map((item, index) => (
-                <Tab
-                  key={item.id}
-                  className={`${
-                    activeTabIndex === index
-                      ? "h-20 w-fit p-4 pr-8 border border-[#A62D82] rounded-2xl flex justify-start items-center space-x-4"
-                      : "w-20 h-20 border border-gray-300 rounded-2xl flex justify-center items-center"
-                  } `}
-                  onClick={() => setActiveTabIndex(index)} // Set selected tab on click
-                >
-                  <h2
-                    className={`w-12 h-12 rounded-2xl bg-gray-200 flex justify-center items-center text-2xl
+        <RegisterWords />
+        <div className="flex flex-col justify-start item-center bg-[#fcfcfe] h-3/5">
+          <Tabs
+            align="center"
+            index={activeTabIndex}
+            onChange={(index) => handleTabChange(index)}
+            variant="unstyled"
+            colorScheme="purple"
+            size="lg"
+          >
+            <div className="text-[#A62D82] flex flex-col absolute -mt-[7%] right-[20%] text-2xl font-nunito">
+              <TabList className="gap-5">
+                {stepperData.map((item, index) => (
+                  <Tab
+                    key={item.id}
+                    className={`${
+                      activeTabIndex === index
+                        ? "h-20 w-fit p-4 pr-8 border border-[#A62D82] rounded-2xl flex justify-start items-center space-x-4"
+                        : "w-20 h-20 border border-gray-300 rounded-2xl flex justify-center items-center"
+                    } `}
+                    onClick={() => setActiveTabIndex(index)} // Set selected tab on click
+                  >
+                    <h2
+                      className={`w-12 h-12 rounded-2xl bg-gray-200 flex justify-center items-center text-2xl
                     font-bold text-${
                       activeTabIndex === index ? "#A62D82" : "gray-500"
                     }`}
-                  >
-                    {item.id}
-                  </h2>
-                  <div
-                    className={`${
-                      activeTabIndex === index
-                        ? "flex flex-col justify-start"
-                        : "hidden"
-                    }`}
-                  >
-                    <p className="text-gray-700 text-xs font-medium text-left">
-                      Step {item.id}/3
-                    </p>
-                    <p
-                      className={`text-${
-                        activeTabIndex === index ? "#A62D82" : "gray-700"
-                      } text-base font-extrabold`}
                     >
-                      {item.title}
-                    </p>
-                  </div>
-                </Tab>
-              ))}
-            </TabList>
-          </div>
+                      {item.id}
+                    </h2>
+                    <div
+                      className={`${
+                        activeTabIndex === index
+                          ? "flex flex-col justify-start"
+                          : "hidden"
+                      }`}
+                    >
+                      <p className="text-gray-700 text-xs font-medium text-left">
+                        Step {item.id}/3
+                      </p>
+                      <p
+                        className={`text-${
+                          activeTabIndex === index ? "#A62D82" : "gray-700"
+                        } text-base font-extrabold`}
+                      >
+                        {item.title}
+                      </p>
+                    </div>
+                  </Tab>
+                ))}
+              </TabList>
+            </div>
 
-          <div className="h-full">
-            <TabPanels className="text-md">
-              <TabPanel
-                key={0}
-                className="h-screen flex justify-center items-center"
-              >
-                <Step1Inputs
-                  formData={formData}
-                  setFormData={setFormData}
-                  onFormChange={handleFormChange}
-                />
-              </TabPanel>
-              <TabPanel
-                key={1}
-                className="h-screen flex justify-center items-center"
-              >
-                <Step2Inputs
-                  formData={formData}
-                  setFormData={setFormData}
-                  onFormChange={handleFormChange}
-                />
-              </TabPanel>
-              <TabPanel
-                key={2}
-                className="h-screen flex justify-center items-center"
-              >
-                <Step3Inputs
-                  formData={formData}
-                  setFormData={setFormData}
-                  onFormChange={handleFormChange}
-                  onRandomFileNames={handleRandomFileNames}
-                />
-              </TabPanel>
-            </TabPanels>
+            <div className="h-full flex justify-center items-center">
+              <TabPanels className="text-md">
+                <TabPanel key={0} className="flex justify-center items-center">
+                  <Step1Inputs
+                    formData={formData}
+                    setFormData={setFormData}
+                    onFormChange={handleFormChange}
+                  />
+                </TabPanel>
+                <TabPanel key={1} className="flex justify-center items-center">
+                  <Step2Inputs
+                    formData={formData}
+                    setFormData={setFormData}
+                    onFormChange={handleFormChange}
+                  />
+                </TabPanel>
+                <TabPanel key={2} className="flex justify-center items-center">
+                  <Step3Inputs
+                    formData={formData}
+                    setFormData={setFormData}
+                    onFormChange={handleFormChange}
+                    onRandomFileNames={handleRandomFileNames}
+                  />
+                </TabPanel>
+              </TabPanels>
+            </div>
+          </Tabs>
+        </div>
+        <div className="p-5 bg-white shadow-md flex justify-between items-center h-fit absolute w-full buttom-0">
+          <div>
+            <p>{activeTabIndex + 1}/3</p>
           </div>
-        </Tabs>
-      </div>
-      <div className="bottom-0 w-screen h-112 p-5 bg-white shadow-md flex justify-end border-t-2">
-        <p className="flex justify-start items-center absolute left-20 bottom-12 text-base font-normal">
-          <span className="text-gray-600">{activeTabIndex + 1}</span>
-          <span className="text-gray-500">/3</span>
-        </p>
-        <ChakraButton
-          name="← Back"
-          variant="link"
-          onClick={handlePrev}
-          colorScheme="gray"
-        />
-        <ChakraButton
-          name={renderButtonLabel}
-          rounded="full"
-          type={renderButtonType}
-          onClick={isLastTab ? handleSubmit : handleNext}
-          colorScheme="red"
-          variant="link"
-        />
+          <div>
+            <ChakraButton
+              name="← Back"
+              variant="link"
+              onClick={handlePrev}
+              colorScheme="gray"
+            />
+            <ChakraButton
+              name={renderButtonLabel}
+              rounded="full"
+              type={renderButtonType}
+              onClick={isLastTab ? handleSubmit : handleNext}
+              colorScheme="red"
+              variant="link"
+            />
+          </div>
+        </div>
       </div>
     </>
   );
