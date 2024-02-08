@@ -21,42 +21,65 @@ function MerryCards() {
 
   useEffect(() => {
     const fetchImages = async () => {
+      setIsLoading(true);
       try {
-        console.log("Fetching images...");
+        // Step 1: Fetch all UUIDs from the "profiles" table
+        const { data: queryUUID, error: errorQueryUUID } = await supabase
+          .from("profiles")
+          .select("id");
 
-        const { data, error } = await supabase.storage
-          .from("user-profiles")
-          .list(null, {
-            limit: 100,
-            offset: 0,
-            sortBy: { column: "name", order: "asc" },
-          });
-
-        if (error) {
-          console.error("Error fetching images:", error);
-          setError(error.message);
-        } else {
-          console.log("Fetched raw data:", data);
-
-          // Construct the image URLs
-          const imageUrls = data.map((item) => {
-            const imageUrl = supabase.storage
-              .from("user-profiles")
-              .getPublicUrl(item.name);
-
-            return { ...item, url: imageUrl };
-          });
-
-          console.log("Image URLs:", imageUrls);
-
-          setPeople(imageUrls);
-          setDataLoaded(true);
+        if (errorQueryUUID) {
+          console.error("Error querying UUIDs:", errorQueryUUID);
+          setError(errorQueryUUID.message);
+          return;
         }
+
+        let allImages = [];
+
+        // Step 2: Loop through each UUID to list files in each "avatars"/UUID/ folder
+        for (const profile of queryUUID) {
+          const { data, error } = await supabase.storage
+            .from("avatars")
+            .list(profile.id, {
+              // Use the UUID as the folder path
+              limit: 100,
+              offset: 0,
+              sortBy: { column: "name", order: "asc" },
+            });
+
+          if (error) {
+            console.error(
+              `Error fetching images for UUID ${profile.id}:`,
+              error
+            );
+            continue; // Skip to the next UUID on error
+          }
+
+          // Step 3: Construct the image URLs for each file
+          for (const item of data) {
+            const { data, error: urlError } = supabase.storage
+              .from("avatars")
+              .getPublicUrl(`${profile.id}/${item.name}`);
+
+            if (urlError) {
+              console.error(
+                `Error getting public URL for ${item.name}:`,
+                urlError
+              );
+              continue; // Skip to the next item on error
+            }
+
+            allImages.push({ ...item, url: data });
+          }
+        }
+
+        setPeople(allImages);
       } catch (error) {
         console.error("Unexpected error:", error);
         setError("Unexpected error");
       } finally {
         setIsLoading(false);
+        setDataLoaded(true);
       }
     };
 
@@ -94,7 +117,7 @@ function MerryCards() {
             >
               <div
                 className="bg-center bg-no-repeat bg-[length:720px_720px]  p-5 relative w-[720px] h-[720px] rounded-2xl hover:cursor-grab active:cursor-grabbing"
-                style={{ backgroundImage: `url(${person.url.data.publicUrl})` }}
+                style={{ backgroundImage: `url(${person.url.publicUrl})` }}
               />
 
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent  rounded-2xl to-[#411849]"></div>
