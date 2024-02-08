@@ -8,9 +8,65 @@ import PropTypes from "prop-types";
 import banner from "../assets/LoginPage/LoginBanner.svg";
 import { Button } from "@chakra-ui/react";
 import { FormControl, FormLabel, Input, Textarea } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import { supabase } from "../utils/supabaseClient";
+import { useUser } from "../app/userContext.js";
 
-function UserComplaint({ user, setUser }) {
+function UserComplaint() {
+  const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
+  const [issue, setIssue] = useState("");
+  const [description, setDescription] = useState("");
+  const [dateSubmitted, setDateSubmitted] = useState("");
+  const [fullname, setFullname] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log(user.user.id);
+    async function fetchUserProfile() {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.user.id) // ใช้ user.id เพื่อเลือกข้อมูลของผู้ใช้ที่เป็นคนล็อกอิน
+        .single();
+
+      if (error) {
+        console.error("Error fetching user profile:", error.message);
+        // Handle error appropriately
+      } else {
+        if (data) {
+          // ถ้ามีข้อมูล fullname ในฐานข้อมูล
+          setFullname(data.full_name);
+        } else {
+          console.log("User profile not found.");
+        }
+      }
+    }
+
+    // เรียกใช้ฟังก์ชันดึงข้อมูล
+    fetchUserProfile();
+  }, [user]); // ให้ useEffect เรียกใช้ฟังก์ชันเมื่อ user เปลี่ยนแปลง
+
+  const handleSubmit = async () => {
+    const { data, error } = await supabase.from("complaints").insert([
+      {
+        issue: issue,
+        description: description,
+        date_submitted: dateSubmitted,
+        fullname: fullname, // ใช้ fullname ที่ดึงมาจากฐานข้อมูล
+      },
+    ]);
+
+    if (error) {
+      console.error("Error submitting complaint:", error.message);
+      // Handle error appropriately
+    } else {
+      console.log("Complaint submitted successfully:", data);
+      // Clear input fields after successful submission
+      setIssue("");
+      setDescription("");
+      setDateSubmitted("");
+    }
+  };
 
   const scrollToSection = (sectionId) => {
     const targetSection = document.getElementById(sectionId);
@@ -67,7 +123,11 @@ function UserComplaint({ user, setUser }) {
           <div className="my-[50px] flex flex-col justify-between items-start w-full gap-[40px]">
             <FormControl isRequired>
               <FormLabel>Issue</FormLabel>
-              <Input placeholder="Issue" />
+              <Input
+                placeholder="Issue"
+                value={issue}
+                onChange={(e) => setIssue(e.target.value)}
+              />
             </FormControl>
 
             <FormControl isRequired>
@@ -76,17 +136,28 @@ function UserComplaint({ user, setUser }) {
                 placeholder="Description"
                 resize="none"
                 style={{ height: "200px" }}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </FormControl>
 
             <div className="w-1/2">
               <FormControl isRequired>
                 <FormLabel>Date Submitted</FormLabel>
-                <Input type="date" size="lg" />
+                <Input
+                  type="date"
+                  size="lg"
+                  value={dateSubmitted}
+                  onChange={(e) => setDateSubmitted(e.target.value)}
+                />
               </FormControl>
             </div>
           </div>
-          <Button colorScheme="red" className="my-[50px] ">
+          <Button
+            colorScheme="red"
+            className="my-[50px] "
+            onClick={handleSubmit}
+          >
             submit
           </Button>
         </div>
