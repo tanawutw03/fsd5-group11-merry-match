@@ -110,46 +110,48 @@ const NavBar = (props) => {
 
   return (
     <>
-      <nav>
-        <ul className=" flex  items-center  text-red-400 text-xl  text-center m-[20px]">
-          <li className=" ml-[60px]">
-            <img src={logo} />
-          </li>
-          <li className=" font-nunito  font-bold ml-[520px]">
-            <Button
-              variant="link"
-              colorScheme="custom"
-              color="#191C77"
-              onClick={handleFirstMenuClick}
-            >
-              {props.firstMenuName}
-            </Button>
-          </li>
-          <li className=" font-nunito  font-bold mr-[24px]  ml-[35px]">
-            <Button
-              variant="link"
-              colorScheme="custom"
-              color="#191C77"
-              onClick={handleSecondMenuClick}
-            >
-              {props.secondMenuName}
-            </Button>
-          </li>
-          <div className="flex  ml-[20px]  ">
-            {props.showBell && (
-              <div className="flex mr-[10px]  ">
-                <Menu>
-                  <MenuButton>
-                    <img className=" w-[48px] h-[48px]  " src={bell} />
-                  </MenuButton>
-                  <MenuList></MenuList>
-                </Menu>
-              </div>
-            )}
-            <li className="mr-[160px]  ]">{MenuOrButton}</li>
-          </div>
-        </ul>
-      </nav>
+      <div className="border-2 border-red-500 flex justify-around items-center">
+        <nav>
+          <ul className=" flex  items-center  text-red-400 text-xl  text-center m-[20px]">
+            <li className=" ml-[60px]">
+              <img src={logo} />
+            </li>
+            <li className=" font-nunito  font-bold ml-[520px]">
+              <Button
+                variant="link"
+                colorScheme="custom"
+                color="#191C77"
+                onClick={handleFirstMenuClick}
+              >
+                {props.firstMenuName}
+              </Button>
+            </li>
+            <li className=" font-nunito  font-bold mr-[24px]  ml-[35px]">
+              <Button
+                variant="link"
+                colorScheme="custom"
+                color="#191C77"
+                onClick={handleSecondMenuClick}
+              >
+                {props.secondMenuName}
+              </Button>
+            </li>
+            <div className="flex  ml-[20px]  ">
+              {props.showBell && (
+                <div className="flex mr-[10px]  ">
+                  <Menu>
+                    <MenuButton>
+                      <img className=" w-[48px] h-[48px]  " src={bell} />
+                    </MenuButton>
+                    <MenuList></MenuList>
+                  </Menu>
+                </div>
+              )}
+              <li className="mr-[160px]  ]">{MenuOrButton}</li>
+            </div>
+          </ul>
+        </nav>
+      </div>
     </>
   );
 };

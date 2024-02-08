@@ -27,6 +27,7 @@ function PackagePage() {
   }, []);
   return (
     <>
+      {/* <div className="border-2 border-red-500 flex justify-center items-center"> */}
       <NavBar
         firstMenuName="Start Matching!"
         secondMenuName="Merry Membership"
@@ -37,7 +38,7 @@ function PackagePage() {
         onClickFirstMenu={() => navigate("/matching")}
         onClickSecondMenu={() => navigate("/package")}
       />
-
+      {/* </div> */}
       <section>
         <div className="package-container flex flex-col mt-[80px] mb-[160px] ml-[160px] mr-[160px]">
           <p className="merry-membership-title  font-nunito text-[14px] text-[#7B4429]">
@@ -52,7 +53,7 @@ function PackagePage() {
               to make more Merry!
             </p>
           </div>
-          <div className="flex justify-center items-center max-[1120px]:flex-col gap-[24px] mt-[80px]">
+          <div className="flex justify-center items-center max-[1120px]:flex-col gap-[24px] mt-[80px] border-2 border-green-500">
             {data.map((packages, index) => (
               <div
                 key={index}
@@ -107,44 +108,46 @@ function PackagePage() {
         </div>
       </section>
 
-      <footer>
-        <div className="flex justify-center items-center">
-          <div className="flex justify-center items-center w-[1440px] h-[371px] p-[48px,160px] bg-gray-100">
-            <ul className="flex  flex-col justify-center items-center w-[1120px] h-[275px] flex-shrink-0">
-              <li className="merry-match-logo ">
-                <img src={logo} />
-              </li>
-              <li className="font-nunito text-center text-[20px] text-[#646D89] font-[600px] leading-[30px]">
-                New generation of online dating website for everyone
-              </li>
-              <div className="flex flex-col items-center gap-[24px] pt-[24px] border-t-1 ">
-                <li className="font-nunito text-center text-[14px] text-[#9AA1B9] font-[500px] leading-[30px]">
-                  copyright ©2022 merrymatch.com All rights reserved
+      <div className="border-2 border-gray-500 flex justify-center items-center">
+        <footer>
+          <div className="flex justify-center items-center border-2 ">
+            <div className="flex justify-center items-center w-[1440px] h-[371px] p-[48px,160px] bg-gray-100 ">
+              <ul className="flex  flex-col justify-center items-center w-[1120px] h-[275px] flex-shrink-0">
+                <li className="merry-match-logo ">
+                  <img src={logo} />
                 </li>
-                <div className="flex flex-row gap-[16px] ">
-                  <img
-                    src={facebookIcon}
-                    alt=""
-                    className="p-[12px] rounded-[24px] bg-purple-500"
-                  />
+                <li className="font-nunito text-center text-[20px] text-[#646D89] font-[600px] leading-[30px]">
+                  New generation of online dating website for everyone
+                </li>
+                <div className="flex flex-col items-center gap-[24px] pt-[24px] border-t-1 ">
+                  <li className="font-nunito text-center text-[14px] text-[#9AA1B9] font-[500px] leading-[30px]">
+                    copyright ©2022 merrymatch.com All rights reserved
+                  </li>
+                  <div className="flex flex-row gap-[16px] ">
+                    <img
+                      src={facebookIcon}
+                      alt=""
+                      className="p-[12px] rounded-[24px] bg-purple-500"
+                    />
 
-                  <img
-                    src={instagramIcon}
-                    alt=""
-                    className="p-[12px]  rounded-[24px] bg-purple-500"
-                  />
+                    <img
+                      src={instagramIcon}
+                      alt=""
+                      className="p-[12px]  rounded-[24px] bg-purple-500"
+                    />
 
-                  <img
-                    src={twitterIcon}
-                    alt=""
-                    className="p-[12px] rounded-[24px] bg-purple-500"
-                  />
+                    <img
+                      src={twitterIcon}
+                      alt=""
+                      className="p-[12px] rounded-[24px] bg-purple-500"
+                    />
+                  </div>
                 </div>
-              </div>
-            </ul>
+              </ul>
+            </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </>
   );
 }
