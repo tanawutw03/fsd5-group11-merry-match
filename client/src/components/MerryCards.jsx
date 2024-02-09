@@ -4,19 +4,55 @@ import { supabase } from "../utils/supabaseClient.js";
 import action from "../assets/Matching/action button.svg";
 import heart from "../assets/Matching/heart button (1).svg";
 import { ArrowForwardIcon, ArrowBackIcon, ViewIcon } from "@chakra-ui/icons";
+import axios from "axios";
+import PropTypes from "prop-types";
 
-function MerryCards() {
+function MerryCards({ user }) {
   const [people, setPeople] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [error, setError] = useState(null);
+  const [updatedMatches, setUpdatedMatches] = useState([]);
 
-  const onSwipe = (direction) => {
+  console.log(`user info`, user);
+
+  const onSwipe = (direction, swipedUserId) => {
     console.log("You swiped: " + direction);
+    console.log(`Your Id:`, user.user.id);
+    console.log(`Your Swipe:`, swipedUserId);
+
+    if (direction === "right" && user.user.id) {
+      updateMatches(user.user.id, swipedUserId);
+    } else if (direction === "left" && user.user.id) {
+    }
   };
 
   const onCardLeftScreen = (myIdentifier) => {
     console.log(myIdentifier + " left the screen");
+  };
+
+  const updateMatches = async (swipingUserId, swipedUserId) => {
+    console.log(swipingUserId);
+    console.log(swipedUserId);
+
+    const swipedUserIdsArray = Array.isArray(swipedUserId)
+      ? swipedUserId
+      : [swipedUserId];
+    console.log(swipedUserIdsArray);
+
+    try {
+      const response = await axios.put(
+        "http://localhost:4008/matching/api/v1/match",
+        {
+          userId: swipingUserId,
+          matchedUserId: swipedUserIdsArray,
+        }
+      );
+
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error updating matches:", error);
+    }
   };
 
   useEffect(() => {
@@ -115,8 +151,8 @@ function MerryCards() {
             <TinderCard
               className=" absolute"
               key={person.id}
-              onSwipe={onSwipe}
-              onCardLeftScreen={() => onCardLeftScreen(person.name)}
+              onSwipe={(dir) => onSwipe(dir, person.id)}
+              onCardLeftScreen={() => onCardLeftScreen(person.full_name)}
             >
               <div
                 className="bg-center bg-no-repeat bg-[length:720px_720px]  p-5 relative w-[720px] h-[720px] rounded-2xl hover:cursor-grab active:cursor-grabbing"
@@ -138,5 +174,9 @@ function MerryCards() {
     </div>
   );
 }
+
+MerryCards.propTypes = {
+  user: PropTypes.object,
+};
 
 export default MerryCards;

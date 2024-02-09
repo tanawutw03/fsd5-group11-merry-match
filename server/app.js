@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { supabase } from "./utils/supabaseClient.js";
 import multer from "multer";
+import matchRouter from "./apps/match.js";
 
 async function init() {
   const app = express();
@@ -10,6 +11,7 @@ async function init() {
   const port = 4008;
   app.use(cors());
   app.use(express.json());
+  app.use("/matching", matchRouter);
 
   app.get("/api/package", async (req, res) => {
     try {
