@@ -19,9 +19,14 @@ function SliderAge() {
 
   const handleInputChange = (index, newValue) => {
     const updatedValues = [...sliderValues];
-
     updatedValues[index] = newValue;
+    setSliderValues(updatedValues);
+  };
 
+  const handleInputBlur = (index) => {
+    const updatedValues = [...sliderValues];
+    // Ensure the input values stay within the min and max range
+    updatedValues[index] = Math.max(18, Math.min(updatedValues[index], 60));
     setSliderValues(updatedValues);
   };
 
@@ -29,9 +34,9 @@ function SliderAge() {
     <>
       <RangeSlider
         aria-label={["Minimum age", "Maximum age"]}
-        defaultValue={[18, 31]}
+        value={sliderValues}
         onChange={handleSliderChange}
-        w="36"
+        minw="36"
         min={18}
         max={60}
       >
@@ -57,21 +62,27 @@ function SliderAge() {
           <RangeSliderThumb index={1} />
         </Tooltip>
       </RangeSlider>
-      <div className="mt-10 flex justify-center ">
+      <div className="mt-10 flex justify-around ">
         <span>
           <input
             className="w-24 border-2"
             type="number"
+            min="18"
+            max="80"
             value={sliderValues[0]}
             onChange={(e) => handleInputChange(0, parseInt(e.target.value))}
+            onBlur={() => handleInputBlur(0)}
           />
         </span>
         <span>
           <input
             className="w-24 border-2"
             type="number"
+            min="18"
+            max="80"
             value={sliderValues[1]}
             onChange={(e) => handleInputChange(1, parseInt(e.target.value))}
+            onBlur={() => handleInputBlur(1)}
           />
         </span>
       </div>
