@@ -23,10 +23,9 @@ function MerryCards() {
     const fetchImages = async () => {
       setIsLoading(true);
       try {
-        // Step 1: Fetch all UUIDs from the "profiles" table
-        const { data: queryUUID, error: errorQueryUUID } = await supabase
+        const { data: profiles, error: errorQueryUUID } = await supabase
           .from("profiles")
-          .select("id");
+          .select("id, full_name, age");
 
         if (errorQueryUUID) {
           console.error("Error querying UUIDs:", errorQueryUUID);
@@ -34,46 +33,50 @@ function MerryCards() {
           return;
         }
 
-        let allImages = [];
+        let allProfilesWithImages = [];
 
-        // Step 2: Loop through each UUID to list files in each "avatars"/UUID/ folder
-        for (const profile of queryUUID) {
-          const { data, error } = await supabase.storage
-            .from("avatars")
-            .list(profile.id, {
-              // Use the UUID as the folder path
+        for (const profile of profiles) {
+          const { data: fileList, error: fileListError } =
+            await supabase.storage.from("avatars").list(profile.id, {
               limit: 100,
               offset: 0,
               sortBy: { column: "name", order: "asc" },
             });
 
-          if (error) {
+          if (fileListError) {
             console.error(
               `Error fetching images for UUID ${profile.id}:`,
-              error
+              fileListError
             );
-            continue; // Skip to the next UUID on error
+            continue;
           }
 
-          // Step 3: Construct the image URLs for each file
-          for (const item of data) {
-            const { data, error: urlError } = supabase.storage
-              .from("avatars")
-              .getPublicUrl(`${profile.id}/${item.name}`);
+          const avatarUrls = await Promise.all(
+            fileList.map(async (file) => {
+              const response = await supabase.storage
+                .from("avatars")
+                .getPublicUrl(`${profile.id}/${file.name}`);
+              if (response.error) {
+                console.error(
+                  `Error getting public URL for ${file.name}:`,
+                  response.error
+                );
+                return null;
+              } else {
+                return response.data.publicUrl; // Make sure this matches the actual property name in the response
+              }
+            })
+          );
 
-            if (urlError) {
-              console.error(
-                `Error getting public URL for ${item.name}:`,
-                urlError
-              );
-              continue; // Skip to the next item on error
-            }
+          const filteredAvatarUrls = avatarUrls.filter((url) => url !== null);
 
-            allImages.push({ ...item, url: data });
-          }
+          allProfilesWithImages.push({
+            ...profile,
+            avatarUrls: filteredAvatarUrls,
+          });
         }
 
-        setPeople(allImages);
+        setPeople(allProfilesWithImages);
       } catch (error) {
         console.error("Unexpected error:", error);
         setError("Unexpected error");
@@ -111,18 +114,20 @@ function MerryCards() {
           {people.map((person) => (
             <TinderCard
               className=" absolute"
-              key={person.name}
+              key={person.id}
               onSwipe={onSwipe}
               onCardLeftScreen={() => onCardLeftScreen(person.name)}
             >
               <div
                 className="bg-center bg-no-repeat bg-[length:720px_720px]  p-5 relative w-[720px] h-[720px] rounded-2xl hover:cursor-grab active:cursor-grabbing"
-                style={{ backgroundImage: `url(${person.url.publicUrl})` }}
+                style={{
+                  backgroundImage: `url(${person.avatarUrls[0]})`,
+                }}
               />
 
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent  rounded-2xl to-[#411849]"></div>
               <h1 className=" absolute bottom-16 left-5 text-white font-bold text-s ">
-                {person.name}
+                {person.full_name}
 
                 <ViewIcon w={5} h={5} ml={4} color="white" />
               </h1>
