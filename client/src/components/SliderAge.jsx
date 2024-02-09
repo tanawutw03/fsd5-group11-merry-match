@@ -7,12 +7,14 @@ import {
 import { Tooltip } from "@chakra-ui/react";
 import { useState } from "react";
 
-function SliderAge() {
+function SliderAge({ onRangeChange }) {
   const [sliderValues, setSliderValues] = useState([18, 31]);
 
   const handleSliderChange = (newValues) => {
     setSliderValues(newValues);
-    console.log("Final Slider Values:", newValues);
+    if (typeof onRangeChange === "function") {
+      onRangeChange({ min_age: newValues[0], max_age: newValues[1] });
+    }
   };
 
   const getTooltipContent = (value) => `${value}`;
@@ -21,13 +23,19 @@ function SliderAge() {
     const updatedValues = [...sliderValues];
     updatedValues[index] = newValue;
     setSliderValues(updatedValues);
+    if (typeof onRangeChange === "function") {
+      onRangeChange({ min_age: updatedValues[0], max_age: updatedValues[1] });
+    }
   };
 
   const handleInputBlur = (index) => {
     const updatedValues = [...sliderValues];
     // Ensure the input values stay within the min and max range
-    updatedValues[index] = Math.max(18, Math.min(updatedValues[index], 60));
+    updatedValues[index] = Math.max(18, Math.min(updatedValues[index], 80));
     setSliderValues(updatedValues);
+    if (typeof onRangeChange === "function") {
+      onRangeChange({ min_age: updatedValues[0], max_age: updatedValues[1] });
+    }
   };
 
   return (
@@ -38,7 +46,7 @@ function SliderAge() {
         onChange={handleSliderChange}
         minw="36"
         min={18}
-        max={60}
+        max={80}
       >
         <RangeSliderTrack>
           <RangeSliderFilledTrack />
