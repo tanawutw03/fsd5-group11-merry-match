@@ -87,18 +87,23 @@ function ComplaintPage() {
 
   const handleCancelComplaint = async (complaintId) => {
     handleCloseCancelModal();
-    const { data, error } = await supabase
-      .from("complaints")
-      .update({ status: "cancel" })
-      .eq("id", complaintId);
+    try {
+      // Make a PUT request to update the status of the complaint to "resolved"
+      const response = await axios.put(
+        `http://localhost:4008/admin/complaint/cancel/${complaintId}`,
+        { complaintId }
+      );
 
-    if (error) {
+      // Check if the request was successful
+      if (response.status === 200) {
+        console.log("Status updated successfully:", response.data);
+        navigate(`/admincomplaint`);
+      } else {
+        console.error("Error updating status:", response.data.error);
+      }
+    } catch (error) {
       console.error("Error updating status:", error.message);
-      return;
     }
-
-    console.log("Status updated successfully:", data);
-    navigate(`/admincomplaint`);
   };
 
   const handleResolveComplaint = async (complaintId) => {
@@ -106,7 +111,7 @@ function ComplaintPage() {
     try {
       // Make a PUT request to update the status of the complaint to "resolved"
       const response = await axios.put(
-        `http://localhost:4008/admin/complaint/resolved`,
+        `http://localhost:4008/admin/complaint/resolved/${complaintId}`,
         { complaintId }
       );
 
