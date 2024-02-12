@@ -1,12 +1,17 @@
 import MerryCards from "../components/MerryCards";
 import NavBar from "../components/common/NavBar";
 import LeftSideMatching from "../components/LeftSideMatching";
-
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchMatching from "../components/SearchMatching";
 
 function Matching() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useState(null);
+
+  const handleSearch = async (params) => {
+    await setSearchParams(params);
+  };
 
   return (
     <>
@@ -30,7 +35,7 @@ function Matching() {
             <MerryCards />
           </div>
           <div>
-            <SearchMatching />
+            <SearchMatching onSearch={handleSearch} />
           </div>
         </div>
       </div>

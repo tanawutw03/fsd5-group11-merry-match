@@ -3,11 +3,9 @@ import SliderAge from "./SliderAge";
 import { useUser } from "../app/userContext.js";
 import { useState, useEffect } from "react";
 import { supabase } from "../utils/supabaseClient";
-import { useNavigate } from "react-router-dom";
 
-function SearchMatching() {
+function SearchMatching({ onSearch }) {
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
-  const navigate = useNavigate();
   const [minAge, setMinAge] = useState(18);
   const [maxAge, setMaxAge] = useState(31);
   const [searchSex, setSearchSex] = useState([]);
@@ -23,7 +21,6 @@ function SearchMatching() {
         .single();
       if (error) {
         console.error("Error fetching user profile:", error.message);
-        // Handle error appropriately
       } else {
         if (data) {
           setUserData(data.sex_preferences);
@@ -34,9 +31,11 @@ function SearchMatching() {
       }
     }
 
-    // Fetch user profile data
-    fetchUserProfile();
-  }, [user]);
+    // Ensure user data is available before attempting to fetch profile
+    if (user && user.user && user.user.id) {
+      fetchUserProfile();
+    }
+  }, [user, userId]);
 
   const handleCheckboxChange = (event) => {
     const { checked, value } = event.target;
@@ -47,27 +46,13 @@ function SearchMatching() {
     }
   };
 
-  const handleSearch = async () => {
-    try {
-      await supabase
-        .from("search_user")
-        .update({
-          sex_preferences: searchSex,
-          min_age: minAge,
-          max_age: maxAge,
-        })
-        .eq("id", userId);
-      console.log("Search preferences updated successfully!");
-    } catch (error) {
-      console.error("Error updating search preferences:", error.message);
-      // Handle error appropriately
-    }
+  const handleSearch = () => {
+    console.log("Searching...");
+    onSearch({ minAge, maxAge, searchSex });
   };
 
   const handleClear = () => {
-    setSearchSex(userData);
-    setMinAge(18);
-    setMaxAge(31);
+    window.location.reload();
   };
 
   return (
