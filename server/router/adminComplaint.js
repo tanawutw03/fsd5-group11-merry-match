@@ -67,11 +67,10 @@ adminComplaint.get("/:id", async (req, res) => {
   }
 });
 
-adminComplaint.put("/pending", async (req, res) => {
+adminComplaint.put("/pending/:id", async (req, res) => {
   try {
-    const { complaintId } = req.body;
+    const complaintId = req.params.id;
 
-    // Update the status of the complaint to "pending" in the database
     const { data, error } = await supabase
       .from("complaints")
       .update({ status: "pending" })
@@ -79,7 +78,34 @@ adminComplaint.put("/pending", async (req, res) => {
 
     if (error) {
       console.error("Error updating status:", error.message);
-      return res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: "Internal server error" });
+    } else {
+      // Send a success response
+      res.status(200).json({ message: "Status updated successfully" });
+    }
+  } catch (error) {
+    console.error("Error updating status:", error.message);
+    // Send an error response
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+adminComplaint.put("/resolved/:id", async (req, res) => {
+  try {
+    const complaintId = req.params.id; // Assuming you're sending the complaint ID in the request body
+
+    // Update the status of the complaint to "resolved"
+    const { data, error } = await supabase
+      .from("complaints")
+      .update({ status: "resolved" })
+      .eq("id", complaintId);
+
+    if (error) {
+      console.error("Error updating status:", error.message);
+      res.status(500).json({ error: "Internal server error" });
+    } else {
+      // Send a success response
+      res.status(200).json({ message: "Status updated successfully" });
     }
   } catch (error) {
     console.error("Error updating status:", error.message);
@@ -87,14 +113,14 @@ adminComplaint.put("/pending", async (req, res) => {
   }
 });
 
-adminComplaint.put("/resolved", async (req, res) => {
+adminComplaint.put("/cancel/:id", async (req, res) => {
   try {
-    const { complaintId } = req.body; // Assuming you're sending the complaint ID in the request body
+    const complaintId = req.params.id; // Assuming you're sending the complaint ID in the request body
 
     // Update the status of the complaint to "resolved"
     const { data, error } = await supabase
       .from("complaints")
-      .update({ status: "resolved" })
+      .update({ status: "cancel" })
       .eq("id", complaintId);
 
     if (error) {

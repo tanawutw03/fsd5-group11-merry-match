@@ -33,13 +33,14 @@ function AdminComplaint() {
     try {
       // Send a PUT request to update the status of the complaint to "pending"
       const response = await axios.put(
-        `http://localhost:4008/admin/complaint/pending`,
+        `http://localhost:4008/admin/complaint/pending/${complaintId}`,
         {
           complaintId: complaintId,
         }
       );
-      navigate(`/complaint/${complaintId}`);
       // Check if the request was successful
+      console.log("Status updated successfully:", response.data);
+
       if (response.status === 200) {
         console.log("Status updated successfully:", response.data);
         // Redirect to the complaint details page
