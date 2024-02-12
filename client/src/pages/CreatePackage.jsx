@@ -15,6 +15,7 @@ import { useState } from "react";
 import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import axios from "axios";
 
 function CreatePackage() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -29,21 +30,15 @@ function CreatePackage() {
   useEffect(() => {
     async function fetchNewComplaintCount() {
       try {
-        const { data: newComplaints, error } = await supabase
-          .from("complaints")
-          .select("*")
-          .eq("status", "new");
-
-        if (error) {
-          console.error("Error fetching new complaints:", error.message);
-          return;
-        } else {
-          setNewComplaintCount(newComplaints.length);
-        }
+        const response = await axios.get(
+          "http://localhost:4008/admin/complaint/news"
+        );
+        setNewComplaintCount(response.data.newComplaintCount);
       } catch (error) {
         console.error("Error fetching new complaints:", error.message);
       }
     }
+
     fetchNewComplaintCount();
   }, []);
 
@@ -94,19 +89,10 @@ function CreatePackage() {
   };
   const handleCreatePackage = async () => {
     let iconUrl;
-
-    console.log("Before Submit - packageDetails:", packageDetails);
     const { file } = selectedFile;
-    console.log(file);
-
-    console.log(selectedFile);
     const uniqueIdentifier = file.name.split(".").pop();
     const fileName = `${Math.random()}.${uniqueIdentifier}`;
-
-    console.log(uniqueIdentifier);
     const iconPath = `iconPackage/${fileName}`;
-    console.log(iconPath);
-
     // Upload icon to Supabase Storage
     if (selectedFile) {
       try {
@@ -121,8 +107,7 @@ function CreatePackage() {
         if (error) {
           console.error("Error fetching icon URL:", error.message);
         } else {
-          iconUrl = urlData;
-          console.log("Icon URL:", iconUrl);
+          iconUrl = urlData.publicUrl;
         }
 
         if (storageError) {
@@ -137,57 +122,30 @@ function CreatePackage() {
       }
     }
 
+    const createPackageData = {
+      name: packageName,
+      merry_limit: merryLimit,
+      price: price,
+      description: packageDetails,
+      iconurl: iconUrl,
+    };
     // Insert package data into the database
-    const { data: packageData, error: packageError } = await supabase
-      .from("packages")
-      .insert([
-        {
-          name: packageName,
-          merry_limit: merryLimit,
-          price: price,
-          description: packageDetails,
-          iconurl: iconUrl.publicUrl,
-        },
-      ])
-      .select();
-
-    console.log(packageData);
-
-    if (packageError) {
-      console.error("Error inserting package data:", packageError);
+    try {
+      const response = await axios.post(
+        "http://localhost:4008/admin/create/package",
+        createPackageData
+      );
+      // Reset form fields or redirect to another page after successful creation
+      setPackageName("");
+      setMerryLimit(0);
+      setPrice(0);
+      setPackageDetails([]);
+      setSelectedFile(null);
+      navigate("/adminpage");
+    } catch (error) {
+      console.error("Error inserting package data:", error.message);
       // Handle the error, e.g., show a message to the user
-      return;
     }
-
-    // // Insert icon data into the "icons" table
-    // const { data: iconData, error: iconError } = await supabase
-    //   .from("icons")
-    //   .insert([
-    //     {
-    //       name: packageName, // Set the name based on your requirement
-    //       path: iconPath,
-    //       package_id: packageData[0].id, // Assuming the "packages" table has an 'id' column
-    //     },
-    //   ]);
-
-    // if (iconError) {
-    //   console.error("Error inserting icon data:", iconError);
-    //   // Handle the error, e.g., show a message to the user
-    //   return;
-    // }
-
-    console.log("After Submit - packageDetails:", packageDetails);
-
-    // Reset form fields or redirect to another page after successful creation
-    setPackageName("");
-    setMerryLimit(0);
-    setPrice(0);
-    setPackageDetails([]);
-    setSelectedFile(null);
-
-    console.log("Package data inserted successfully:", packageData);
-    navigate("/adminpage");
-    // console.log("Icon data inserted successfully:", iconData);
   };
   return (
     <div className="flex flex-row justify-stretch min-w-[1440px]">

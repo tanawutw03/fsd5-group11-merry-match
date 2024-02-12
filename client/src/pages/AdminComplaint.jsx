@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../utils/supabaseClient";
 import { Select } from "@chakra-ui/react";
 import { Badge } from "@chakra-ui/react";
+import axios from "axios";
 
 function AdminComplaint() {
   const navigate = useNavigate();
@@ -29,52 +30,53 @@ function AdminComplaint() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleRowClick = async (complaintId) => {
-    const { data, error } = await supabase
-      .from("complaints")
-      .update({ status: "pending" })
-      .eq("id", complaintId);
-
-    if (error) {
+    try {
+      // Send a PUT request to update the status of the complaint to "pending"
+      const response = await axios.put(
+        `http://localhost:4008/admin/complaint/pending`,
+        {
+          complaintId: complaintId,
+        }
+      );
+      navigate(`/complaint/${complaintId}`);
+      // Check if the request was successful
+      if (response.status === 200) {
+        console.log("Status updated successfully:", response.data);
+        // Redirect to the complaint details page
+        navigate(`/complaint/${complaintId}`);
+      } else {
+        console.error("Error updating status:", response.data.error);
+      }
+    } catch (error) {
       console.error("Error updating status:", error.message);
-      return;
     }
-
-    console.log("Status updated successfully:", data);
-    navigate(`/complaint/${complaintId}`);
   };
 
   useEffect(() => {
     // Fetch data from Supabase or your backend API
     // Replace this with your actual Supabase query or API call
     const fetchData = async () => {
-      // Example using Supabase
-
-      const { data, error } = await supabase.from("complaints").select("*");
-      if (error) {
-        console.error("Error fetching data:", error);
-      } else {
+      try {
+        const response = await axios.get(
+          "http://localhost:4008/admin/complaint"
+        );
+        const data = response.data;
         setComplainData(data);
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
       }
     };
     async function fetchNewComplaintCount() {
       try {
-        const { data: newComplaints, error } = await supabase
-          .from("complaints")
-          .select("*")
-          .eq("status", "new");
-
-        if (error) {
-          console.error("Error fetching new complaints:", error.message);
-          return;
-        } else {
-          setNewComplaintCount(newComplaints.length);
-        }
+        const response = await axios.get(
+          "http://localhost:4008/admin/complaint/news"
+        );
+        setNewComplaintCount(response.data.newComplaintCount);
       } catch (error) {
         console.error("Error fetching new complaints:", error.message);
       }
     }
     fetchNewComplaintCount();
-
     fetchData();
   }, []);
 
