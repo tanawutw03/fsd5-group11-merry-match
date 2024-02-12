@@ -17,6 +17,7 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import axios from "axios";
 
 function ComplaintPage() {
   const navigate = useNavigate();
@@ -29,35 +30,24 @@ function ComplaintPage() {
   useEffect(() => {
     async function fetchComplaintData() {
       try {
-        const { data, error } = await supabase
-          .from("complaints")
-          .select("*")
-          .eq("id", parseInt(complaint_Id))
-          .single();
+        // Send a GET request to fetch complaint data by ID
+        const response = await axios.get(
+          `http://localhost:4008/admin/complaint/${complaint_Id}`
+        );
+        const complaintData = response.data;
 
-        if (error) {
-          console.error("Error fetching data:", error.message);
-          return;
-        } else {
-          setComplaintData(data); // Log packData.price instead of price
-        }
+        // Update the state with the fetched complaint data
+        setComplaintData(complaintData);
       } catch (error) {
-        console.error("Error fetching data:", error.message);
+        console.error("Error fetching complaint data:", error.message);
       }
     }
     async function fetchNewComplaintCount() {
       try {
-        const { data: newComplaints, error } = await supabase
-          .from("complaints")
-          .select("*")
-          .eq("status", "new");
-
-        if (error) {
-          console.error("Error fetching new complaints:", error.message);
-          return;
-        } else {
-          setNewComplaintCount(newComplaints.length);
-        }
+        const response = await axios.get(
+          "http://localhost:4008/admin/complaint/news"
+        );
+        setNewComplaintCount(response.data.newComplaintCount);
       } catch (error) {
         console.error("Error fetching new complaints:", error.message);
       }
@@ -97,34 +87,44 @@ function ComplaintPage() {
 
   const handleCancelComplaint = async (complaintId) => {
     handleCloseCancelModal();
-    const { data, error } = await supabase
-      .from("complaints")
-      .update({ status: "cancel" })
-      .eq("id", complaintId);
+    try {
+      // Make a PUT request to update the status of the complaint to "resolved"
+      const response = await axios.put(
+        `http://localhost:4008/admin/complaint/cancel/${complaintId}`,
+        { complaintId }
+      );
 
-    if (error) {
+      // Check if the request was successful
+      if (response.status === 200) {
+        console.log("Status updated successfully:", response.data);
+        navigate(`/admincomplaint`);
+      } else {
+        console.error("Error updating status:", response.data.error);
+      }
+    } catch (error) {
       console.error("Error updating status:", error.message);
-      return;
     }
-
-    console.log("Status updated successfully:", data);
-    navigate(`/admincomplaint`);
   };
 
   const handleResolveComplaint = async (complaintId) => {
     handleCloseResolveModal();
-    const { data, error } = await supabase
-      .from("complaints")
-      .update({ status: "resolved" })
-      .eq("id", complaintId);
+    try {
+      // Make a PUT request to update the status of the complaint to "resolved"
+      const response = await axios.put(
+        `http://localhost:4008/admin/complaint/resolved/${complaintId}`,
+        { complaintId }
+      );
 
-    if (error) {
+      // Check if the request was successful
+      if (response.status === 200) {
+        console.log("Status updated successfully:", response.data);
+        navigate(`/admincomplaint`);
+      } else {
+        console.error("Error updating status:", response.data.error);
+      }
+    } catch (error) {
       console.error("Error updating status:", error.message);
-      return;
     }
-
-    console.log("Status updated successfully:", data);
-    navigate(`/admincomplaint`);
   };
 
   const handleComplaint = () => {

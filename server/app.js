@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import { supabase } from "./utils/supabaseClient.js";
 import multer from "multer";
+import adminPackageRoute from "./router/adminPackage.js";
+import adminComplaint from "./router/adminComplaint.js";
 
 async function init() {
   const app = express();
@@ -10,6 +12,8 @@ async function init() {
   const port = 4008;
   app.use(cors());
   app.use(express.json());
+  app.use("/admin", adminPackageRoute);
+  app.use("/admin/complaint", adminComplaint);
 
   app.get("/api/package", async (req, res) => {
     try {

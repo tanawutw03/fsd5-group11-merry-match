@@ -21,6 +21,7 @@ import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { supabase } from "../utils/supabaseClient";
+import axios from "axios";
 
 function AdminPage() {
   const navigate = useNavigate();
@@ -33,30 +34,24 @@ function AdminPage() {
     const fetchData = async () => {
       // Example using Supabase
 
-      const { data, error } = await supabase.from("packages").select("*");
-      if (error) {
-        console.error("Error fetching data:", error);
-      } else {
-        setPackageData(data);
+      try {
+        const response = await axios.get("http://localhost:4008/admin/package");
+        setPackageData(response.data);
+      } catch (error) {
+        console.error(error);
       }
     };
     async function fetchNewComplaintCount() {
       try {
-        const { data: newComplaints, error } = await supabase
-          .from("complaints")
-          .select("*")
-          .eq("status", "new");
-
-        if (error) {
-          console.error("Error fetching new complaints:", error.message);
-          return;
-        } else {
-          setNewComplaintCount(newComplaints.length);
-        }
+        const response = await axios.get(
+          "http://localhost:4008/admin/complaint/news"
+        );
+        setNewComplaintCount(response.data.newComplaintCount);
       } catch (error) {
         console.error("Error fetching new complaints:", error.message);
       }
     }
+
     fetchNewComplaintCount();
 
     fetchData();
@@ -87,20 +82,19 @@ function AdminPage() {
 
   const handleDelete = async (packageId) => {
     try {
-      // Perform the delete operation using supabase
-      const { error } = await supabase
-        .from("packages")
-        .delete()
-        .eq("package_id", packageId);
+      // Perform the delete operation using Axios
+      const response = await axios.delete(
+        `http://localhost:4008/admin/delete/package/${packageId}`
+      );
 
-      if (error) {
-        console.error("Error deleting package:", error);
-      } else {
+      if (response.status === 200) {
         // Update the state to reflect the changes
         setPackageData((prevData) =>
           prevData.filter((item) => item.package_id !== packageId)
         );
         console.log("Package deleted successfully!");
+      } else {
+        console.error("Error deleting package:", response.data.error);
       }
     } catch (error) {
       console.error("Error during package deletion:", error);
