@@ -7,11 +7,14 @@ import NavBar from "../components/common/NavBar";
 import axios from "axios";
 import { supabase } from "../utils/supabaseClient";
 import UserProfileUpload from "../components/UserProfileUpload";
+import ConfirmDeleteBtn from "../components/ConfirmDeleteBtn";
 
 function UserProfilePage() {
   const fileInputRef = useRef(null);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+
   const [session, setSession] = useState(null);
   const SERVER_API_URL = "http://localhost:4008";
   const [formData, setFormData] = useState({
@@ -30,14 +33,6 @@ function UserProfilePage() {
     about_me: "",
   });
   const profile_id = "3";
-
-  // const axiosInstance = axios.create({
-  //   baseURL: "http://localhost:4008/api/profile",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //     Authorization: session ? `Bearer ${session}` : "",
-  //   },
-  // });
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -148,6 +143,22 @@ function UserProfilePage() {
     }
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    console.log("Field name:", name);
+    console.log("Field value:", value);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+
+  const handleDeleteFile = (index) => {
+    setSelectedFiles((prevSelectedFiles) =>
+      prevSelectedFiles.filter((file, i) => i !== index)
+    );
+  };
+
   const handleDeleteAccount = async () => {
     try {
       const { data, error } = await supabase
@@ -175,25 +186,10 @@ function UserProfilePage() {
       });
 
       console.log("Profile deleted successfully");
+      setShowDeleteConfirmation(false);
     } catch (error) {
       console.error("Error deleting profile:", error.message);
     }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    console.log("Field name:", name);
-    console.log("Field value:", value);
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-  };
-
-  const handleDeleteFile = (index) => {
-    setSelectedFiles((prevSelectedFiles) =>
-      prevSelectedFiles.filter((file, i) => i !== index)
-    );
   };
 
   console.log("formData before return", formData.first_name);
@@ -211,7 +207,14 @@ function UserProfilePage() {
           onClickSecondMenu={() => navigate("/package")}
         />
       </div>
-      <div className="flex flex-col justify-center items-center w-screen">
+      <div className="flex flex-col justify-center items-center w-screen relative">
+        <div className="">
+          <ConfirmDeleteBtn
+            isOpen={showDeleteConfirmation}
+            onClose={() => setShowDeleteConfirmation(false)}
+            onDelete={handleDeleteAccount}
+          />
+        </div>
         <div className=" w-[931px]  ">
           <div className="profile-title-container flex justify-between ">
             <div className=" gap-[37px] ">
@@ -497,7 +500,8 @@ function UserProfilePage() {
                     className="choose-package-btn flex justify-center items-center  w-[170px] font-nunito text-[16px] text-red-600 font-bold  
                            rounded-[10px]  bg-[white]  hover:bg-red-200 active:bg-red-500  active:text-[white]  shadow-setShadow01 h-12 p-[16px] mr-6"
                     type="button"
-                    onClick={handleDeleteAccount}
+                    onClick={() => setShowDeleteConfirmation(true)}
+                    // onClick={handleDeleteAccount}
                   >
                     Delete account
                   </button>
