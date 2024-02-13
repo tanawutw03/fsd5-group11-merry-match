@@ -1,9 +1,11 @@
 import express from "express";
 import cors from "cors";
+
 import { supabase } from "./utils/supabaseClient.js";
 import multer from "multer";
 import adminPackageRoute from "./router/adminPackage.js";
 import adminComplaint from "./router/adminComplaint.js";
+import fs from "fs";
 
 async function init() {
   const app = express();
@@ -14,6 +16,28 @@ async function init() {
   app.use(express.json());
   app.use("/admin", adminPackageRoute);
   app.use("/admin/complaint", adminComplaint);
+
+  app.put("/profile/:id", async (req, res) => {
+    const { id } = req.params;
+    //  updatedData = req.body;
+    console.log(JSON.stringify(req.body));
+    console.log(id);
+
+    try {
+      const { data, error } = await supabase
+        .from(user2_profiles)
+        .update(req.body)
+        .eq("id", id);
+
+      if (error) {
+        throw error;
+      }
+
+      res.json({ success: true, data });
+    } catch (error) {
+      res.status(550).json({ success: false, error: error.message });
+    }
+  });
 
   app.get("/api/package", async (req, res) => {
     try {
@@ -51,7 +75,7 @@ async function init() {
 
   app.get("/api/profile", async (req, res) => {
     try {
-      const { data, error } = await supabase.from("profiles").select("*");
+      const { data, error } = await supabase.from("user2_profiles").select("*");
 
       if (error) {
         throw error;
@@ -68,7 +92,7 @@ async function init() {
     try {
       const { id } = req.params;
       const { data, error } = await supabase
-        .from("profiles")
+        .from("user2_profiles")
         .select("*")
         .eq("id", id);
 
@@ -85,7 +109,7 @@ async function init() {
 
   app.post("/api/package", upload.single("icon"), async (req, res) => {
     try {
-      const { name, merry_limit, description, price } = req.body;
+      const { body } = req.body;
       const iconFile = req.file;
 
       if (!iconFile) {
@@ -133,6 +157,93 @@ async function init() {
     }
   });
 
+  //------- leang for user_profile getData-------
+  // app.get('/api/profileImages', async (req, res) => {
+  app.get("/api/user_profile", async (req, res) => {
+    try {
+      const { id } = req.query;
+
+      const { data, error } = await supabase
+        .from("user2_profiles_url")
+        .select("storage_location")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      res.status(200).json({ data });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  //------- leang for user_profile Saveurl-------
+  app.put("/api/saveImageUrlSets", async (req, res) => {
+    try {
+      const { storage_location, id } = req.body;
+
+      const { data, error } = await supabase
+        .from("user2_profiles_url")
+        .update({
+          storage_location: storage_location,
+        })
+        .eq("id", id);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      res.status(200).json({ message: "Image URL sets updated successfully" });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  //------- leang for upload userprofilePage------
+  app.post("/api/upload_image", upload.single("file"), async (req, res) => {
+    try {
+      const file = req.file;
+      if (!file) {
+        throw new Error("No file received");
+      }
+      const { data, error } = await supabase.storage
+        .from("profile_images")
+        .upload(file.path, {
+          destination: req.body.imagePath,
+          contentType: file.mimetype,
+        });
+      fs.unlinkSync(file.path);
+      if (error) {
+        throw new Error(`Storage Error: ${error.message}`);
+      }
+      res.status(200).json({ imageUrl: data.Key });
+    } catch (error) {
+      console.error("Error uploading image:", error.message);
+      res.status(500).json({ error: error.message });
+    }
+  });
+  //------- leang for userprofilePage  saveImageUrl------
+  app.post("/api/save_img_url", async (req, res) => {
+    try {
+      const { userId, imageUrl } = req.body;
+      const { data, error } = await supabase
+        .from("user2_profiles_url")
+        .insert([{ id: 51, storage_location: imageUrl }]);
+
+      if (error) {
+        throw new Error(`Database Error: ${error.message}`);
+      }
+
+      res.status(200).json({ success: true });
+    } catch (error) {
+      console.error("Error saving image URL to database:", error.message);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  //------- leang for packages_id ---------------
   app.put(
     "/api/package/:package_id",
     upload.single("icon"),

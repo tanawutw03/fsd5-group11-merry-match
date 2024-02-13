@@ -14,6 +14,7 @@ import { useUser } from "./app/userContext.js";
 import UserComplaint from "./pages/Usercomplaint";
 import AdminComplaint from "./pages/AdminComplaint.jsx";
 import ComplaintPage from "./pages/Complaint.jsx";
+import UserProfilePage from "./pages/UserProfilePage.jsx";
 
 const NoMatch = () => {
   return (
@@ -64,6 +65,7 @@ function App() {
         <Route path="/usercomplaint" element={<UserComplaint />} />
         <Route path="/admincomplaint" element={<AdminComplaint />} />
         <Route path="/complaint/:complaint_Id" element={<ComplaintPage />} />
+        <Route path="/profile" element={<UserProfilePage />} />
       </Routes>
     </BrowserRouter>
   );
