@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+
 import { supabase } from "./utils/supabaseClient.js";
 import multer from "multer";
 import adminPackageRoute from "./router/adminPackage.js";
@@ -14,6 +15,30 @@ async function init() {
   app.use(express.json());
   app.use("/admin", adminPackageRoute);
   app.use("/admin/complaint", adminComplaint);
+
+  app.put("/profile/:id", async (req, res) => {
+    const { id } = req.params;
+    //  updatedData = req.body;
+    console.log(JSON.stringify(req.body));
+    console.log(id);
+
+    try {
+      const { data, error } = await supabase
+        .from(user2_profiles)
+        .update(req.body)
+        .eq("id", id);
+
+      if (error) {
+        throw error;
+      }
+
+      res.json({ success: true, data });
+    } catch (error) {
+      res.status(550).json({ success: false, error: error.message });
+    }
+  });
+
+
 
   app.get("/api/package", async (req, res) => {
     try {
@@ -51,7 +76,7 @@ async function init() {
 
   app.get("/api/profile", async (req, res) => {
     try {
-      const { data, error } = await supabase.from("profiles").select("*");
+      const { data, error } = await supabase.from("user2_profiles").select("*");
 
       if (error) {
         throw error;
@@ -68,7 +93,7 @@ async function init() {
     try {
       const { id } = req.params;
       const { data, error } = await supabase
-        .from("profiles")
+        .from("user2_profiles")
         .select("*")
         .eq("id", id);
 
@@ -85,7 +110,7 @@ async function init() {
 
   app.post("/api/package", upload.single("icon"), async (req, res) => {
     try {
-      const { name, merry_limit, description, price } = req.body;
+      const { body } = req.body;
       const iconFile = req.file;
 
       if (!iconFile) {
