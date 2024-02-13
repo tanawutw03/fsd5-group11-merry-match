@@ -60,6 +60,28 @@ matchRouter.put("/api/v1/match", async (req, res) => {
         return res.status(500).send("Error updating matches");
       }
 
+      // Check for mutual matches
+      const { data: matchedUserData, error: matchedUserError } = await supabase
+        .from("profiles")
+        .select("matches")
+        .eq("id", uniqueNewMatchIds[0])
+        .single();
+
+      if (matchedUserError) {
+        console.error("Error fetching matched user data:", matchedUserError);
+        return res.status(500).send("Error fetching matched user data");
+      }
+
+      if (matchedUserData.matches.includes(userId)) {
+        // Mutual match detected, send notification
+        // Assuming you have some notification mechanism in place
+        // You can add code here to trigger notification
+        // For example, you can emit a socket event, send a push notification, etc.
+
+        // Respond with mutual match data
+        return res.json({ message: "Mutual match", data: updatedData });
+      }
+
       res.json({ message: "Update successful", data: updatedData });
     } else {
       // If there are no new matches to add, respond appropriately

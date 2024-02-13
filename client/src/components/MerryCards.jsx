@@ -6,23 +6,32 @@ import heart from "../assets/Matching/heart button (1).svg";
 import { ArrowForwardIcon, ArrowBackIcon, ViewIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import PropTypes from "prop-types";
+import MerryMatch from "./MerryMatch.jsx";
+import { useDisclosure } from "@chakra-ui/react";
 
 function MerryCards({ user }) {
   const [people, setPeople] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [error, setError] = useState(null);
-  const [updatedMatches, setUpdatedMatches] = useState([]);
+  const [mutualMatch, setMutualMatch] = useState(false);
+  const { isOpen, onClose } = useDisclosure();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   console.log(`user info`, user);
 
-  const onSwipe = (direction, swipedUserId) => {
+  const onSwipe = async (direction, swipedUserId) => {
     console.log("You swiped: " + direction);
     console.log(`Your Id:`, user.user.id);
     console.log(`Your Swipe:`, swipedUserId);
 
     if (direction === "right" && user.user.id) {
-      updateMatches(user.user.id, swipedUserId);
+      const response = await updateMatches(user.user.id, swipedUserId);
+
+      console.log(response.message);
+      if (response.message === "Mutual match") {
+        setMutualMatch(true);
+      }
     } else if (direction === "left" && user.user.id) {
     }
   };
@@ -49,9 +58,12 @@ function MerryCards({ user }) {
         }
       );
 
+      console.log(response);
       console.log(response.data);
+      return response.data; // Return the response for trigger modal
     } catch (error) {
       console.error("Error updating matches:", error);
+      return null;
     }
   };
 
@@ -129,6 +141,13 @@ function MerryCards({ user }) {
     console.log("People state:", people);
   }, [people]);
 
+  useEffect(() => {
+    if (mutualMatch) {
+      console.log(`Open the modal:`, mutualMatch);
+      setIsModalOpen(true);
+    }
+  }, [mutualMatch]);
+
   return (
     <div>
       {isLoading && <p>Loading...</p>}
@@ -170,6 +189,12 @@ function MerryCards({ user }) {
             </TinderCard>
           ))}
         </div>
+      )}
+      {mutualMatch && (
+        <MerryMatch
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
       )}
     </div>
   );
