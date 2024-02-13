@@ -212,7 +212,7 @@ export default function UserProfileUpload({ formDataId, isEditMode }) {
     <SimpleGrid
       columns={[1, 2, 3, 4, 5]}
       spacing="20px"
-      className="w-full h-[390px] mb-20"
+      className="w-full  min-[1283px]:h-[200px] "
     >
       {[...Array(5)].map((_, index) => (
         <div key={index}>
