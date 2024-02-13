@@ -3,8 +3,7 @@ import facebookIcon from "../assets/merryPackagePage/facebook-circle-fill.svg";
 import instagramIcon from "../assets/merryPackagePage/instagram-fill.svg";
 import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
 import logo from "../assets/merryPackagePage/logo.svg";
-import bell from "../assets/merryPackagePage/bell.svg";
-import person01 from "../assets/merryPackagePage/person01.png";
+import NavBar from "../components/common/NavBar";
 import axios from "axios";
 import { supabase } from "../utils/supabaseClient";
 import UserProfileUpload from "../components/UserProfileUpload";
@@ -14,7 +13,7 @@ function UserProfilePage() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [session, setSession] = useState(null);
-  const serverUrl = "http://localhost:4008";
+  const SERVER_API_URL = "http://localhost:4008";
   const [formData, setFormData] = useState({
     id: "",
     first_name: "",
@@ -30,7 +29,7 @@ function UserProfilePage() {
     hobbies: "",
     about_me: "",
   });
-  const profile_id = "4";
+  const profile_id = "3";
 
   // const axiosInstance = axios.create({
   //   baseURL: "http://localhost:4008/api/profile",
@@ -39,6 +38,33 @@ function UserProfilePage() {
   //     Authorization: session ? `Bearer ${session}` : "",
   //   },
   // });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Fetch user data from your backend or database
+        const { data, error } = await supabase
+          .from("user2_profiles")
+          .select("*")
+          .eq("id", profile_id)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        if (data) {
+          // Update form data with the retrieved user data
+          setFormData(data);
+          setIsEditMode(true); // Enable edit mode to populate the form fields
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error.message);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleFileInputChange = () => {
     const files = Array.from(fileInputRef.current.files);
@@ -61,12 +87,10 @@ function UserProfilePage() {
     console.log("Preview Profile button clicked");
     try {
       const response = await axios.get(
-        `${serverUrl}/api/profile/${profile_id}`
+        `${SERVER_API_URL}/user/profile/${profile_id}`
       );
       const responseData = response.data;
-
       console.log("response.data", responseData);
-
       if (responseData.length > 0) {
         const firstUserData = responseData[0];
         setFormData({
@@ -85,14 +109,13 @@ function UserProfilePage() {
           about_me: firstUserData.about_me || "",
         });
 
-        setIsEditMode(true); 
+        setIsEditMode(true);
       } else {
         console.log("No data available");
       }
     } catch (error) {
       console.error(error);
     }
-    
   };
 
   const handleUpdateProfile = async () => {
@@ -176,40 +199,18 @@ function UserProfilePage() {
   console.log("formData before return", formData.first_name);
   return (
     <>
-      <nav className="nav-container">
-        <ul className="flex justify-between items-center  text-red-400 text-xl  text-center m-[20px]">
-          <li className="merry-math-logo ml-[160px]">
-            <img src={logo} />
-          </li>
-
-          <div className="flex justify-center items-center">
-            <li className="start-matching-link font-nunito text-[16px] text-[#191C77] font-bold mr-[24px]">
-              <a href="">Start Matching</a>
-            </li>
-            <li className="merry-membership-link font-nunito text-[16px] text-[#191C77] font-bold mr-[24px]">
-              <a href="">Merry Membership</a>
-            </li>
-            <div className="flex ">
-              <div className="flex mr-[12px] justify-center items-center w-[48px] h-[48px] bg-[#F6F7FC] rounded-[999px] object-fit object-cover">
-                <li>
-                  <img
-                    className="flex-shrink-0 w-[24px] h-[24px] "
-                    src={bell}
-                    alt=""
-                  />
-                </li>
-              </div>
-              <li className="mr-[160px]">
-                <img
-                  className="w-[48px] h-[48px] rounded-[999px] object-fit object-cover"
-                  src={person01}
-                  alt=""
-                />
-              </li>
-            </div>
-          </div>
-        </ul>
-      </nav>
+      <div className="nav-container flex justify-center items-center">
+        <NavBar
+          firstMenuName="Start Matching!"
+          secondMenuName="Merry Membership"
+          name="login"
+          color="red"
+          showBell="true"
+          useMenu="true"
+          onClickFirstMenu={() => navigate("/matching")}
+          onClickSecondMenu={() => navigate("/package")}
+        />
+      </div>
       <div className="flex flex-col justify-center items-center w-screen">
         <div className=" w-[931px]  ">
           <div className="profile-title-container flex justify-between ">
