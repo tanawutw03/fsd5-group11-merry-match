@@ -29,6 +29,9 @@ matchRouter.put("/api/v1/match", async (req, res) => {
       return res.status(500).send("Error fetching current matches");
     }
 
+    // Initialize matches array as an empty array if it is null
+    const currentMatches = currentUserData.matches || [];
+
     // Determine if matchedUserId is an array or a single value
     const newMatchIds = Array.isArray(matchedUserId)
       ? matchedUserId
@@ -36,13 +39,13 @@ matchRouter.put("/api/v1/match", async (req, res) => {
 
     // Filter out any IDs already present in the existing matches
     const uniqueNewMatchIds = newMatchIds.filter(
-      (id) => !currentUserData.matches.includes(id)
+      (id) => !currentMatches.includes(id)
     );
 
     // Only proceed if there are new, unique matches to add
     if (uniqueNewMatchIds.length > 0) {
       // Combine existing matches with new, unique match IDs
-      const updatedMatches = [...currentUserData.matches, ...uniqueNewMatchIds];
+      const updatedMatches = [...currentMatches, ...uniqueNewMatchIds];
 
       // Update the matches array in the database
       const { data: updatedData, error: updateError } = await supabase
@@ -51,6 +54,7 @@ matchRouter.put("/api/v1/match", async (req, res) => {
         .eq("id", userId)
         .select();
 
+      console.log(`updatedData:`, updatedData);
       if (updateError) {
         console.error("Error updating matches:", updateError);
         return res.status(500).send("Error updating matches");
