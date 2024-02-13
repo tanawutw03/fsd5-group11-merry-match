@@ -9,6 +9,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import PropTypes from "prop-types";
+import merrymatch from "../assets/MerryMatch/merrymatch.png";
 
 function MerryMatch({ isOpen, onClose }) {
   return (
@@ -16,6 +17,7 @@ function MerryMatch({ isOpen, onClose }) {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent className="flex flex-col justify-center items-center">
+          <img src={merrymatch} alt="" />
           <ModalHeader>
             <h1 className="text-6xl">Merry Match!</h1>
           </ModalHeader>
