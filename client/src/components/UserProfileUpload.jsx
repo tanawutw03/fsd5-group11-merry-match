@@ -9,47 +9,22 @@ export default function UserProfileUpload({ formDataId, isEditMode }) {
   const [session, setSession] = useState(null);
   const [refresh, setRefresh] = useState(false);
   formDataId = 51;
-  const API_ENDPOINT = "http://localhost:4008";
 
-  //--------leang Note  please don't delect-------
-  // useEffect(() => {
-  //   const fetchProfileImages = async () => {
-  //     try {
-  //       const { data, error } = await supabase
-  //         .from("user2_profiles_url")
-  //         .select("storage_location")
-  //         .eq("id", formDataId)
-  //         .single();
-
-  //       if (error) {
-  //         throw error;
-  //       }
-
-  //       if (data && data.storage_location) {
-  //         setImageUrls(Object.values(data.storage_location));
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching profile images:", error.message);
-  //     }
-  //   };
-
-  //   if (isEditMode) {
-  //     fetchProfileImages();
-  //   }
-  // }, [isEditMode, refresh]);
+  const SERVER_API_URL = "http://localhost:4008";
 
   useEffect(() => {
     const fetchProfileImages = async () => {
       try {
-        const response = await axios.get(`${API_ENDPOINT}/api/user_profile`, {
-          params: {
-            id: formDataId,
-          },
-        });
-        const { data, error } = response.data;
+        const { data, error } = await supabase
+          .from("user2_profiles_url")
+          .select("storage_location")
+          .eq("id", formDataId)
+          .single();
+
         if (error) {
           throw error;
         }
+
         if (data && data.storage_location) {
           setImageUrls(Object.values(data.storage_location));
         }
@@ -57,117 +32,113 @@ export default function UserProfileUpload({ formDataId, isEditMode }) {
         console.error("Error fetching profile images:", error.message);
       }
     };
-    if (isEditMode) {
-      fetchProfileImages();
-    }
-  }, [isEditMode, refresh]);
+
+    fetchProfileImages();
+  }, [formDataId, refresh, imageUrls]);
 
   const handleFileChange = async (event, index) => {
     const file = event.target.files[0];
     if (file) {
       const userId = session?.user.id;
+
+      console.log(file);
+      console.log(index);
+      console.log(userId);
       await handleFileUpload(file, index, userId);
     }
   };
-//------------leang don't Delete ----------------------
+  //------------leang don't Delete ----------------------
   // const handleFileUpload = async (file, index, userId) => {
   //   try {
-     
-  //     const lastDotIndex = file.name.lastIndexOf(".");
-  //     const fileNameWithoutExtension = file.name.slice(0, lastDotIndex);
-  //     const fileExtension = file.name.slice(lastDotIndex + 1);
-  //     const uniqueFileName = `${fileNameWithoutExtension.replace(
-  //       /\.[^.]+$/,
-  //       ""
-  //     )}_${Date.now()}.${fileExtension}`;
-
-     
+  //     const uniqueFileName = `${file.name.split(".")[0]}_${Date.now()}.${file.name.split(".")[1]}`;
   //     const imagePath = `images/${uniqueFileName}`;
-  //     console.log("uniqueFileName: ", uniqueFileName);
-  //     console.log("imagePath: ", imagePath);
-
+  //     console.log("image path", imagePath);
+  
   //     const formData = new FormData();
   //     formData.append("file", file);
   //     formData.append("imagePath", imagePath);
-
-  //     const uploadResponse = await axios.post(
-  //       `${API_ENDPOINT}/api/upload_image`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-  //     );
-
-  //     console.log("imagePath", imagePath);
-
+  
+  //     const uploadResponse = await axios.post(`${SERVER_API_URL}/user/uploadImage`, formData, {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+  
+  //     console.log("uploadResponse: ", uploadResponse.data);
+  
   //     const imageUrl = uploadResponse.data.imageUrl;
-
+  
   //     const newImageUrls = [...imageUrls];
   //     newImageUrls[index] = imageUrl;
   //     setImageUrls(newImageUrls);
-
+  
   //     await saveImageUrlSetsToDatabase(newImageUrls, userId);
   //   } catch (error) {
-  //     console.error("Error handling file upload:", error.message);
+  //     console.error("Error uploading file:", error);
   //   }
   // };
-
-  // const saveImageUrlSetsToDatabase = async (imageUrls, formDataId) => {
+  
+  // const saveImageUrlSetsToDatabase = async (imageUrls, userId) => {
   //   try {
   //     const imageUrlSets = imageUrls.reduce((acc, curr, index) => {
   //       acc[`url${index + 1}`] = curr;
   //       return acc;
   //     }, {});
-
-  //     await axios.post(`${API_ENDPOINT}/api/save_image_url_sets`, {
+  
+  //     await axios.put(`${SERVER_API_URL}/user/saveImageUrlSets`, {
   //       imageUrlSets: imageUrlSets,
-  //       formDataId: formDataId,
+  //       userId: userId,
   //     });
-
+  
   //     console.log("Image URL sets updated successfully:", imageUrlSets);
   //   } catch (error) {
   //     console.error("Error saving image URL sets to database:", error.message);
   //   }
   // };
+  
+  // -----OK-PASS-------leang don't Delete ----------------------
+    const handleFileUpload = async (file, index, userId) => {
+      try {
+        const uniqueFileName = `${file.name.split(".")[0]}_${Date.now()}.${
+          file.name.split(".")[1]
+        }`;
+        const imagePath = `images/${uniqueFileName}`;
+        console.log("image path", imagePath);
 
-  //------------leang don't Delete ----------------------
-  const handleFileUpload = async (file, index, userId) => {
-    try {
-      const uniqueFileName = `${file.name.split(".")[0]}_${Date.now()}.${
-        file.name.split(".")[1]
-      }`;
-      const imagePath = `images/${uniqueFileName}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("profile_images")
+          .upload(imagePath, file);
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("profile_images")
-        .upload(imagePath, file);
+        if (uploadError) {
+          throw new Error(`Storage Error: ${uploadError.message}`);
+        }
 
-      if (uploadError) {
-        throw new Error(`Storage Error: ${uploadError.message}`);
+        const { data: urlData, error } = await supabase.storage
+          .from("profile_images")
+          .getPublicUrl(imagePath);
+
+        console.log("urlData :", urlData);
+
+        if (error) {
+          throw new Error(`Error getting public URL: ${error.message}`);
+        }
+
+        if (!urlData || !urlData.publicUrl) {
+          throw new Error("Public URL is undefined or not found.");
+        }
+
+        const newImageUrls = [...imageUrls];
+        newImageUrls[index] = urlData.publicUrl;
+        setImageUrls(newImageUrls);
+        console.log("newImageUrls :", newImageUrls);
+
+        await saveImageUrlSetsToDatabase(newImageUrls);
+      } catch (error) {
+        console.error("Error uploading file:", error);
+
       }
-
-      const { data: urlData, error } = await supabase.storage
-        .from("profile_images")
-        .getPublicUrl(imagePath);
-
-      if (error) {
-        throw new Error(`Error getting public URL: ${error.message}`);
-      }
-
-      if (!urlData || !urlData.publicUrl) {
-        throw new Error("Public URL is undefined or not found.");
-      }
-
-      const newImageUrls = [...imageUrls];
-      newImageUrls[index] = urlData.publicUrl;
-      setImageUrls(newImageUrls);
-
-      await saveImageUrlSetsToDatabase(newImageUrls);
-    } catch (error) {}
   };
-  // --------leang Note  please don't delect-------
+
   const saveImageUrlSetsToDatabase = async (imageUrls) => {
     try {
       const imageUrlSets = imageUrls.reduce((acc, curr, index) => {
@@ -185,6 +156,7 @@ export default function UserProfileUpload({ formDataId, isEditMode }) {
       console.log("Image URL sets updated successfully:", imageUrlSets);
     } catch (error) {
       console.error("Error saving image URL sets to database:", error.message);
+
     }
   };
 
@@ -216,7 +188,7 @@ export default function UserProfileUpload({ formDataId, isEditMode }) {
     >
       {[...Array(5)].map((_, index) => (
         <div key={index}>
-          {!imageUrls[index] && isEditMode && (
+          {!imageUrls[index] && (
             <>
               <label htmlFor={`file-upload${index}`}>
                 <Card
@@ -246,7 +218,7 @@ export default function UserProfileUpload({ formDataId, isEditMode }) {
               />
             </>
           )}
-          {imageUrls[index] && isEditMode && (
+          {imageUrls[index] && (
             <div className=" relative p-3 object-cover">
               <img src={imageUrls[index]} alt={`Uploaded Image ${index + 1}`} />
               <button
