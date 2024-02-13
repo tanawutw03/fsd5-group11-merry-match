@@ -3,15 +3,52 @@ import { supabase } from "../utils/supabaseClient.js";
 
 const matchRouter = Router();
 
-matchRouter.get("/api/v1/match", async (req, res) => {
-  const { data, error } = await supabase
-    .from("profiles")
-    // .eq("id")
-    .select("matches");
+// GET /api/v1/match/:userId
+matchRouter.get("/api/v1/match/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
 
-  res.json({ message: `View all matched`, data: data });
+    // Retrieve the list of matched user IDs for the specified user
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("matches")
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      console.error("Error fetching matches:", error);
+      return res.status(500).json({ error: "Error fetching matches" });
+    }
+
+    // If no data is returned or if matches is null, return an empty array
+    if (!data || !data.matches || !Array.isArray(data.matches)) {
+      return res.json({ message: "No matches found", data: [] });
+    }
+
+    const matches = data.matches;
+
+    // Fetch profiles of matched users
+    const { data: matchedProfiles, error: profileError } = await supabase
+      .from("profiles")
+      .select("*") // Can specific the column
+      .in("id", matches);
+
+    if (profileError) {
+      console.error("Error fetching matched profiles:", profileError);
+      return res.status(500).json({ error: "Error fetching matched profiles" });
+    }
+
+    res.json({
+      message: "Matches retrieved successfully",
+      data: matchedProfiles,
+    });
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    res.status(500).json({ error: "Unexpected error" });
+  }
 });
 
+// PUT /api/v1/match/
 matchRouter.put("/api/v1/match", async (req, res) => {
   const { userId, matchedUserId } = req.body;
 
