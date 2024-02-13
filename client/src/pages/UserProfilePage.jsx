@@ -7,7 +7,7 @@ import bell from "../assets/merryPackagePage/bell.svg";
 import person01 from "../assets/merryPackagePage/person01.png";
 import axios from "axios";
 import { supabase } from "../utils/supabaseClient";
-import UserProfileUpload from "./UserProfileUpload";
+import UserProfileUpload from "../components/UserProfileUpload";
 
 function UserProfilePage() {
   const fileInputRef = useRef(null);
@@ -85,14 +85,14 @@ function UserProfilePage() {
           about_me: firstUserData.about_me || "",
         });
 
-        setIsEditMode(true); // เพิ่มบรรทัดนี้เพื่อให้แสดงข้อมูลทันทีเมื่อกด Preview Profile
+        setIsEditMode(true); 
       } else {
         console.log("No data available");
       }
     } catch (error) {
       console.error(error);
     }
-    // Additional logic to show preview of the profile
+    
   };
 
   const handleUpdateProfile = async () => {
