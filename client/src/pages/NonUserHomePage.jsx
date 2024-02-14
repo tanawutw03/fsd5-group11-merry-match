@@ -26,11 +26,7 @@ function NonUserHomePage({ user, setUser }) {
   };
 
   return (
-<<<<<<< Updated upstream
-    <div className=" w-max  ">
-=======
-    <div className=" min-w-[1440px] bg-white z-auto flex flex-col items-center">
->>>>>>> Stashed changes
+    <div className="h-screen w-screen">
       {user ? (
         <NavBar
           useMenu={user}
