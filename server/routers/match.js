@@ -38,9 +38,40 @@ matchRouter.get("/api/v1/match/:userId", async (req, res) => {
       return res.status(500).json({ error: "Error fetching matched profiles" });
     }
 
+    // Modify each profile to include a public URL for the avatar
+    const profilesWithPublicUrls = await Promise.all(
+      matchedProfiles.map(async (profile) => {
+        const avatarUrl =
+          profile.avatar_url && profile.avatar_url.length > 0
+            ? profile.avatar_url[0]
+            : null;
+
+        if (avatarUrl) {
+          // Retrieve the public URL for the avatar from Supabase storage
+          const { data: publicURL, error: storageError } =
+            await supabase.storage
+              .from("avatars")
+              .getPublicUrl(`${profile.id}/${avatarUrl}`);
+
+          if (storageError) {
+            console.error(
+              "Error fetching public URL for avatar:",
+              storageError
+            );
+
+            return profile;
+          }
+
+          // Update the profile with the public URL
+          return { ...profile, avatar_url: publicURL };
+        }
+        return profile;
+      })
+    );
+
     res.json({
       message: "Matches retrieved successfully",
-      data: matchedProfiles,
+      data: profilesWithPublicUrls,
     });
   } catch (error) {
     console.error("Unexpected error:", error);
@@ -60,7 +91,6 @@ matchRouter.put("/api/v1/match", async (req, res) => {
       .eq("id", userId)
       .single();
 
-    console.log(`currentUserData:`, currentUserData);
     if (selectError) {
       console.error("Error fetching current matches:", selectError);
       return res.status(500).send("Error fetching current matches");
@@ -91,7 +121,6 @@ matchRouter.put("/api/v1/match", async (req, res) => {
         .eq("id", userId)
         .select();
 
-      console.log(`updatedData:`, updatedData);
       if (updateError) {
         console.error("Error updating matches:", updateError);
         return res.status(500).send("Error updating matches");
@@ -109,7 +138,7 @@ matchRouter.put("/api/v1/match", async (req, res) => {
         return res.status(500).send("Error fetching matched user data");
       }
 
-      if (matchedUserData.matches.includes(userId)) {
+      if (matchedUserData.matches && matchedUserData.matches.includes(userId)) {
         // Mutual match detected, send notification
         // Assuming you have some notification mechanism in place
         // You can add code here to trigger notification
