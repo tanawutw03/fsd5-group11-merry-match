@@ -17,7 +17,7 @@ function Matching() {
 
   return (
     <>
-      <div className=" w-max ">
+      <div className="w-screen h-screen ">
         <NavBar
           firstMenuName="Start Matching!"
           secondMenuName="Merry Membership"

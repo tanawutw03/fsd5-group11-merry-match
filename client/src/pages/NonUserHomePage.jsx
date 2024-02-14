@@ -26,7 +26,7 @@ function NonUserHomePage({ user, setUser }) {
   };
 
   return (
-    <div className=" min-w-[1440px] bg-white z-auto flex flex-col items-center">
+    <div className=" w-max  ">
       {user ? (
         <NavBar
           useMenu={user}

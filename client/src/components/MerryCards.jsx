@@ -8,8 +8,8 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import MerryMatch from "./MerryMatch.jsx";
 import { useDisclosure } from "@chakra-ui/react";
-
-function MerryCards({ user }) {
+import PopUpProfile from "./PopUpProfile.jsx";
+function MerryCards() {
   const [people, setPeople] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [dataLoaded, setDataLoaded] = useState(false);
@@ -149,22 +149,25 @@ function MerryCards({ user }) {
   }, [mutualMatch]);
 
   return (
-    <div>
+    <div className="w-full flex justify-center items-center ">
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
       {dataLoaded && !isLoading && !error && people.length > 0 && (
-        <div className="h-[936px] w-[905px] bg-[#160404] flex justify-center items-center gap-5 border-2 overflow-hidden  ">
-          <div className="flex flex-row mt-[710px]  absolute z-10 ">
+        <div className="h-[936px] w-full bg-[#160404] flex justify-center relative items-center gap-5 border-2 overflow-hidden borer-4 border-amber-500 ">
+          <div className="flex  flex-row absolute bottom-16 z-30 ">
             <img className=" w-[90px] h-[90px]  " src={action} />
             <img className=" w-[90px] h-[90px] " src={heart} />
           </div>
-          <div className=" flex flex-row absolute z-20 mt-[870px] ">
+          <div className=" flex flex-row  absolute z-20 bottom-4 ">
             <p className="text-[#646D89]">Merry limit today</p>
-            <p className="ml-2 text-[#FF1659]">2/20</p>
+            <p className="  text-[#FF1659]">2/20</p>
           </div>
-          <div className=" flex flex-row absolute z-30 mt-[565px] ml-[520px]  ">
-            <ArrowBackIcon w={5} h={5} color="white" mr={4} />
+          <div className=" flex flex-row space-x-4 absolute z-30 bottom-48 right-20 ">
+            <ArrowBackIcon w={5} h={5} color="white" />
             <ArrowForwardIcon w={5} h={5} color="white" />
+          </div>
+          <div className="absolute z-30 bottom-48 left-40">
+            <PopUpProfile />
           </div>
           {people.map((person) => (
             <TinderCard
@@ -179,7 +182,6 @@ function MerryCards({ user }) {
                   backgroundImage: `url(${person.avatarUrls[0]})`,
                 }}
               />
-
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent  rounded-2xl to-[#411849]"></div>
               <h1 className=" absolute bottom-16 left-5 text-white font-bold text-s ">
                 {person.full_name}
