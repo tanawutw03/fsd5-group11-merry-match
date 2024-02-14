@@ -3,7 +3,7 @@ import cors from "cors";
 import adminPackageRoute from "./routers/adminPackage.js";
 import adminComplaint from "./routers/adminComplaint.js";
 import userProfileRoute from "./routers/userProfile.js";
-import matchRouter from "./routers/index.js";
+import matchRouter from "./routers/match.js";
 
 async function init() {
   const app = express();
