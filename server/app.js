@@ -1,8 +1,9 @@
 import express from "express";
 import cors from "cors";
-import adminPackageRoute from "./router/adminPackage.js";
-import adminComplaint from "./router/adminComplaint.js";
-import userProfileRoute from "./router/userProfile.js";
+import adminPackageRoute from "./routers/adminPackage.js";
+import adminComplaint from "./routers/adminComplaint.js";
+import userProfileRoute from "./routers/userProfile.js";
+import matchRouter from "./routers/index.js";
 
 async function init() {
   const app = express();
@@ -13,6 +14,7 @@ async function init() {
   app.use("/admin", adminPackageRoute);
   app.use("/admin/complaint", adminComplaint);
   app.use("/user", userProfileRoute);
+  app.use("/matching", matchRouter);
 
   app.get("/", (req, res) => {
     res.send("Hello Marry Porject!");
