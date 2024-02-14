@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import CreatePackage from "./pages/CreatePackage";
 import EditPackage from "./pages/EditPackage";
+import MerryListPage from "./pages/MerryListPage.jsx";
 import { useUser } from "./app/userContext.js";
 import UserComplaint from "./pages/Usercomplaint";
 import AdminComplaint from "./pages/AdminComplaint.jsx";
@@ -62,10 +63,14 @@ function App() {
         <Route path="/matching" element={<Matching />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/package" element={<MerryPackagePage />} />
+<<<<<<< HEAD
         <Route path="/usercomplaint" element={<UserComplaint />} />
         <Route path="/admincomplaint" element={<AdminComplaint />} />
         <Route path="/complaint/:complaint_Id" element={<ComplaintPage />} />
         <Route path="/profile" element={<UserProfilePage />} />
+=======
+        <Route path="/merrylist" element={<MerryListPage />} />
+>>>>>>> d434965 (feat: add merry list page)
       </Routes>
     </BrowserRouter>
   );
