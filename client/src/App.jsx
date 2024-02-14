@@ -67,6 +67,7 @@ function App() {
         <Route path="/admincomplaint" element={<AdminComplaint />} />
         <Route path="/complaint/:complaint_Id" element={<ComplaintPage />} />
         <Route path="/profile" element={<UserProfilePage />} />
+        <Route path="/merrylist" element={<MerryListPage />} />
       </Routes>
     </BrowserRouter>
   );
