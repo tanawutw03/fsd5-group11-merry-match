@@ -151,7 +151,7 @@ function MerryListPage() {
                 >
                   <section className="flex w-[674px]">
                     <img
-                      src={profile.avatar_url}
+                      src={profile.avatar_url.publicUrl}
                       alt="user's profile pic"
                       className="mr-[40px] w-[187px] h-[187px] bg rounded-3xl"
                     />
