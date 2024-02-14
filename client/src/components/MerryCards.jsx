@@ -149,12 +149,12 @@ function MerryCards() {
   }, [mutualMatch]);
 
   return (
-    <div className="w-full flex justify-center items-center border-2 border-yellow-500">
+    <div className="w-full flex justify-center items-center ">
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
       {dataLoaded && !isLoading && !error && people.length > 0 && (
-        <div className="h-[936px] w-full bg-[#160404] flex justify-center items-center gap-5 border-2 overflow-hidden  ">
-          <div className="flex flex-row mt-[710px]  absolute z-10 ">
+        <div className="h-[936px] w-full bg-[#160404] flex justify-center relative items-center gap-5 border-2 overflow-hidden borer-4 border-amber-500 ">
+          <div className="flex  flex-row absolute bottom-16 z-30 ">
             <img className=" w-[90px] h-[90px]  " src={action} />
             <img className=" w-[90px] h-[90px] " src={heart} />
           </div>
