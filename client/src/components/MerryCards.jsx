@@ -18,6 +18,7 @@ function MerryCards({ user }) {
   const { isOpen, onClose } = useDisclosure();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  console.log(`mutualMatch:`, mutualMatch);
   console.log(`user info`, user);
 
   const onSwipe = async (direction, swipedUserId) => {
@@ -195,7 +196,10 @@ function MerryCards({ user }) {
       {mutualMatch && (
         <MerryMatch
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => {
+            setMutualMatch(false);
+            console.log(`mutualMatch onClose:`, mutualMatch);
+          }}
         />
       )}
     </div>
