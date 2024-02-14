@@ -15,6 +15,7 @@ import { supabase } from "../utils/supabaseClient";
 import { useEffect, useState } from "react";
 import { useUser } from "../app/userContext.js";
 import UnmerryButton from "../components/UnmerryButton.jsx";
+import axios from "axios";
 
 function MerryListPage() {
   const navigate = useNavigate();
@@ -33,33 +34,31 @@ function MerryListPage() {
 
   useEffect(() => {
     const id = user.user.id;
+
     async function fetchMerryListData() {
       try {
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("*")
-          .neq("id", id)
-          .range((page - 1) * itemsPerPage, page * itemsPerPage - 1);
-
-        if (error) {
-          console.error("Error fetching data:", error.message);
-          return;
+        const response = await axios.get(
+          `http://localhost:4008/matching/api/v1/match/${id}`
+        );
+        const data = response.data.data;
+        setMerryList(data);
+        setMatchCount(displayedMerryLimit - data.length);
+        if (data.length !== 5) {
+          setHasMoreData(false);
         } else {
-          setMerryList(data);
-          setMatchCount(displayedMerryLimit - data.length);
-          console.log("count", matchCount);
-          if (data.length !== 5) {
-            setHasMoreData(false);
-          } else {
-            setHasMoreData(true); // Set to true because there might be more data
-          }
+          setHasMoreData(true); // Set to true because there might be more data
         }
       } catch (error) {
         console.error("Error fetching data:", error.message);
       }
     }
+
     fetchMerryListData();
-  }, [page]);
+
+    return () => {
+      // Cleanup logic, if needed
+    };
+  }, [user.user.id]);
 
   {
     /* Calculate estimate time until midnight 
