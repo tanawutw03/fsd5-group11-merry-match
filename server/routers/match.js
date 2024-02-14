@@ -138,7 +138,7 @@ matchRouter.put("/api/v1/match", async (req, res) => {
         return res.status(500).send("Error fetching matched user data");
       }
 
-      if (matchedUserData.matches.includes(userId)) {
+      if (matchedUserData.matches && matchedUserData.matches.includes(userId)) {
         // Mutual match detected, send notification
         // Assuming you have some notification mechanism in place
         // You can add code here to trigger notification
