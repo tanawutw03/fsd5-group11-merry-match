@@ -5,7 +5,10 @@ const adminPackageRoute = Router();
 
 adminPackageRoute.get("/package", async (req, res) => {
   try {
-    const { data, error } = await supabase.from("packages").select("*");
+    const { data, error } = await supabase
+      .from("packages")
+      .select("*")
+      .neq("package_id", 69);
 
     if (error) {
       throw error;
