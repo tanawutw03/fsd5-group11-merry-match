@@ -138,29 +138,17 @@ const NavBar = (props) => {
 
           <div className="flex  ml-[20px]  ">
             {props.showBell && (
-              <div className="flex mr-[10px]  ">
+              <div className="pl-10  ">
                 <Menu>
                   <MenuButton>
-                    <img className=" w-[48px] h-[48px]  " src={bell} />
+                    <img src={bell} />
                   </MenuButton>
                   <MenuList></MenuList>
                 </Menu>
               </div>
             )}
-            <li className="mr-[160px]  ]">{MenuOrButton}</li>
+            <li className="pl-2 pr-32  ">{MenuOrButton}</li>
           </div>
-
-          {props.showBell && (
-            <div className="pl-10  ">
-              <Menu>
-                <MenuButton>
-                  <img src={bell} />
-                </MenuButton>
-                <MenuList></MenuList>
-              </Menu>
-            </div>
-          )}
-          <li className="pl-2 pr-32  ">{MenuOrButton}</li>
         </ul>
       </nav>
     </>

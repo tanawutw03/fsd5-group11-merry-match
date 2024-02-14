@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 import MerryMatch from "./MerryMatch.jsx";
 import { useDisclosure } from "@chakra-ui/react";
 import PopUpProfile from "./PopUpProfile.jsx";
-function MerryCards() {
+function MerryCards({ user }) {
   const [people, setPeople] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [dataLoaded, setDataLoaded] = useState(false);
@@ -149,7 +149,7 @@ function MerryCards() {
   }, [mutualMatch]);
 
   return (
-    <div className="w-full flex justify-center items-center ">
+    <div className="w-[700px] flex justify-center items-center ">
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
       {dataLoaded && !isLoading && !error && people.length > 0 && (
