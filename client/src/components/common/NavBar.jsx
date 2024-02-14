@@ -47,7 +47,7 @@ const NavBar = (props) => {
     { src: warn, name: "Compliant" },
   ];
   const MenuOrButton = props.useMenu ? (
-    <Menu className=" mt-5">
+    <Menu>
       <MenuButton>
         {avatarUrl ? (
           <img
@@ -110,12 +110,21 @@ const NavBar = (props) => {
 
   return (
     <>
+<<<<<<< Updated upstream
       <nav>
         <ul className=" flex  items-center  text-red-400 text-xl  text-center m-[20px]">
           <li className=" ml-[60px]">
             <img src={logo} />
           </li>
           <li className=" font-nunito  font-bold ml-[520px]">
+=======
+      <nav className=" w-screen  flex  items-center  justify-between ">
+        <ul className="pl-32">
+          <img src={logo} />
+        </ul>
+        <ul className=" flex flex-row items-center justify-center">
+          <li className=" font-nunito  font-bold   ">
+>>>>>>> Stashed changes
             <Button
               variant="link"
               colorScheme="custom"
@@ -125,7 +134,11 @@ const NavBar = (props) => {
               {props.firstMenuName}
             </Button>
           </li>
+<<<<<<< Updated upstream
           <li className=" font-nunito  font-bold mr-[24px]  ml-[35px]">
+=======
+          <li className=" font-nunito  font-bold pl-10 ">
+>>>>>>> Stashed changes
             <Button
               variant="link"
               colorScheme="custom"
@@ -135,6 +148,7 @@ const NavBar = (props) => {
               {props.secondMenuName}
             </Button>
           </li>
+<<<<<<< Updated upstream
           <div className="flex  ml-[20px]  ">
             {props.showBell && (
               <div className="flex mr-[10px]  ">
@@ -148,6 +162,19 @@ const NavBar = (props) => {
             )}
             <li className="mr-[160px]  ]">{MenuOrButton}</li>
           </div>
+=======
+          {props.showBell && (
+            <div className="pl-10  ">
+              <Menu>
+                <MenuButton>
+                  <img src={bell} />
+                </MenuButton>
+                <MenuList></MenuList>
+              </Menu>
+            </div>
+          )}
+          <li className="pl-2 pr-32  ">{MenuOrButton}</li>
+>>>>>>> Stashed changes
         </ul>
       </nav>
     </>
