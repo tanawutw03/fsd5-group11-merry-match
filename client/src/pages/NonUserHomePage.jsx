@@ -26,7 +26,7 @@ function NonUserHomePage({ user, setUser }) {
   };
 
   return (
-    <div className=" w-max  ">
+    <div className="h-screen w-screen">
       {user ? (
         <NavBar
           useMenu={user}
