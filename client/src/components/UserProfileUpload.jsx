@@ -8,9 +8,30 @@ export default function UserProfileUpload({ formDataId, isEditMode }) {
   const [imageUrls, setImageUrls] = useState([]);
   const [session, setSession] = useState(null);
   const [refresh, setRefresh] = useState(false);
-  formDataId = 51;
+  formDataId = 52;
 
   const SERVER_API_URL = "http://localhost:4008";
+
+  const [url2, setUrl2] = useState("");
+
+  useEffect(() => {
+    async function fetchData() {
+      const supabase = createClient(supabaseUrl, supabaseKey);
+      const { data, error } = await supabase
+        .from(tableName)
+        .select("url2")
+        .single();
+
+      if (error) {
+        console.error("Error fetching data:", error.message);
+      } else {
+        setUrl2(data.url2);
+        console.log("url2: ", url2);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const fetchProfileImages = async () => {
@@ -53,90 +74,89 @@ export default function UserProfileUpload({ formDataId, isEditMode }) {
   //     const uniqueFileName = `${file.name.split(".")[0]}_${Date.now()}.${file.name.split(".")[1]}`;
   //     const imagePath = `images/${uniqueFileName}`;
   //     console.log("image path", imagePath);
-  
+
   //     const formData = new FormData();
   //     formData.append("file", file);
   //     formData.append("imagePath", imagePath);
-  
+
   //     const uploadResponse = await axios.post(`${SERVER_API_URL}/user/uploadImage`, formData, {
   //       headers: {
   //         "Content-Type": "multipart/form-data",
   //       },
   //     });
-  
+
   //     console.log("uploadResponse: ", uploadResponse.data);
-  
+
   //     const imageUrl = uploadResponse.data.imageUrl;
-  
+
   //     const newImageUrls = [...imageUrls];
   //     newImageUrls[index] = imageUrl;
   //     setImageUrls(newImageUrls);
-  
+
   //     await saveImageUrlSetsToDatabase(newImageUrls, userId);
   //   } catch (error) {
   //     console.error("Error uploading file:", error);
   //   }
   // };
-  
+
   // const saveImageUrlSetsToDatabase = async (imageUrls, userId) => {
   //   try {
   //     const imageUrlSets = imageUrls.reduce((acc, curr, index) => {
   //       acc[`url${index + 1}`] = curr;
   //       return acc;
   //     }, {});
-  
+
   //     await axios.put(`${SERVER_API_URL}/user/saveImageUrlSets`, {
   //       imageUrlSets: imageUrlSets,
   //       userId: userId,
   //     });
-  
+
   //     console.log("Image URL sets updated successfully:", imageUrlSets);
   //   } catch (error) {
   //     console.error("Error saving image URL sets to database:", error.message);
   //   }
   // };
-  
+
   // -----OK-PASS-------leang don't Delete ----------------------
-    const handleFileUpload = async (file, index, userId) => {
-      try {
-        const uniqueFileName = `${file.name.split(".")[0]}_${Date.now()}.${
-          file.name.split(".")[1]
-        }`;
-        const imagePath = `images/${uniqueFileName}`;
-        console.log("image path", imagePath);
+  const handleFileUpload = async (file, index, userId) => {
+    try {
+      const uniqueFileName = `${file.name.split(".")[0]}_${Date.now()}.${
+        file.name.split(".")[1]
+      }`;
+      const imagePath = `images/${uniqueFileName}`;
+      console.log("image path", imagePath);
 
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("profile_images")
-          .upload(imagePath, file);
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("profile_images")
+        .upload(imagePath, file);
 
-        if (uploadError) {
-          throw new Error(`Storage Error: ${uploadError.message}`);
-        }
-
-        const { data: urlData, error } = await supabase.storage
-          .from("profile_images")
-          .getPublicUrl(imagePath);
-
-        console.log("urlData :", urlData);
-
-        if (error) {
-          throw new Error(`Error getting public URL: ${error.message}`);
-        }
-
-        if (!urlData || !urlData.publicUrl) {
-          throw new Error("Public URL is undefined or not found.");
-        }
-
-        const newImageUrls = [...imageUrls];
-        newImageUrls[index] = urlData.publicUrl;
-        setImageUrls(newImageUrls);
-        console.log("newImageUrls :", newImageUrls);
-
-        await saveImageUrlSetsToDatabase(newImageUrls);
-      } catch (error) {
-        console.error("Error uploading file:", error);
-
+      if (uploadError) {
+        throw new Error(`Storage Error: ${uploadError.message}`);
       }
+
+      const { data: urlData, error } = await supabase.storage
+        .from("profile_images")
+        .getPublicUrl(imagePath);
+
+      console.log("urlData :", urlData);
+
+      if (error) {
+        throw new Error(`Error getting public URL: ${error.message}`);
+      }
+
+      if (!urlData || !urlData.publicUrl) {
+        throw new Error("Public URL is undefined or not found.");
+      }
+
+      const newImageUrls = [...imageUrls];
+      newImageUrls[index] = urlData.publicUrl;
+      setImageUrls(newImageUrls);
+      console.log("newImageUrls :", newImageUrls);
+
+      await saveImageUrlSetsToDatabase(newImageUrls);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
   };
 
   const saveImageUrlSetsToDatabase = async (imageUrls) => {
@@ -156,7 +176,6 @@ export default function UserProfileUpload({ formDataId, isEditMode }) {
       console.log("Image URL sets updated successfully:", imageUrlSets);
     } catch (error) {
       console.error("Error saving image URL sets to database:", error.message);
-
     }
   };
 
@@ -219,10 +238,10 @@ export default function UserProfileUpload({ formDataId, isEditMode }) {
             </>
           )}
           {imageUrls[index] && (
-            <div className=" relative p-3 object-cover">
+            <div className=" relative p-3 object-cover border-[1px] rounded-[12px]  shadow-setShadow01">
               <img src={imageUrls[index]} alt={`Uploaded Image ${index + 1}`} />
               <button
-                className=" absolute top-0 right-0 flex items-center justify-center w-8 h-8 rounded-full bg-red-500 text-white "
+                className=" absolute z-20 top-0 right-0 flex items-center justify-center w-8 h-8 rounded-full bg-red-500 text-white "
                 onClick={() => handleDeleteImage(index)}
               >
                 X

@@ -159,6 +159,8 @@ function UserProfilePage() {
     );
   };
 
+  
+
   const handleDeleteAccount = async () => {
     try {
       const { data, error } = await supabase
