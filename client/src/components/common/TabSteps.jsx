@@ -210,7 +210,7 @@ function TabSteps() {
 
   return (
     <>
-      <div className=" w-max">
+      <div className="flex justify-center w-full">
         <NavBar
           useMenu={false}
           name="Login"

@@ -4,8 +4,17 @@ import LeftSideMatching from "../components/LeftSideMatching";
 import { Checkbox } from "@chakra-ui/react";
 import SliderAge from "../components/SliderAge";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../app/userContext";
+import PropTypes from "prop-types";
+
 function Matching() {
+  const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
   const navigate = useNavigate();
+
+  const handleClick = () => {
+    console.log(`Clicked`);
+  };
+
   return (
     <>
       <div className=" w-max ">
@@ -14,10 +23,13 @@ function Matching() {
           secondMenuName="Merry Membership"
           name="login"
           color="red"
-          showBell="true"
-          useMenu="true"
+          showBell={true}
+          useMenu={user}
           onClickFirstMenu={() => navigate("/matching")}
           onClickSecondMenu={() => navigate("/package")}
+          setUser={setUser}
+          user={user}
+          onClick={handleClick}
         />
 
         <div className="flex flex-row">
@@ -25,7 +37,7 @@ function Matching() {
             <LeftSideMatching />
           </div>
           <div>
-            <MerryCards />
+            <MerryCards user={user} />
           </div>
           <div className="  flex-col flex ml-2  w-[220] h-[900px]  ">
             <p className=" text-[#191C77] text-base font-bold">
@@ -52,5 +64,10 @@ function Matching() {
     </>
   );
 }
+
+Matching.propTypes = {
+  user: PropTypes.object,
+  setUser: PropTypes.func,
+};
 
 export default Matching;
