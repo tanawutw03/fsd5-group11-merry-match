@@ -125,7 +125,6 @@ const NavBar = (props) => {
               {props.firstMenuName}
             </Button>
           </li>
-
           <li className=" font-nunito  font-bold pl-10 ">
             <Button
               variant="link"
