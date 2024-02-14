@@ -2,7 +2,7 @@ import { Button } from "@chakra-ui/react";
 import image1 from "../assets/NonUserHomePage/image-1.png";
 import image2 from "../assets/NonUserHomePage/image-2.png";
 import vector from "../assets/NonUserHomePage/vector.png";
-import heart from "../assets/NonUserHomePage/heart.png";
+import heart from "../assets/NonUserHomePage/heart1.png";
 import heart2 from "../assets/NonUserHomePage/heart2.png";
 import heart3 from "../assets/NonUserHomePage/heart3.png";
 import logofooter from "../assets/NonUserHomePage/logofooter.png";
@@ -26,7 +26,7 @@ function NonUserHomePage({ user, setUser }) {
   };
 
   return (
-    <div className=" w-max  ">
+    <div className=" min-w-[1440px] bg-white z-auto flex flex-col items-center">
       {user ? (
         <NavBar
           useMenu={user}
@@ -38,12 +38,14 @@ function NonUserHomePage({ user, setUser }) {
           showBell={true}
           setUser={setUser}
           user={user}
+          color=""
           name="userAvatar"
         />
       ) : (
         <NavBar
           useMenu={false}
           name="Login"
+          color="red"
           onClick={handleClick}
           firstMenuName="Why Merry Match?"
           secondMenuName="How to Merry"
@@ -83,7 +85,7 @@ function NonUserHomePage({ user, setUser }) {
           className=" absolute right-[203px] bottom-[403px] z-auto"
         />
         <img src={heart2} className=" absolute right-[558px] top-[117px]" />
-        <img
+        <imga
           src={image2}
           className=" absolute left-[203px] bottom-0 rounded-full"
         />
