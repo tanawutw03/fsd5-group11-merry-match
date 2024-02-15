@@ -9,7 +9,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Tooltip } from "@chakra-ui/react";
-import merryIcon from "../assets/MerryListPage/merryIcon.svg";
+import whiteHeart from "../assets/MerryListPage/whiteHeart.svg";
 
 function UnmerryButton({ isUnmerry }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -27,7 +27,7 @@ function UnmerryButton({ isUnmerry }) {
       >
         <button className="w-[48px] h-[48px] shadow-md flex justify-center items-center rounded-2xl bg-[#c70039]">
           <img
-            src={merryIcon}
+            src={whiteHeart}
             alt="merry icon"
             className="w-[48px] h-[48px] ml-[5px] mt-[5px]"
             onClick={onOpen}

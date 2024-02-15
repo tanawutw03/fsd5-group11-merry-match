@@ -6,7 +6,7 @@ import matchedLabel from "../assets/MerryListPage/matchedLabel.svg";
 import notMatchedLabel from "../assets/MerryListPage/notMatchedLabel.svg";
 import messageIcon from "../assets/MerryListPage/messageIcon.svg";
 import viewProfileIcon from "../assets/MerryListPage/eyeIcon.svg";
-import unMerryIcon from "../assets/MerryListPage/unMerryIcon.svg"; //อยู่ในปุ่มที่คอมเมนท์ไว้
+import redHeart from "../assets/MerryListPage/redHeart.svg"; //อยู่ในปุ่มที่คอมเมนท์ไว้
 import logo from "../assets/merryPackagePage/logo.svg";
 import facebookIcon from "../assets/merryPackagePage/facebook-circle-fill.svg";
 import instagramIcon from "../assets/merryPackagePage/instagram-fill.svg";
@@ -16,13 +16,18 @@ import { useEffect, useState } from "react";
 import { useUser } from "../app/userContext.js";
 import UnmerryButton from "../components/UnmerryButton.jsx";
 import axios from "axios";
+import PopUpProfile from "../components/PopUpProfile.jsx";
 
 function MerryListPage() {
   const navigate = useNavigate();
   const [merryList, setMerryList] = useState([]);
+  {
+    /* 
   const itemsPerPage = 5;
   const [page, setPage] = useState(1);
-  // const [packages, setPackages] = useState([]);
+  const [packages, setPackages] = useState([]);
+  */
+  } //pagination
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
   const [matchCount, setMatchCount] = useState();
   const [hasMoreData, setHasMoreData] = useState(true);
@@ -78,8 +83,7 @@ function MerryListPage() {
   };
 
   {
-    /* Fetch packages data 
-    แยก component */
+    /* Fetch packages data */
   }
   // useEffect(() => {
   //   async function fetchPackageData() {
@@ -153,7 +157,12 @@ function MerryListPage() {
                     <img
                       src={profile.avatar_url.publicUrl}
                       alt="user's profile pic"
-                      className="mr-[40px] w-[187px] h-[187px] bg rounded-3xl"
+                      className="mr-[40px] rounded-3xl"
+                      style={{
+                        width: "187px",
+                        height: "187px",
+                        objectFit: "cover",
+                      }}
                     />
                     <div>
                       <section className="flex justify-start pb-[24px]">
@@ -244,12 +253,13 @@ function MerryListPage() {
                             alt="view profile icon"
                             className="w-[24px] h-[24px]"
                           />
+                          {/*<PopUpProfile />*/}
                         </button>
                       </Tooltip>
 
                       <UnmerryButton isUnmerry={HandleisUnmerry} />
 
-                      {/* merry button
+                      {/* merry back button
                       <Tooltip
                         bg="gray.400"
                         label="Merry"
@@ -258,7 +268,7 @@ function MerryListPage() {
                       >
                         <button className="w-[48px] h-[48px] bg-white shadow-md flex justify-center items-center rounded-2xl">
                           <img
-                            src={unMerryIcon}
+                            src={redHeart}
                             alt="merry icon"
                             className="w-[48px] h-[48px] ml-[5px] mt-[5px]"
                           />
@@ -272,7 +282,8 @@ function MerryListPage() {
           </div>
         </section>
       </main>
-      <div className="w-full flex flex-col justify-center items-center font-nunito bg-[#fcfcfe] gap-5">
+      {/*Pagination*/}
+      {/*<div className="w-full flex flex-col justify-center items-center font-nunito bg-[#fcfcfe] gap-5">
         <div>Page {page}</div>
         <div className="mb-[100px]">
           <button
@@ -290,7 +301,7 @@ function MerryListPage() {
             Next
           </button>
         </div>
-      </div>
+                    </div>*/}
       {/* Footer Section */}
       <footer className="flex w-screen h-96 px-8 justify-center items-center bg-gray-100">
         <div className="flex flex-col items-center max-w-screen-lg w-full h-64 justify-between">
