@@ -11,7 +11,7 @@ merryLimit.get("/count/:id", async (req, res) => {
     const { data: countData, error: countError } = await supabase
       .from("merry_limits")
       .select("merry_count, merry_limit")
-      .eq("id", parseInt(countId))
+      .eq("id", countId)
       .single();
 
     if (countError) {
@@ -43,7 +43,7 @@ merryLimit.get("/limit/:id", async (req, res) => {
     const { data, error } = await supabase
       .from("merry_limits")
       .select("merry_limit")
-      .eq("id", parseInt(limitId))
+      .eq("id", limitId)
       .single();
 
     if (error) {
@@ -67,7 +67,7 @@ merryLimit.put("/count/:id", async (req, res) => {
     const { data: countData, error: countError } = await supabase
       .from("merry_limits")
       .select("merry_count, merry_limit")
-      .eq("id", parseInt(countId))
+      .eq("id", countId)
       .single();
 
     if (countError) {
@@ -93,7 +93,7 @@ merryLimit.put("/count/:id", async (req, res) => {
     const { data: updateData, error: updateError } = await supabase
       .from("merry_limits")
       .update({ merry_count: updatedCount })
-      .eq("id", parseInt(countId));
+      .eq("id", countId);
 
     if (updateError) {
       console.error("Error updating data:", updateError.message);

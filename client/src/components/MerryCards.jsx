@@ -17,6 +17,8 @@ function MerryCards({ user }) {
   const [mutualMatch, setMutualMatch] = useState(false);
   const { isOpen, onClose } = useDisclosure();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [merryCount, setMerryCount] = useState();
+  const [limitCount, setLimitCount] = useState();
 
   console.log(`mutualMatch:`, mutualMatch);
   console.log(`user info`, user);
@@ -29,10 +31,19 @@ function MerryCards({ user }) {
     if (direction === "right" && user.user.id) {
       const response = await updateMatches(user.user.id, swipedUserId);
 
+      const decreaseLimitResponse = await axios.put(
+        "http://localhost:4008/merryLimit/count/" + user.user.id
+      );
+
+      console.log(`decreaseLimitResponse:`, decreaseLimitResponse.data.message);
       console.log(response.message);
       if (response.message === "Mutual match") {
         setMutualMatch(true);
       }
+
+      // Update merry count state
+      const updatedMerryCount = merryCount - 1;
+      setMerryCount(updatedMerryCount);
     } else if (direction === "left" && user.user.id) {
     }
   };
@@ -140,6 +151,43 @@ function MerryCards({ user }) {
 
   useEffect(() => {
     console.log("People state:", people);
+
+    const fetchMerry = async () => {
+      try {
+        const getMerry = await axios.get(
+          "http://localhost:4008/merryLimit/count/" + user.user.id
+        );
+
+        const getLimit = await axios.get(
+          "http://localhost:4008/merryLimit/limit/" + user.user.id
+        );
+
+        const currentDate = new Date().toISOString();
+        const formattedDate = currentDate.substring(0, 10); // Extract 'yyyy-mm-dd'
+        console.log(`currentDate:`, currentDate);
+        console.log(`formattedDate:`, formattedDate);
+
+        const { data: insertCurrentDate, error: errorInsertCurrentDate } =
+          await supabase
+            .from("merry_limits")
+            .update({ last_login_date: formattedDate })
+            .eq("id", user.user.id)
+            .select();
+
+        console.log(`insertCurrentDate:`, insertCurrentDate);
+        console.log(`errorInsertCurrentDate:`, errorInsertCurrentDate);
+
+        setMerryCount(getMerry.data.remainingCount);
+        console.log(getMerry.data.remainingCount);
+
+        setLimitCount(getLimit.data.merry_limit);
+        console.log(getLimit.data.merry_limit);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchMerry();
   }, [people]);
 
   useEffect(() => {
@@ -161,7 +209,7 @@ function MerryCards({ user }) {
           </div>
           <div className=" flex flex-row  absolute z-20 bottom-4 ">
             <p className="text-[#646D89]">Merry limit today</p>
-            <p className="  text-[#FF1659]">2/20</p>
+            <p className="  text-[#FF1659]">{`${merryCount} / ${limitCount}`}</p>
           </div>
           <div className=" flex flex-row space-x-4 absolute z-30 bottom-48 right-20 ">
             <ArrowBackIcon w={5} h={5} color="white" />
