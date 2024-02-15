@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import facebookIcon from "../assets/merryPackagePage/facebook-circle-fill.svg";
 import instagramIcon from "../assets/merryPackagePage/instagram-fill.svg";
 import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
@@ -7,9 +7,12 @@ import NavBar from "../components/common/NavBar";
 import axios from "axios";
 import { supabase } from "../utils/supabaseClient";
 import UserProfileUpload from "../components/UserProfileUpload";
-import ConfirmDeleteBtn from "../components/ConfirmDeleteBtn";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../app/userContext";
 
 function UserProfilePage() {
+  const navigate = useNavigate();
+  const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
   const fileInputRef = useRef(null);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -159,8 +162,6 @@ function UserProfilePage() {
     );
   };
 
-  
-
   const handleDeleteAccount = async () => {
     try {
       const { data, error } = await supabase
@@ -203,10 +204,12 @@ function UserProfilePage() {
           secondMenuName="Merry Membership"
           name="login"
           color="red"
-          showBell="true"
-          useMenu="true"
+          showBell={true}
+          useMenu={user}
           onClickFirstMenu={() => navigate("/matching")}
           onClickSecondMenu={() => navigate("/package")}
+          setUser={setUser}
+          user={user}
         />
       </div>
       <div className="flex flex-col justify-center items-center w-screen relative">

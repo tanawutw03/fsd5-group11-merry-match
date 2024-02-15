@@ -215,8 +215,8 @@ function MerryCards({ user }) {
             <ArrowBackIcon w={5} h={5} color="white" />
             <ArrowForwardIcon w={5} h={5} color="white" />
           </div>
-          <div className="absolute z-30 bottom-48 left-40">
-            <PopUpProfile />
+          <div className="absolute z-30 bottom-44 left-40">
+            <PopUpProfile useMenu={true} />
           </div>
           {people.map((person) => (
             <TinderCard
@@ -234,8 +234,6 @@ function MerryCards({ user }) {
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent  rounded-2xl to-[#411849]"></div>
               <h1 className=" absolute bottom-16 left-5 text-white font-bold text-s ">
                 {person.full_name}
-
-                <ViewIcon w={5} h={5} ml={4} color="white" />
               </h1>
             </TinderCard>
           ))}

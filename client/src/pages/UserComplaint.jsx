@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import logofooter from "../assets/NonUserHomePage/logofooter.png";
 import fb from "../assets/NonUserHomePage/fb.png";
 import ig from "../assets/NonUserHomePage/ig.png";
@@ -78,46 +79,43 @@ function UserComplaint() {
   };
 
   return (
-    <div className=" min-w-[1440px] bg-white z-auto flex flex-col items-center">
-      <div className="shadow-md bg-opacity-10">
-        {user ? (
-          <NavBar
-            useMenu={user}
-            onClick={handleClick}
-            firstMenuName="Start Matching!"
-            secondMenuName="Merry Membership"
-            onClickFirstMenu={() => navigate("/matching")}
-            onClickSecondMenu={() => navigate("/package")}
-            showBell={true}
-            setUser={setUser}
-            user={user}
-            color=""
-            name="userAvatar"
-          />
-        ) : (
-          <NavBar
-            useMenu={false}
-            name="Login"
-            color="red"
-            onClick={handleClick}
-            firstMenuName="Why Merry Match?"
-            secondMenuName="How to Merry"
-            onClickFirstMenu={() => scrollToSection("WhyMerry")}
-            onClickSecondMenu={() => scrollToSection("HowToMerry")}
-            showBell={false}
-            setUser={setUser}
-            user={user}
-          />
-        )}
-      </div>
-      <section className="h-[1023px] w-full  flex flex-row justify-center items-center gap-[80px]">
+    <div className=" w-screen bg-white z-auto flex flex-col items-center">
+      {user ? (
+        <NavBar
+          useMenu={user}
+          onClick={handleClick}
+          firstMenuName="Start Matching!"
+          secondMenuName="Merry Membership"
+          onClickFirstMenu={() => navigate("/matching")}
+          onClickSecondMenu={() => navigate("/package")}
+          showBell={true}
+          setUser={setUser}
+          user={user}
+          name="userAvatar"
+        />
+      ) : (
+        <NavBar
+          useMenu={false}
+          name="Login"
+          onClick={handleClick}
+          firstMenuName="Why Merry Match?"
+          secondMenuName="How to Merry"
+          onClickFirstMenu={() => scrollToSection("WhyMerry")}
+          onClickSecondMenu={() => scrollToSection("HowToMerry")}
+          showBell={false}
+          setUser={setUser}
+          user={user}
+        />
+      )}
+
+      <section className="h-[1023px] w-screen  flex flex-row justify-center items-center gap-[80px]">
         <div className="w-1/4 max-w-[580px] h-fit flex flex-col justify-center items-start">
           <div className="my-[50px]">
             <div className="tagline font-nunito text-[14px] font-semibold leading-5 text-left text-[#7B4429]">
               COMPLAINT
             </div>
             <div className="font-nunito text-4xl font-[46px] leading-58 tracking-tighter text-left text-[#A62D82]">
-              If you have any trouble Don't be afraid to tell us!
+              <p> If you have any trouble Don't be afraid to tell us!</p>
             </div>
           </div>
           <div className="my-[50px] flex flex-col justify-between items-start w-full gap-[40px]">
@@ -163,7 +161,7 @@ function UserComplaint() {
         </div>
         <img src={banner} />
       </section>
-      <footer className="flex w-[1440px] h-96 px-8 justify-center items-center bg-gray-100">
+      <footer className="flex w-screen h-96 px-8 justify-center items-center bg-gray-100">
         <div className="flex flex-col items-center w-1120 h-64  flex-shrink-0 justify-between">
           <div className="flex flex-col items-center">
             <img src={logofooter} />

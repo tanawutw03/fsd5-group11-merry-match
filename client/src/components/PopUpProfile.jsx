@@ -4,13 +4,29 @@ import action from "../assets/Matching/action button.svg";
 import heart from "../assets/Matching/heart button (1).svg";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 import location from "../assets/PopupProfile/location.png";
+import ChakraButton from "./common/ChakraButton";
+import PropTypes from "prop-types";
 
-const PopUpProfile = () => {
+const PopUpProfile = (props) => {
   const [modal, setModal] = useState(false);
-
   const toggleModal = () => {
     setModal(!modal);
   };
+
+  const IconOrButton = props.useMenu ? (
+    <button onClick={toggleModal}>
+      <ViewIcon color="white" />
+    </button>
+  ) : (
+    <ChakraButton
+      onClick={toggleModal}
+      colorScheme={props.colorScheme}
+      name={props.name}
+      rounded={props.rounded}
+      width={props.width}
+      height={props.height}
+    />
+  );
 
   if (modal) {
     document.body.classList.add("active-modal");
@@ -25,10 +41,7 @@ const PopUpProfile = () => {
   ];
   return (
     <>
-      <button onClick={toggleModal}>
-        <ViewIcon color="white" />
-      </button>
-
+      <ui className="pl-2 pr-32  ">{IconOrButton}</ui>
       {modal && (
         <div className="w-screen h-screen top-0 left-0 right-0 bottom-0">
           <div
@@ -104,5 +117,13 @@ const PopUpProfile = () => {
     </>
   );
 };
-
+PopUpProfile.propTypes = {
+  useMenu: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+  colorScheme: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  rounded: PropTypes.string,
+  variant: PropTypes.string,
+  width: PropTypes.string,
+  height: PropTypes.string,
+};
 export default PopUpProfile;
