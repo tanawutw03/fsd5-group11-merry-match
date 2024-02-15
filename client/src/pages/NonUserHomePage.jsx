@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { Button } from "@chakra-ui/react";
 import image1 from "../assets/NonUserHomePage/image-1.png";
 import image2 from "../assets/NonUserHomePage/image-2.png";
@@ -12,7 +13,6 @@ import tw from "../assets/NonUserHomePage/tw.png";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/common/NavBar";
 import PropTypes from "prop-types";
-
 function NonUserHomePage({ user, setUser }) {
   const navigate = useNavigate();
 
@@ -20,13 +20,20 @@ function NonUserHomePage({ user, setUser }) {
     const targetSection = document.getElementById(sectionId);
     targetSection.scrollIntoView({ behavior: "smooth" });
   };
+  const isLoggedIn = () => {
+    if (user) {
+      return navigate("/matching");
+    } else {
+      return navigate("/login");
+    }
+  };
 
   const handleClick = () => {
     navigate("/login");
   };
 
   return (
-    <div className=" min-w-[1440px] bg-white z-auto flex flex-col items-center">
+    <div className="w-screen bg-white z-auto flex flex-col items-center">
       {user ? (
         <NavBar
           useMenu={user}
@@ -79,15 +86,15 @@ function NonUserHomePage({ user, setUser }) {
           <ChakraButton name="Login" color="red" onNext={handleClick} />
         </div>
       </nav> */}
-      <header className="bg-[#160404] w-full h-[758px] flex flex-col justify-center items-center font-nunito relative overflow-hidden">
+      <header className="bg-[#160404] w-screen h-[758px] flex flex-col justify-center items-center font-nunito relative overflow-hidden">
         <img
           src={image1}
           className=" absolute right-[203px] bottom-[403px] z-auto"
         />
-        <img src={heart2} className=" absolute right-[558px] top-[117px]" />
-        <imga
+        <img src={heart} className=" absolute right-[558px] top-[117px] " />
+        <img
           src={image2}
-          className=" absolute left-[203px] bottom-0 rounded-full"
+          className=" absolute left-[203px] bottom-0 rounded-full  "
         />
         <div className="h-[8px] w-[8px] absolute right-[197px] bottom-[197px] bg-[#7B4429] rounded-full"></div>
         <div className="h-[67px] w-[67px] absolute left-[-9px] top-[108px] bg-[#411032] rounded-full"></div>
@@ -110,12 +117,14 @@ function NonUserHomePage({ user, setUser }) {
             If you feel lonely, let’s start meeting new people in your area!
             Dont’t forget to get Merry with us
           </div>
-          <Button colorScheme="pink">Start matching!</Button>
+          <Button colorScheme="pink" onClick={isLoggedIn}>
+            Start matching!
+          </Button>
         </div>
       </header>
       <section
         id="WhyMerry"
-        className=" bg-[#160404] w-full h-[533px] flex flex-col justify-center items-center font-nunito"
+        className=" bg-[#160404] w-screen h-[533px] flex flex-col justify-center items-center font-nunito"
       >
         <div className="flex w-1120 items-center gap-6">
           <div className="flex flex-col justify-between items-start w-[549px] h-full">
@@ -142,7 +151,7 @@ function NonUserHomePage({ user, setUser }) {
       </section>
       <section
         id="HowToMerry"
-        className="bg-[#160404] w-full flex flex-col h-[622px] px-16 py-20 justify-center items-center"
+        className="bg-[#160404] w-screen flex flex-col h-[622px] px-16 py-20 justify-center items-center"
       >
         <div className="text-purple-300 text-center font-nunito text-[46px] font-extrabold leading-125 tracking-tight mb-[48px]">
           How to Merry
@@ -194,12 +203,15 @@ function NonUserHomePage({ user, setUser }) {
           </div>
         </div>
       </section>
-      <section className="bg-[#160404] w-full flex flex-col h-[570px] px-16 py-20 justify-center items-center">
+      <section className="bg-[#160404]w-screen flex flex-col h-[570px] px-16 py-20 justify-center items-center">
         <div className="w-[1120px] h-[369px] rounded-2xl bg-gradient-to-br from-red-900 to-pink-500 flex flex-col justify-evenly items-center relative">
           <div className="w-[588px] text-white text-center font-nunito text-4xl font-extrabold leading-125 tracking-tight">
             Let’s start finding and matching someone new
           </div>
-          <button className="inline-flex p-3 md:p-4 justify-center items-center gap-2 md:gap-4 rounded-full bg-red-100 shadow-md text-red-600 text-center font-nunito text-base font-bold leading-150">
+          <button
+            onClick={isLoggedIn}
+            className="inline-flex p-3 md:p-4 justify-center items-center gap-2 md:gap-4 rounded-full bg-red-100 shadow-md text-red-600 text-center font-nunito text-base font-bold leading-150"
+          >
             Start Matching!
           </button>
           <img src={heart} className=" absolute right-0 bottom-[27px]" />
@@ -207,7 +219,7 @@ function NonUserHomePage({ user, setUser }) {
           <img src={heart3} className=" absolute left-[0px] bottom-[160px]" />
         </div>
       </section>
-      <footer className="flex w-[1440px] h-96 px-8 justify-center items-center bg-gray-100">
+      <footer className="flex w-screen h-96 px-8 justify-center items-center bg-gray-100">
         <div className="flex flex-col items-center w-1120 h-64  flex-shrink-0 justify-between">
           <div className="flex flex-col items-center">
             <img src={logofooter} />

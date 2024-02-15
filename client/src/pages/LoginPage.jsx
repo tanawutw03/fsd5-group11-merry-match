@@ -82,7 +82,7 @@ const Login = () => {
           />
         </div>
 
-        <div className="bg-white h-screen w-screen flex items-center justify-center gap-36 pt-20">
+        <div className=" h-screen w-screen flex items-center justify-center gap-36 pt-20">
           <div className="flex">
             <img src={LoginBanner} alt="" className="w-4/5" />
           </div>
