@@ -10,6 +10,7 @@ export default function UserProfileUpload({ formDataId, isEditMode }) {
   const [refresh, setRefresh] = useState(false);
 
   const SERVER_PORT = "http://localhost:4008";
+  formDataId=3;
 
   // const [url2, setUrl2] = useState("");
 
@@ -36,7 +37,7 @@ export default function UserProfileUpload({ formDataId, isEditMode }) {
     const fetchProfileImages = async () => {
       try {
         const { data, error } = await supabase
-          .from("profiles")
+          .from("user_profiles_url")
           .select("storage_location")
           .eq("id", formDataId)
           .single();
