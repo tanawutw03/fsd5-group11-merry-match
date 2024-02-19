@@ -4,17 +4,17 @@ import instagramIcon from "../assets/merryPackagePage/instagram-fill.svg";
 import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
 import logo from "../assets/merryPackagePage/logo.svg";
 import NavBar from "../components/common/NavBar";
-import axios from "axios";
 import { supabase } from "../utils/supabaseClient";
 import UserProfileUpload from "../components/UserProfileUpload";
 import ConfirmDeleteBtn from "../components/ConfirmDeleteBtn";
+import PopUpProfile from "../components/PopUpProfile";
 
 function UserProfilePage() {
   const fileInputRef = useRef(null);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
   const [session, setSession] = useState(null);
   const SERVER_API_URL = "http://localhost:4008";
   const [formData, setFormData] = useState({
@@ -32,14 +32,26 @@ function UserProfilePage() {
     hobbies: "",
     about_me: "",
   });
-  const profile_id = "3";
+  // const profile_id = "3";
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      console.log(session);
+    });
+    // console.log("formDataId Data: ", formDataId);
+  }, []);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         // Fetch user data from your backend or database
         const { data, error } = await supabase
-          .from("user2_profiles")
+          .from("profiles")
           .select("*")
           .eq("id", profile_id)
           .single();
@@ -79,44 +91,15 @@ function UserProfilePage() {
   };
 
   const handlePreviewProfile = async () => {
-    console.log("Preview Profile button clicked");
-    try {
-      const response = await axios.get(
-        `${SERVER_API_URL}/user/profile/${profile_id}`
-      );
-      const responseData = response.data;
-      console.log("response.data", responseData);
-      if (responseData.length > 0) {
-        const firstUserData = responseData[0];
-        setFormData({
-          id: firstUserData.id || "",
-          first_name: firstUserData.first_name || "",
-          date_of_birth: firstUserData.date_of_birth || "",
-          country: firstUserData.country || "",
-          city: firstUserData.city || "",
-          username: firstUserData.username || "",
-          email: firstUserData.email || "",
-          sex_identities: firstUserData.sex_identities || "",
-          sex_preferences: firstUserData.sex_preferences || "",
-          racial_preferences: firstUserData.racial_preferences || "",
-          meeting_interest: firstUserData.meeting_interest || "",
-          hobbies: firstUserData.hobbies || "",
-          about_me: firstUserData.about_me || "",
-        });
+    setIsPopUpOpen(true);
 
-        setIsEditMode(true);
-      } else {
-        console.log("No data available");
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    console.log("handlePreviewProfileActive");
   };
 
   const handleUpdateProfile = async () => {
     try {
       const { data, error } = await supabase
-        .from("user2_profiles")
+        .from("profiles")
         .update({
           first_name: formData.first_name,
           date_of_birth: formData.date_of_birth,
@@ -159,12 +142,10 @@ function UserProfilePage() {
     );
   };
 
-  
-
   const handleDeleteAccount = async () => {
     try {
       const { data, error } = await supabase
-        .from("user2_profiles")
+        .from("profiles")
         .delete()
         .eq("id", profile_id);
 
@@ -216,6 +197,9 @@ function UserProfilePage() {
             onClose={() => setShowDeleteConfirmation(false)}
             onDelete={handleDeleteAccount}
           />
+          {isPopUpOpen && (
+            <PopUpProfile formData={formData} isPopUpOpen={isPopUpOpen} />
+          )}
         </div>
         <div className=" w-[931px]  ">
           <div className="profile-title-container flex justify-between ">

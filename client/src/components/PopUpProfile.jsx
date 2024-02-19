@@ -5,8 +5,10 @@ import heart from "../assets/Matching/heart button (1).svg";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 import location from "../assets/PopupProfile/location.png";
 
-const PopUpProfile = () => {
+const PopUpProfile = ({fromData}) => {
   const [modal, setModal] = useState(false);
+  const [formData, setFormData] = useState([]);
+  const [preferencesData, setPreferencesData] = useState([]);
 
   const toggleModal = () => {
     setModal(!modal);
@@ -17,12 +19,20 @@ const PopUpProfile = () => {
   } else {
     document.body.classList.remove("active-modal");
   }
-  const preferencesData = [
-    { title: "Sexual identities", value: "Male" },
-    { title: "Sexual preferences", value: "Female" },
-    { title: "Racial preferences", value: "Asian" },
-    { title: "Meeting interests", value: "Friends" },
-  ];
+  
+  // const preferencesData = [
+  //   { title: "Sexual identities", value: "Male" },
+  //   { title: "Sexual preferences", value: "Female" },
+  //   { title: "Racial preferences", value: "Asian" },
+  //   { title: "Meeting interests", value: "Friends" },
+  // ];
+
+  const transferData = () => {
+    // Example: Transfer first two items from formData to preferencesData
+    const transferredData = formData.slice(0, 2);
+    setPreferencesData(transferredData);
+  };
+
   return (
     <>
       <button onClick={toggleModal}>
