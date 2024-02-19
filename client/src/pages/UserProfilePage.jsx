@@ -10,7 +10,6 @@ import ConfirmDeleteBtn from "../components/ConfirmDeleteBtn";
 import PopUpProfile from "../components/PopUpProfile";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../app/userContext";
-
 function UserProfilePage() {
   const navigate = useNavigate();
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();

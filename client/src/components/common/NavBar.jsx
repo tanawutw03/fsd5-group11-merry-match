@@ -64,22 +64,22 @@ const NavBar = (props) => {
       </MenuButton>
       <Portal>
         <MenuList w="198px" h="258px">
-          <MenuItem display="flex" alignItems="center" justifyContent="center">
-            <Button onClick={handleClick} colorScheme="whiteAlpha">
-              <div className="w-[179px] h-[41px]  rounded-full bg-gradient-to-r from-[#742138] to-[#A878BF] flex flex-row justify-center items-center">
-                <img className=" w-4 h-4 mr-2  " src={star} />
-                <button className=" text-white  text-sm">
-                  More limit Merry!
-                </button>
-              </div>
-            </Button>
+          <MenuItem
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            onClick={handleClick}
+            colorScheme="whiteAlpha"
+          >
+            <div className="w-[179px] h-[41px]  rounded-full bg-gradient-to-r from-[#742138] to-[#A878BF] flex flex-row justify-center items-center">
+              <img className=" w-4 h-4 mr-2  " src={star} />
+              <span className=" text-white  text-sm">More limit Merry!</span>
+            </div>
           </MenuItem>
           {images.map((image, index) => (
-            <MenuItem key={index}>
-              <Button variant="link" onClick={() => linkClick(image.link)}>
-                <img className="w-4 h-4 mr-2 " src={image.src} />
-                <button className="text-[#646D89] text-sm">{image.name}</button>
-              </Button>
+            <MenuItem key={index} onClick={() => linkClick(image.link)}>
+              <img className="w-4 h-4 mr-2 " src={image.src} />
+              <span className="text-[#646D89] text-sm">{image.name}</span>
             </MenuItem>
           ))}
           <MenuDivider />
