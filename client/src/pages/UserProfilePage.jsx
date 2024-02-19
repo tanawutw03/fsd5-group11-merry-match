@@ -19,10 +19,12 @@ function UserProfilePage() {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
   const [session, setSession] = useState(null);
+  const [userProfileId, setUserProfileId] = useState(null);
   const SERVER_API_URL = "http://localhost:4008";
+  let userProfile_id;
   const [formData, setFormData] = useState({
     id: "",
-    first_name: "",
+    full_name: "",
     date_of_birth: "",
     country: "",
     city: "",
@@ -35,28 +37,60 @@ function UserProfilePage() {
     hobbies: "",
     about_me: "",
   });
-  // const profile_id = "3";
 
   useEffect(() => {
+    // Fetch session and set userProfileId
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      setUserProfileId(session.user.id);
+      console.log("UserProfileID : ", session.user.id); // Log here to ensure it's set correctly
+      userProfile_id=session.user.id;
+  
+      // Update formData with userProfileId
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        id: session.user.id
+      }));
+      console.log("fromData.id",formData.id)
     });
 
-    supabase.auth.onAuthStateChange((_event, session) => {
+    //for testing
+    //matthewdonaldson@merrymatch.com
+    //6d92b715-febd-42a3-8c74-7bbadbf74b28
+    // larryprice@merrymatch.com
+    // 013e2ffe-b12d-45b5-afbf-8261b91ee847
+  
+    // Listen to auth state changes
+    const authListener = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      console.log(session);
+      if (session) {
+        setUserProfileId(session.user.id);
+        
+        // localStorage.setItem('userProfileId', session.user.id);
+       
+        setFormData(prevFormData => ({
+          ...prevFormData,
+          id: session.user.id
+        }));
+        console.log("UserProfileID : ", session.user.id); // Log here to ensure it's set correctly
+        console.log("formData.Id: ", formData.id); // Log here to ensure it's set correctly
+        console.log("userProfile_id: ", userProfile_id); // Log here to ensure it's set correctly
+      } else {
+        setUserProfileId(null);
+        // Clear userProfileId from local storage if user is not authenticated
+        localStorage.removeItem('userProfileId');
+      }
+      fetchUserData();
     });
-    // console.log("formDataId Data: ", formDataId);
   }, []);
 
-  useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Fetch user data from your backend or database
+        // const UserProfileId = await localStorage.getItem("userProfileId");
         const { data, error } = await supabase
           .from("profiles")
           .select("*")
-          .eq("id", profile_id)
+          .eq("id", userProfile_id)
           .single();
 
         if (error) {
@@ -73,8 +107,9 @@ function UserProfilePage() {
       }
     };
 
-    fetchUserData();
-  }, []);
+   
+
+  
 
   const handleFileInputChange = () => {
     const files = Array.from(fileInputRef.current.files);
@@ -104,7 +139,7 @@ function UserProfilePage() {
       const { data, error } = await supabase
         .from("profiles")
         .update({
-          first_name: formData.first_name,
+          full_name: formData.full_name,
           date_of_birth: formData.date_of_birth,
           country: formData.country,
           city: formData.city,
@@ -157,7 +192,7 @@ function UserProfilePage() {
       }
       setFormData({
         id: "",
-        first_name: "",
+        full_name: "",
         date_of_birth: "",
         country: "",
         city: "",
@@ -178,7 +213,7 @@ function UserProfilePage() {
     }
   };
 
-  console.log("formData before return", formData.first_name);
+  console.log("formData before return", formData.full_name);
   return (
     <>
       <div className="nav-container flex justify-center items-center">
@@ -251,9 +286,9 @@ function UserProfilePage() {
                   </label>
                   <input
                     type="text"
-                    id="first_name"
-                    name="first_name"
-                    value={formData.first_name || ""}
+                    id="full_name"
+                    name="full_name"
+                    value={formData.full_name || ""}
                     onChange={handleInputChange}
                     className="border-2 w-[450px] px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
                     placeholder="At least 8 characters"
