@@ -11,7 +11,6 @@ import logo from "../assets/merryPackagePage/logo.svg";
 import facebookIcon from "../assets/merryPackagePage/facebook-circle-fill.svg";
 import instagramIcon from "../assets/merryPackagePage/instagram-fill.svg";
 import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
-import { supabase } from "../utils/supabaseClient";
 import { useEffect, useState } from "react";
 import { useUser } from "../app/userContext.js";
 import UnmerryButton from "../components/UnmerryButton.jsx";
@@ -22,16 +21,16 @@ function MerryListPage() {
   const navigate = useNavigate();
   const [merryList, setMerryList] = useState([]);
   {
-    /* 
+    /* pagination
   const itemsPerPage = 5;
   const [page, setPage] = useState(1);
   const [packages, setPackages] = useState([]);
   */
-  } //pagination
+  }
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
   const [matchCount, setMatchCount] = useState();
   const [hasMoreData, setHasMoreData] = useState(true);
-  const displayedMerryLimit = 20;
+  const [displayedMerryLimit, setDisplayedMerryLimit] = useState();
 
   {
     /* fetch user data */
@@ -47,7 +46,6 @@ function MerryListPage() {
         );
         const data = response.data.data;
         setMerryList(data);
-        setMatchCount(displayedMerryLimit - data.length);
         if (data.length !== 5) {
           setHasMoreData(false);
         } else {
@@ -57,7 +55,31 @@ function MerryListPage() {
         console.error("Error fetching data:", error.message);
       }
     }
+    async function fetchMerryLimitData() {
+      try {
+        const response = await axios.get(
+          `http://localhost:4008/merryLimit/limit/` + id
+        );
+        const data = response.data.merry_limit;
+        setDisplayedMerryLimit(data);
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
+      }
+    }
+    async function fetchMerryCountData() {
+      try {
+        const response = await axios.get(
+          `http://localhost:4008/merryLimit/count/` + id
+        );
+        const data = response.data.remainingCount;
 
+        setMatchCount(data);
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
+      }
+    }
+    fetchMerryCountData();
+    fetchMerryLimitData();
     fetchMerryListData();
 
     return () => {
@@ -66,21 +88,14 @@ function MerryListPage() {
   }, [user.user.id]);
 
   {
-    /* Calculate estimate time until midnight 
-    แยก component และตั้งค่าการแสดงผลให้เป็น boolean*/
+    /* Calculate estimate time until midnight */
   }
   const now = new Date();
   const timeUntilMidnight =
     new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - now;
   const hoursLeft = Math.floor(timeUntilMidnight / (1000 * 60 * 60));
 
-  const HandleisUnmerry = () => {
-    if (matchCount < displayedMerryLimit) {
-      setMatchCount((prevCount) => prevCount + 1);
-    } else {
-      alert("Daily limit reached. Try again tomorrow.");
-    }
-  };
+  const HandleisUnmerry = () => {};
 
   {
     /* Fetch packages data */
@@ -248,12 +263,13 @@ function MerryListPage() {
                         borderRadius="md"
                       >
                         <button className="w-[48px] h-[48px] shadow-md flex justify-center items-center rounded-2xl">
-                          <img
+                          {/*<img
                             src={viewProfileIcon}
                             alt="view profile icon"
                             className="w-[24px] h-[24px]"
-                          />
-                          {/*<PopUpProfile />*/}
+                        />*/}
+
+                          <PopUpProfile />
                         </button>
                       </Tooltip>
 
