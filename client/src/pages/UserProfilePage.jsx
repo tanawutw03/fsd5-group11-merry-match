@@ -7,9 +7,9 @@ import NavBar from "../components/common/NavBar";
 import axios from "axios";
 import { supabase } from "../utils/supabaseClient";
 import UserProfileUpload from "../components/UserProfileUpload";
+import ConfirmDeleteBtn from "../components/ConfirmDeleteBtn";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../app/userContext";
-
 function UserProfilePage() {
   const navigate = useNavigate();
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();

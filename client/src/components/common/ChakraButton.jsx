@@ -22,7 +22,7 @@ function ChakraButton(props) {
   );
 }
 ChakraButton.propTypes = {
-  colorScheme: PropTypes.string.isRequired,
+  colorScheme: PropTypes.string,
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   rounded: PropTypes.string,
