@@ -35,7 +35,7 @@ function UnmerryButton({ isUnmerry }) {
         </button>
       </Tooltip>
 
-      <Modal isOpen={isOpen} onClose={onClose} isCentered="true" font>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered="true">
         <ModalOverlay />
         <ModalContent borderRadius="3xl">
           <ModalHeader className="border-solid border-b-[1px] border-[#e4e6ed] text-[18px] font-bold font-nunito">
