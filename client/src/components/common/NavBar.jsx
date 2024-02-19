@@ -41,11 +41,14 @@ const NavBar = (props) => {
     navigate("/package");
   };
   const images = [
-    { src: person, name: "Profile" },
+    { src: person, name: "Profile", link: "/profile" },
     { src: heart, name: "Merry list" },
     { src: box, name: "Merry Membership" },
-    { src: warn, name: "Compliant" },
+    { src: warn, name: "Compliant", link: "/usercomplaint" },
   ];
+  const linkClick = (link) => {
+    navigate(link);
+  };
   const MenuOrButton = props.useMenu ? (
     <Menu>
       <MenuButton>
@@ -61,17 +64,21 @@ const NavBar = (props) => {
       </MenuButton>
       <Portal>
         <MenuList w="198px" h="258px">
-          <MenuItem display="flex" alignItems="center" justifyContent="center">
-            <Button onClick={handleClick} colorScheme="whiteAlpha">
-              <div className="w-[179px] h-[41px]  rounded-full bg-gradient-to-r from-[#742138] to-[#A878BF] flex flex-row justify-center items-center">
-                <img className=" w-4 h-4 mr-2  " src={star} />
-                <span className=" text-white  text-sm">More limit Merry!</span>
-              </div>
-            </Button>
+          <MenuItem
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            onClick={handleClick}
+            colorScheme="whiteAlpha"
+          >
+            <div className="w-[179px] h-[41px]  rounded-full bg-gradient-to-r from-[#742138] to-[#A878BF] flex flex-row justify-center items-center">
+              <img className=" w-4 h-4 mr-2  " src={star} />
+              <span className=" text-white  text-sm">More limit Merry!</span>
+            </div>
           </MenuItem>
           {images.map((image, index) => (
-            <MenuItem key={index}>
-              <img className="w-4 h-4 mr-2 " src={image.src} alt={image.name} />
+            <MenuItem key={index} onClick={() => linkClick(image.link)}>
+              <img className="w-4 h-4 mr-2 " src={image.src} />
               <span className="text-[#646D89] text-sm">{image.name}</span>
             </MenuItem>
           ))}
@@ -110,7 +117,7 @@ const NavBar = (props) => {
 
   return (
     <>
-      <nav className=" w-screen  flex  items-center  justify-between ">
+      <nav className=" w-screen  flex  items-center p-2  justify-between shadow-md bg-opacity-20">
         <ul className="pl-32">
           <img src={logo} />
         </ul>

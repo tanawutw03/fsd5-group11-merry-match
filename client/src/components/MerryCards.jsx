@@ -211,13 +211,7 @@ function MerryCards({ user }) {
             <p className="text-[#646D89]">Merry limit today</p>
             <p className="  text-[#FF1659]">{`${merryCount} / ${limitCount}`}</p>
           </div>
-          <div className=" flex flex-row space-x-4 absolute z-30 bottom-48 right-20 ">
-            <ArrowBackIcon w={5} h={5} color="white" />
-            <ArrowForwardIcon w={5} h={5} color="white" />
-          </div>
-          <div className="absolute z-30 bottom-48 left-40">
-            <PopUpProfile />
-          </div>
+
           {people.map((person) => (
             <TinderCard
               className=" absolute"
@@ -226,17 +220,24 @@ function MerryCards({ user }) {
               onCardLeftScreen={() => onCardLeftScreen(person.full_name)}
             >
               <div
-                className="bg-center bg-no-repeat bg-[length:720px_720px]  p-5 relative w-[720px] h-[720px] rounded-2xl hover:cursor-grab active:cursor-grabbing"
+                className="bg-center bg-no-repeat bg-[length:620px_720px]   p-5 relative w-[620px] h-[720px] rounded-2xl hover:cursor-grab active:cursor-grabbing"
                 style={{
                   backgroundImage: `url(${person.avatarUrls[0]})`,
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent  rounded-2xl to-[#411849]"></div>
-              <h1 className=" absolute bottom-16 left-5 text-white font-bold text-s ">
-                {person.full_name}
-
-                <ViewIcon w={5} h={5} ml={4} color="white" />
-              </h1>
+              <div className=" flex flex-row absolute w-full z-40 bottom-20  justify-between p-10 ">
+                <div className=" flex flex-row space-x-5">
+                  <h1 className=" text-white font-bold text-xl   ">
+                    {person.full_name}
+                  </h1>
+                  <PopUpProfile useMenu={true} />
+                </div>
+                <div>
+                  <ArrowBackIcon w={5} h={5} color="white" />
+                  <ArrowForwardIcon w={5} h={5} color="white" />
+                </div>
+              </div>
             </TinderCard>
           ))}
         </div>
