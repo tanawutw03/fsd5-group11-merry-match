@@ -1,14 +1,28 @@
 import { Router } from "express";
 import { supabase } from "../utils/supabaseClient.js";
 import multer from "multer";
-import fs from "fs";
+// import fs from "fs";
 
 const userProfileRoute = Router();
 const upload = multer();
+//leang don't Delete
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//       cb(null, 'uploads')
+//   },
+//   filename: function (req, file, cb) {
+//     const fileName = `${Date.now()}-${file.originalname}`
+//     cb(null, fileName)
+//   }
+// })
+
+// const upload = multer({
+//   storage: storage
+// })
 
 userProfileRoute.get("/profile", async (req, res) => {
   try {
-    const { data, error } = await supabase.from("user2_profiles").select("*");
+    const { data, error } = await supabase.from("profiles").select("*");
     if (error) {
       throw error;
     }
@@ -23,7 +37,7 @@ userProfileRoute.get("/profile/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { data, error } = await supabase
-      .from("user2_profiles")
+      .from("profiles")
       .select("*")
       .eq("id", id);
 
@@ -39,39 +53,69 @@ userProfileRoute.get("/profile/:id", async (req, res) => {
 });
 
 //------- leang for upload userprofilePage------
-userProfileRoute.post("/uploadImage", upload.single("file"), async (req, res) => {
+// userProfileRoute.post("/upload", upload.single('file'), async (req, res) => {
+//   try {
+//     const file = req.file;
+//     if (!file) {
+//       throw new Error("No file received");
+//     }
+//     const uniqueFileName = `${Date.now()}_${file.name}`
+//     const imagePath = `images/${uniqueFileName}`;
+//     console.log("imagePath88: ",imagePath)
+
+//     // Upload file to Supabase Storage
+//     const { data, error } = await supabase.storage
+//       .from("profile_images")
+//       .upload(file.path,file)
+
+//     // Delete the temporary file after upload
+//     fs.unlinkSync(file.path);
+
+//     if (error) {
+//       throw new Error(`Storage Error: ${error.message}`);
+//     }
+
+//     // Return the uploaded file URL
+//     res.status(200).json({ imageUrl: data.Key });
+//   } catch (error) {
+//     console.error("Error uploading image:", error.message);
+//     res.status(500).json({ error: error.message });
+//   }
+// });
+
+userProfileRoute.post("/upload", upload.single("file"), async (req, res) => {
+  const fileName = req.files;
+  const timestamp = Date.now();
+
+  const uniqueFileName = `${timestamp}-${fileName}`;
+  const imagePath = `images/${uniqueFileName}`;
+  console.log("fileName: ", fileName);
+  console.log("uniqueFileName: ", uniqueFileName);
+
   try {
-    const file = req.file;
-    if (!file) {
-      throw new Error("No file received");
-    }
-    const uniqueFileName = `${file.originalname.split(".")[0]}_${Date.now()}.${
-      file.originalname.split(".")[1]
-    }`;
-    const imagePath = `images/${uniqueFileName}`;
-
-    // Upload file to Supabase Storage
-    const { data, error } = await supabaseClient.storage
+    const { data, error } = await supabase.storage
       .from("profile_images")
-      .upload(file.path, {
-        destination: imagePath,
-        contentType: file.mimetype,
-      });
-
-    // Delete the temporary file after upload
-    fs.unlinkSync(file.path);
+      .upload(imagePath, file.buffer);
 
     if (error) {
-      throw new Error(`Storage Error: ${error.message}`);
+      return res.status(500).json({ error: error.message });
+    }
+    const { data: dataLoad, error: errorLoad } = await supabase.storage
+      .from("profile_images")
+      .getPublicUrl(imagePath);
+
+    if (error) {
+      throw error;
     }
 
-    // Return the uploaded file URL
-    res.status(200).json({ imageUrl: data.Key });
+    console.log(dataLoad);
+    res.json({ uploadedFileUrl: dataLoad.publicUrl });
   } catch (error) {
-    console.error("Error uploading image:", error.message);
-    res.status(500).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
   }
 });
+
 //------- leang for user_profile Saveurl-------
 userProfileRoute.put("/saveImageUrlSets", async (req, res) => {
   try {
@@ -111,6 +155,10 @@ userProfileRoute.put("/saveImageUrlSets", async (req, res) => {
 //     console.error("Error saving image URL to database:", error.message);
 //     res.status(500).json({ error: error.message });
 //   }
+// });
+//**Leang don't delete
+// userProfileRoute.post("/upload", upload.single("file"), (req, res) => {
+//   res.status(200).json({ message: "Hello OK" });
 // });
 
 export default userProfileRoute;
