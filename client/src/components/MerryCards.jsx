@@ -19,6 +19,8 @@ function MerryCards({ user }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [merryCount, setMerryCount] = useState();
   const [limitCount, setLimitCount] = useState();
+  const [cardLeft, setCardLeft] = useState(0);
+  const [totalCard, setTotalCard] = useState(0);
 
   const onSwipe = async (direction, swipedUserId) => {
     console.log("You swiped: " + direction);
@@ -28,7 +30,6 @@ function MerryCards({ user }) {
     const swipedUserIdsArray = Array.isArray(swipedUserId)
       ? swipedUserId
       : [swipedUserId];
-    console.log(swipedUserIdsArray);
 
     if (direction === "right" && user.user.id) {
       const response = await updateMatches(user.user.id, swipedUserIdsArray);
@@ -47,9 +48,15 @@ function MerryCards({ user }) {
     } else if (direction === "left" && user.user.id) {
       const response = await updatedUnmatched(user.user.id, swipedUserIdsArray);
       // if(response.message === "User unmatched successfully"){}
-      console.log(response);
     }
+
+    setCardLeft((prevCardLeft) => prevCardLeft - 1);
   };
+
+  useEffect(() => {
+    console.log(`cardLeft:`, cardLeft);
+    console.log(`totalCard:`, totalCard);
+  }, [cardLeft, totalCard]);
 
   const onCardLeftScreen = (myIdentifier) => {
     console.log(myIdentifier + " left the screen");
@@ -83,7 +90,6 @@ function MerryCards({ user }) {
         }
       );
 
-      console.log(response);
       return response.data;
     } catch (error) {
       console.error("Error updating unmatched:", error);
@@ -103,6 +109,8 @@ function MerryCards({ user }) {
           // Handle case when no profiles are fetched
         } else {
           setPeople(profileResponse.data.data);
+          setCardLeft(profileResponse.data.data.length);
+          setTotalCard(profileResponse.data.data.length);
 
           // Fetch merry count data
           const merryResponse = await axios.get(
@@ -160,13 +168,13 @@ function MerryCards({ user }) {
 
           {people.map((person) => (
             <TinderCard
-              className=" absolute"
+              className=" absolute hover:cursor-grab active:cursor-grabbing"
               key={person.id}
               onSwipe={(dir) => onSwipe(dir, person.id)}
               onCardLeftScreen={() => onCardLeftScreen(person.full_name)}
             >
               <div
-                className="bg-center bg-no-repeat bg-[length:620px_720px]   p-5 relative w-[620px] h-[720px] rounded-2xl hover:cursor-grab active:cursor-grabbing"
+                className="bg-center bg-no-repeat bg-[length:620px_720px]   p-5 relative w-[620px] h-[720px] rounded-2xl "
                 style={{
                   backgroundImage: `url(${person.avatarUrl})`,
                 }}
