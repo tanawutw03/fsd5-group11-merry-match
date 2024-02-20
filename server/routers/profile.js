@@ -35,10 +35,10 @@ profileRouter.get(
 
       if (excludeUserProfile) {
         // Log the matches array for the excludeUserId
-        console.log(
-          `Matches for exclude user (${excludeUserId}):`,
-          excludeUserProfile.matches
-        );
+        // console.log(
+        //   `Matches for exclude user (${excludeUserId}):`,
+        //   excludeUserProfile.matches
+        // );
       } else {
         console.log(`Profile not found for user ${excludeUserId}`);
       }

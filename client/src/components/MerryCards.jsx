@@ -3,7 +3,7 @@ import TinderCard from "react-tinder-card";
 import { supabase } from "../utils/supabaseClient.js";
 import action from "../assets/Matching/action button.svg";
 import heart from "../assets/Matching/heart button (1).svg";
-import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon, ArrowBackIcon, ViewIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import PropTypes from "prop-types";
 import MerryMatch from "./MerryMatch.jsx";
@@ -21,9 +21,9 @@ function MerryCards({ user }) {
   const [limitCount, setLimitCount] = useState();
 
   const onSwipe = async (direction, swipedUserId) => {
-    console.log(
-      `You swiped: ${direction},Your Id: ${user.user.id}, Your swipe Id: ${swipedUserId}`
-    );
+    console.log("You swiped: " + direction);
+    console.log(`Your Id:`, user.user.id);
+    console.log(`Your Swipe:`, swipedUserId);
 
     const swipedUserIdsArray = Array.isArray(swipedUserId)
       ? swipedUserId
@@ -36,10 +36,7 @@ function MerryCards({ user }) {
       const decreaseLimitResponse = await axios.put(
         "http://localhost:4008/merryLimit/count/" + user.user.id
       );
-      console.log(response);
 
-      console.log(`decreaseLimitResponse:`, decreaseLimitResponse.data.message);
-      console.log(response.message);
       if (response.message === "Mutual match") {
         setMutualMatch(true);
       }
@@ -83,7 +80,6 @@ function MerryCards({ user }) {
         {
           userId: swipingUserId,
           unmatchUserId: swipedUserIdsArray,
-          // unmatchUserId: swipedUserId,
         }
       );
 
@@ -95,10 +91,7 @@ function MerryCards({ user }) {
     }
   };
 
-  console.log(`People state:`, people);
   useEffect(() => {
-    console.log(`User ID:`, user.user.id);
-
     const fetchData = async () => {
       setIsLoading(true);
       try {
@@ -109,7 +102,6 @@ function MerryCards({ user }) {
         if (profileResponse.data.data.length === 0) {
           // Handle case when no profiles are fetched
         } else {
-          console.log(`Profile Response log`, profileResponse.data.data);
           setPeople(profileResponse.data.data);
 
           // Fetch merry count data
@@ -119,7 +111,6 @@ function MerryCards({ user }) {
           const limitResponse = await axios.get(
             "http://localhost:4008/merryLimit/limit/" + user.user.id
           );
-
           const currentDate = new Date().toISOString();
           const formattedDate = currentDate.substring(0, 10); // Extract 'yyyy-mm-dd'
 
@@ -169,13 +160,13 @@ function MerryCards({ user }) {
 
           {people.map((person) => (
             <TinderCard
-              className="absolute hover:cursor-grab active:cursor-grabbing"
+              className=" absolute"
               key={person.id}
               onSwipe={(dir) => onSwipe(dir, person.id)}
               onCardLeftScreen={() => onCardLeftScreen(person.full_name)}
             >
               <div
-                className="bg-center bg-no-repeat bg-[length:620px_720px] p-5 relative w-[620px] h-[720px] rounded-2xl"
+                className="bg-center bg-no-repeat bg-[length:620px_720px]   p-5 relative w-[620px] h-[720px] rounded-2xl hover:cursor-grab active:cursor-grabbing"
                 style={{
                   backgroundImage: `url(${person.avatarUrl})`,
                 }}
