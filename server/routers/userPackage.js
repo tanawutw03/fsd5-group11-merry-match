@@ -72,4 +72,31 @@ userPackage.put("/cancel/:id", async (req, res) => {
   }
 });
 
+userPackage.put("/updatePackage/:id", async (req, res) => {
+  try {
+    const Id = req.params.id;
+    const { package: packageName, merry_limit: merryLimit } = req.body;
+
+    // Update package details in the "merry_limits" table
+    const { data, error } = await supabase
+      .from("merry_limits")
+      .update({ package: packageName, merry_limit: merryLimit })
+      .eq("id", Id);
+
+    if (error) {
+      console.error("Error updating package details:", error.message);
+      return res.status(500).json({ error: "Internal server error" });
+    } else {
+      // Send a success response
+      return res
+        .status(200)
+        .json({ message: "Package details updated successfully" });
+    }
+  } catch (error) {
+    console.error("Error updating package details:", error.message);
+    // Send an error response
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 export default userPackage;

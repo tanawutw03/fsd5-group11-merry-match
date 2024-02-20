@@ -112,7 +112,7 @@ function UserMembership() {
           user={user}
         />
       )}
-      <div className="MerryMembershipSection w-[1440px] h-[1585px] pl-[254px] pr-[255px] pt-20 pb-28 bg-white flex-col justify-start items-center inline-flex">
+      <div className="MerryMembershipSection w-[1440px] h-[1585px] pl-[254px] pr-[255px] pt-20 pb-28 bg-white flex-col justify-start items-center  inline-flex">
         <div className="MerryMembershipContainer self-stretch flex-col justify-start items-center gap-20 inline-flex">
           <div className="Header w-[930px] justify-start items-end gap-4 inline-flex">
             <div className="RegsterWrapper grow shrink basis-0 flex-col justify-start items-end gap-[37px] inline-flex">
