@@ -3,12 +3,13 @@ import TinderCard from "react-tinder-card";
 import { supabase } from "../utils/supabaseClient.js";
 import action from "../assets/Matching/action button.svg";
 import heart from "../assets/Matching/heart button (1).svg";
-import { ArrowForwardIcon, ArrowBackIcon, ViewIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import PropTypes from "prop-types";
 import MerryMatch from "./MerryMatch.jsx";
 import { useDisclosure } from "@chakra-ui/react";
 import PopUpProfile from "./PopUpProfile.jsx";
+
 function MerryCards({ user }) {
   const [people, setPeople] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -19,8 +20,57 @@ function MerryCards({ user }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [merryCount, setMerryCount] = useState();
   const [limitCount, setLimitCount] = useState();
-  const [cardLeft, setCardLeft] = useState(0);
-  const [totalCard, setTotalCard] = useState(0);
+  const [cardLeft, setCardLeft] = useState(5);
+  const [totalCard, setTotalCard] = useState(5);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      // Fetch profile data
+      const profileResponse = await axios.get(
+        `http://localhost:4008/profile/api/v1/profile/${user.user.id}/5`
+      );
+      if (profileResponse.data.data.length === 0) {
+        // Handle case when no profiles are fetched
+        console.log(profileResponse.data.message);
+        setPeople([]); // Set people to an empty array
+        setCardLeft(0); // Set cardLeft to 0 when there are no profiles
+        setTotalCard(0); // Set totalCard to 0 when there are no profiles
+        setIsLoading(false); // Set isLoading to false when there are no profiles
+        setDataLoaded(false); // Set dataLoaded to false when there are no profiles
+      } else {
+        setPeople(profileResponse.data.data);
+        setCardLeft(profileResponse.data.data.length);
+        setTotalCard(profileResponse.data.data.length);
+
+        // Fetch merry count data
+        const merryResponse = await axios.get(
+          "http://localhost:4008/merryLimit/count/" + user.user.id
+        );
+        const limitResponse = await axios.get(
+          "http://localhost:4008/merryLimit/limit/" + user.user.id
+        );
+        const currentDate = new Date().toISOString();
+        const formattedDate = currentDate.substring(0, 10); // Extract 'yyyy-mm-dd'
+
+        const { data: insertCurrentDate, error: errorInsertCurrentDate } =
+          await supabase
+            .from("merry_limits")
+            .update({ last_login_date: formattedDate })
+            .eq("id", user.user.id)
+            .select();
+
+        setMerryCount(merryResponse.data.remainingCount);
+        setLimitCount(limitResponse.data.merry_limit);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Error fetching data");
+    } finally {
+      setIsLoading(false);
+      setDataLoaded(true);
+    }
+  };
 
   const onSwipe = async (direction, swipedUserId) => {
     console.log("You swiped: " + direction);
@@ -42,21 +92,14 @@ function MerryCards({ user }) {
         setMutualMatch(true);
       }
 
-      // Update merry count state
       const updatedMerryCount = merryCount - 1;
       setMerryCount(updatedMerryCount);
     } else if (direction === "left" && user.user.id) {
       const response = await updatedUnmatched(user.user.id, swipedUserIdsArray);
-      // if(response.message === "User unmatched successfully"){}
     }
 
     setCardLeft((prevCardLeft) => prevCardLeft - 1);
   };
-
-  useEffect(() => {
-    console.log(`cardLeft:`, cardLeft);
-    console.log(`totalCard:`, totalCard);
-  }, [cardLeft, totalCard]);
 
   const onCardLeftScreen = (myIdentifier) => {
     console.log(myIdentifier + " left the screen");
@@ -73,7 +116,7 @@ function MerryCards({ user }) {
       );
 
       console.log(response);
-      return response.data; // Return the response for trigger modal
+      return response.data;
     } catch (error) {
       console.error("Error updating matches:", error);
       return null;
@@ -98,55 +141,20 @@ function MerryCards({ user }) {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        // Fetch profile data
-        const profileResponse = await axios.get(
-          `http://localhost:4008/profile/api/v1/profile/${user.user.id}/5`
-        );
-        if (profileResponse.data.data.length === 0) {
-          // Handle case when no profiles are fetched
-        } else {
-          setPeople(profileResponse.data.data);
-          setCardLeft(profileResponse.data.data.length);
-          setTotalCard(profileResponse.data.data.length);
-
-          // Fetch merry count data
-          const merryResponse = await axios.get(
-            "http://localhost:4008/merryLimit/count/" + user.user.id
-          );
-          const limitResponse = await axios.get(
-            "http://localhost:4008/merryLimit/limit/" + user.user.id
-          );
-          const currentDate = new Date().toISOString();
-          const formattedDate = currentDate.substring(0, 10); // Extract 'yyyy-mm-dd'
-
-          const { data: insertCurrentDate, error: errorInsertCurrentDate } =
-            await supabase
-              .from("merry_limits")
-              .update({ last_login_date: formattedDate })
-              .eq("id", user.user.id)
-              .select();
-
-          setMerryCount(merryResponse.data.remainingCount);
-          setLimitCount(limitResponse.data.merry_limit);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("Error fetching data");
-      } finally {
-        setIsLoading(false);
-        setDataLoaded(true);
-      }
-    };
-
     fetchData();
-  }, [user.user.id]);
+  }, []);
+
+  useEffect(() => {
+    console.log(`cardLeft:`, cardLeft);
+    console.log(`totalCard:`, totalCard);
+
+    if (cardLeft === 0) {
+      fetchData();
+    }
+  }, [cardLeft, totalCard]);
 
   useEffect(() => {
     if (mutualMatch) {
-      console.log(`Open the modal:`, mutualMatch);
       setIsModalOpen(true);
     }
   }, [mutualMatch]);
@@ -202,7 +210,6 @@ function MerryCards({ user }) {
           isOpen={isModalOpen}
           onClose={() => {
             setMutualMatch(false);
-            console.log(`mutualMatch onClose:`, mutualMatch);
           }}
         />
       )}
