@@ -3,7 +3,7 @@ import TinderCard from "react-tinder-card";
 import { supabase } from "../utils/supabaseClient.js";
 import action from "../assets/Matching/action button.svg";
 import heart from "../assets/Matching/heart button (1).svg";
-import { ArrowForwardIcon, ArrowBackIcon, ViewIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import PropTypes from "prop-types";
 import MerryMatch from "./MerryMatch.jsx";
@@ -20,20 +20,23 @@ function MerryCards({ user }) {
   const [merryCount, setMerryCount] = useState();
   const [limitCount, setLimitCount] = useState();
 
-  console.log(`mutualMatch:`, mutualMatch);
-  console.log(`user info`, user);
-
   const onSwipe = async (direction, swipedUserId) => {
-    console.log("You swiped: " + direction);
-    console.log(`Your Id:`, user.user.id);
-    console.log(`Your Swipe:`, swipedUserId);
+    console.log(
+      `You swiped: ${direction},Your Id: ${user.user.id}, Your swipe Id: ${swipedUserId}`
+    );
+
+    const swipedUserIdsArray = Array.isArray(swipedUserId)
+      ? swipedUserId
+      : [swipedUserId];
+    console.log(swipedUserIdsArray);
 
     if (direction === "right" && user.user.id) {
-      const response = await updateMatches(user.user.id, swipedUserId);
+      const response = await updateMatches(user.user.id, swipedUserIdsArray);
 
       const decreaseLimitResponse = await axios.put(
         "http://localhost:4008/merryLimit/count/" + user.user.id
       );
+      console.log(response);
 
       console.log(`decreaseLimitResponse:`, decreaseLimitResponse.data.message);
       console.log(response.message);
@@ -45,6 +48,9 @@ function MerryCards({ user }) {
       const updatedMerryCount = merryCount - 1;
       setMerryCount(updatedMerryCount);
     } else if (direction === "left" && user.user.id) {
+      const response = await updatedUnmatched(user.user.id, swipedUserIdsArray);
+      // if(response.message === "User unmatched successfully"){}
+      console.log(response);
     }
   };
 
@@ -52,15 +58,7 @@ function MerryCards({ user }) {
     console.log(myIdentifier + " left the screen");
   };
 
-  const updateMatches = async (swipingUserId, swipedUserId) => {
-    console.log(swipingUserId);
-    console.log(swipedUserId);
-
-    const swipedUserIdsArray = Array.isArray(swipedUserId)
-      ? swipedUserId
-      : [swipedUserId];
-    console.log(swipedUserIdsArray);
-
+  const updateMatches = async (swipingUserId, swipedUserIdsArray) => {
     try {
       const response = await axios.put(
         "http://localhost:4008/matching/api/v1/match",
@@ -71,7 +69,6 @@ function MerryCards({ user }) {
       );
 
       console.log(response);
-      console.log(response.data);
       return response.data; // Return the response for trigger modal
     } catch (error) {
       console.error("Error updating matches:", error);
@@ -79,116 +76,74 @@ function MerryCards({ user }) {
     }
   };
 
+  const updatedUnmatched = async (swipingUserId, swipedUserIdsArray) => {
+    try {
+      const response = await axios.put(
+        "http://localhost:4008/matching/api/v1/unmatch",
+        {
+          userId: swipingUserId,
+          unmatchUserId: swipedUserIdsArray,
+          // unmatchUserId: swipedUserId,
+        }
+      );
+
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating unmatched:", error);
+      return null;
+    }
+  };
+
+  console.log(`People state:`, people);
   useEffect(() => {
-    const fetchImages = async () => {
+    console.log(`User ID:`, user.user.id);
+
+    const fetchData = async () => {
       setIsLoading(true);
       try {
-        const { data: profiles, error: errorQueryUUID } = await supabase
-          .from("profiles")
-          .select("id, full_name, age");
+        // Fetch profile data
+        const profileResponse = await axios.get(
+          `http://localhost:4008/profile/api/v1/profile/${user.user.id}/5`
+        );
+        if (profileResponse.data.data.length === 0) {
+          // Handle case when no profiles are fetched
+        } else {
+          console.log(`Profile Response log`, profileResponse.data.data);
+          setPeople(profileResponse.data.data);
 
-        if (errorQueryUUID) {
-          console.error("Error querying UUIDs:", errorQueryUUID);
-          setError(errorQueryUUID.message);
-          return;
-        }
-
-        let allProfilesWithImages = [];
-
-        for (const profile of profiles) {
-          const { data: fileList, error: fileListError } =
-            await supabase.storage.from("avatars").list(profile.id, {
-              limit: 100,
-              offset: 0,
-              sortBy: { column: "name", order: "asc" },
-            });
-
-          if (fileListError) {
-            console.error(
-              `Error fetching images for UUID ${profile.id}:`,
-              fileListError
-            );
-            continue;
-          }
-
-          const avatarUrls = await Promise.all(
-            fileList.map(async (file) => {
-              const response = await supabase.storage
-                .from("avatars")
-                .getPublicUrl(`${profile.id}/${file.name}`);
-              if (response.error) {
-                console.error(
-                  `Error getting public URL for ${file.name}:`,
-                  response.error
-                );
-                return null;
-              } else {
-                return response.data.publicUrl; // Make sure this matches the actual property name in the response
-              }
-            })
+          // Fetch merry count data
+          const merryResponse = await axios.get(
+            "http://localhost:4008/merryLimit/count/" + user.user.id
+          );
+          const limitResponse = await axios.get(
+            "http://localhost:4008/merryLimit/limit/" + user.user.id
           );
 
-          const filteredAvatarUrls = avatarUrls.filter((url) => url !== null);
+          const currentDate = new Date().toISOString();
+          const formattedDate = currentDate.substring(0, 10); // Extract 'yyyy-mm-dd'
 
-          allProfilesWithImages.push({
-            ...profile,
-            avatarUrls: filteredAvatarUrls,
-          });
+          const { data: insertCurrentDate, error: errorInsertCurrentDate } =
+            await supabase
+              .from("merry_limits")
+              .update({ last_login_date: formattedDate })
+              .eq("id", user.user.id)
+              .select();
+
+          setMerryCount(merryResponse.data.remainingCount);
+          setLimitCount(limitResponse.data.merry_limit);
         }
-
-        setPeople(allProfilesWithImages);
       } catch (error) {
-        console.error("Unexpected error:", error);
-        setError("Unexpected error");
+        console.error("Error fetching data:", error);
+        setError("Error fetching data");
       } finally {
         setIsLoading(false);
         setDataLoaded(true);
       }
     };
 
-    fetchImages();
-  }, []);
-
-  useEffect(() => {
-    console.log("People state:", people);
-
-    const fetchMerry = async () => {
-      try {
-        const getMerry = await axios.get(
-          "http://localhost:4008/merryLimit/count/" + user.user.id
-        );
-
-        const getLimit = await axios.get(
-          "http://localhost:4008/merryLimit/limit/" + user.user.id
-        );
-
-        const currentDate = new Date().toISOString();
-        const formattedDate = currentDate.substring(0, 10); // Extract 'yyyy-mm-dd'
-        console.log(`currentDate:`, currentDate);
-        console.log(`formattedDate:`, formattedDate);
-
-        const { data: insertCurrentDate, error: errorInsertCurrentDate } =
-          await supabase
-            .from("merry_limits")
-            .update({ last_login_date: formattedDate })
-            .eq("id", user.user.id)
-            .select();
-
-        console.log(`insertCurrentDate:`, insertCurrentDate);
-        console.log(`errorInsertCurrentDate:`, errorInsertCurrentDate);
-
-        setMerryCount(getMerry.data.remainingCount);
-        console.log(getMerry.data.remainingCount);
-
-        setLimitCount(getLimit.data.merry_limit);
-        console.log(getLimit.data.merry_limit);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchMerry();
-  }, [people]);
+    fetchData();
+  }, [user.user.id]);
 
   useEffect(() => {
     if (mutualMatch) {
@@ -214,23 +169,24 @@ function MerryCards({ user }) {
 
           {people.map((person) => (
             <TinderCard
-              className=" absolute"
+              className="absolute hover:cursor-grab active:cursor-grabbing"
               key={person.id}
               onSwipe={(dir) => onSwipe(dir, person.id)}
               onCardLeftScreen={() => onCardLeftScreen(person.full_name)}
             >
               <div
-                className="bg-center bg-no-repeat bg-[length:620px_720px]   p-5 relative w-[620px] h-[720px] rounded-2xl hover:cursor-grab active:cursor-grabbing"
+                className="bg-center bg-no-repeat bg-[length:620px_720px] p-5 relative w-[620px] h-[720px] rounded-2xl"
                 style={{
-                  backgroundImage: `url(${person.avatarUrls[0]})`,
+                  backgroundImage: `url(${person.avatarUrl})`,
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent  rounded-2xl to-[#411849]"></div>
               <div className=" flex flex-row absolute w-full z-40 bottom-20  justify-between p-10 ">
-                <div className=" flex flex-row space-x-5">
+                <div className=" flex flex-row space-x-5 items-center">
                   <h1 className=" text-white font-bold text-xl   ">
                     {person.full_name}
                   </h1>
+                  <span className="text-white">{person.age}</span>
                   <PopUpProfile useMenu={true} />
                 </div>
                 <div>

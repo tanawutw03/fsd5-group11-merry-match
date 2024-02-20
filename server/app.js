@@ -5,6 +5,7 @@ import adminComplaint from "./routers/adminComplaint.js";
 import userProfileRoute from "./routers/userProfile.js";
 import matchRouter from "./routers/match.js";
 import merryLimit from "./routers/merryLimit.js";
+import profileRouter from "./routers/profile.js";
 
 
 async function init() {
@@ -18,6 +19,7 @@ async function init() {
   app.use("/user", userProfileRoute);
   app.use("/matching", matchRouter);
   app.use("/merryLimit", merryLimit);
+  app.use("/profile", profileRouter);
 
 
 
