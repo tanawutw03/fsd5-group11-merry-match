@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TinderCard from "react-tinder-card";
 import { supabase } from "../utils/supabaseClient.js";
 import action from "../assets/Matching/action button.svg";
@@ -19,9 +19,63 @@ function MerryCards({ user }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [merryCount, setMerryCount] = useState();
   const [limitCount, setLimitCount] = useState();
+  const [cardLeft, setCardLeft] = useState(0);
+  const [totalCard, setTotalCard] = useState(0);
+  const isInitialMount = useRef(true);
 
-  console.log(`mutualMatch:`, mutualMatch);
-  console.log(`user info`, user);
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      // Fetch profile data
+      const profileResponse = await axios.get(
+        `http://localhost:4008/profile/api/v1/profile/${user.user.id}/5`
+      );
+      if (profileResponse.data.data.length === 0) {
+        // Handle case when no profiles are fetched
+        console.log(profileResponse.data.message);
+        setPeople([]); // Set people to an empty array
+        setCardLeft(0); // Set cardLeft to 0 when there are no profiles
+        setTotalCard(0); // Set totalCard to 0 when there are no profiles
+        setIsLoading(false); // Set isLoading to false when there are no profiles
+        setDataLoaded(false); // Set dataLoaded to false when there are no profiles
+      } else {
+        setPeople(profileResponse.data.data);
+        console.log("Profiles set in state:", profileResponse.data.data);
+
+        setCardLeft(profileResponse.data.data.length);
+        setTotalCard(profileResponse.data.data.length);
+
+        profileResponse.data.data.forEach((profile) => {
+          console.log(profile.full_name);
+        });
+        // Fetch merry count data
+        const merryResponse = await axios.get(
+          "http://localhost:4008/merryLimit/count/" + user.user.id
+        );
+        const limitResponse = await axios.get(
+          "http://localhost:4008/merryLimit/limit/" + user.user.id
+        );
+        const currentDate = new Date().toISOString();
+        const formattedDate = currentDate.substring(0, 10); // Extract 'yyyy-mm-dd'
+
+        const { data: insertCurrentDate, error: errorInsertCurrentDate } =
+          await supabase
+            .from("merry_limits")
+            .update({ last_login_date: formattedDate })
+            .eq("id", user.user.id)
+            .select();
+
+        setMerryCount(merryResponse.data.remainingCount);
+        setLimitCount(limitResponse.data.merry_limit);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Error fetching data");
+    } finally {
+      setIsLoading(false);
+      setDataLoaded(true);
+    }
+  };
 
   const onSwipe = async (direction, swipedUserId) => {
     console.log("You swiped: " + direction);
@@ -150,45 +204,19 @@ function MerryCards({ user }) {
   }, []);
 
   useEffect(() => {
-    console.log("People state:", people);
+    // This code runs whenever the `people` state changes.
+    console.log("People state has changed:", people);
 
-    const fetchMerry = async () => {
-      try {
-        const getMerry = await axios.get(
-          "http://localhost:4008/merryLimit/count/" + user.user.id
-        );
+    // Any other logic you want to execute when `people` changes.
+  }, [people]); // Includes `people` in the dependency array.
 
-        const getLimit = await axios.get(
-          "http://localhost:4008/merryLimit/limit/" + user.user.id
-        );
-
-        const currentDate = new Date().toISOString();
-        const formattedDate = currentDate.substring(0, 10); // Extract 'yyyy-mm-dd'
-        console.log(`currentDate:`, currentDate);
-        console.log(`formattedDate:`, formattedDate);
-
-        const { data: insertCurrentDate, error: errorInsertCurrentDate } =
-          await supabase
-            .from("merry_limits")
-            .update({ last_login_date: formattedDate })
-            .eq("id", user.user.id)
-            .select();
-
-        console.log(`insertCurrentDate:`, insertCurrentDate);
-        console.log(`errorInsertCurrentDate:`, errorInsertCurrentDate);
-
-        setMerryCount(getMerry.data.remainingCount);
-        console.log(getMerry.data.remainingCount);
-
-        setLimitCount(getLimit.data.merry_limit);
-        console.log(getLimit.data.merry_limit);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchMerry();
-  }, [people]);
+  useEffect(() => {
+    if (!isInitialMount.current && cardLeft === 0) {
+      fetchData();
+    } else {
+      isInitialMount.current = false;
+    }
+  }, [cardLeft]);
 
   useEffect(() => {
     if (mutualMatch) {
@@ -212,7 +240,7 @@ function MerryCards({ user }) {
             <p className="  text-[#FF1659]">{`${merryCount} / ${limitCount}`}</p>
           </div>
 
-          {people.map((person) => (
+          {[...people].reverse().map((person) => (
             <TinderCard
               className=" absolute"
               key={person.id}
