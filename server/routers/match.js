@@ -214,6 +214,66 @@ matchRouter.put("/api/v1/unmatch", async (req, res) => {
       // If there are no new unmatches to add, respond appropriately
       res.json({ message: "No new unmatches to add", data: currentUserData });
     }
+matchRouter.put("/api/v2/unmatch", async (req, res) => {
+  const { userId, idUnmatch } = req.body;
+
+  try {
+    // Fetch the user's matches
+    const { data: matchesData, error: matchesError } = await supabase
+      .from("profiles")
+      .select("matches")
+      .eq("id", userId)
+      .single();
+    console.log(matchesData);
+    // Fetch the user's unmatched profiles
+    const { data: unmatchedProfilesData, error: unmatchedProfilesError } =
+      await supabase
+        .from("profiles")
+        .select("unmatched_profiles")
+        .eq("id", userId)
+        .single();
+    console.log(unmatchedProfilesData);
+    if (matchesError || unmatchedProfilesError) {
+      console.error(
+        "Error fetching user profile:",
+        matchesError || unmatchedProfilesError
+      );
+      return res.status(500).send("Error fetching user profile");
+    }
+
+    // Remove idUnmatch from matches
+    const updatedMatches = (matchesData.matches || []).filter(
+      (id) => id !== idUnmatch
+    );
+
+    // Initialize updatedUnmatchedProfiles as an empty array if it's null
+    let updatedUnmatchedProfiles =
+      unmatchedProfilesData.unmatched_profiles || [];
+
+    // Add idUnmatch to updatedUnmatchedProfiles if it's not already present
+    if (!updatedUnmatchedProfiles.includes(idUnmatch)) {
+      updatedUnmatchedProfiles.push(idUnmatch);
+    }
+
+    console.log("match", updatedMatches);
+    console.log("unmatch", updatedUnmatchedProfiles);
+
+    // Update the matches and unmatched_profiles arrays in the database
+    const { data: updatedData, error: updateError } = await supabase
+      .from("profiles")
+      .update({
+        matches: updatedMatches,
+        unmatched_profiles: updatedUnmatchedProfiles,
+      })
+      .eq("id", userId)
+      .single(); // Use .single() instead of .select() since we're updating a single row
+
+    if (updateError) {
+      console.error("Error updating profiles:", updateError);
+      return res.status(500).send("Error updating profiles");
+    }
+
+    res.json({ message: "Unmatch successful", data: updatedData });
   } catch (error) {
     console.error("Unexpected error:", error);
     res.status(500).send("Unexpected error");
