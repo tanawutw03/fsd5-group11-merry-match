@@ -5,7 +5,6 @@ import locationIcon from "../assets/MerryListPage/locationIcon.svg";
 import matchedLabel from "../assets/MerryListPage/matchedLabel.svg";
 import notMatchedLabel from "../assets/MerryListPage/notMatchedLabel.svg";
 import messageIcon from "../assets/MerryListPage/messageIcon.svg";
-import viewProfileIcon from "../assets/MerryListPage/eyeIcon.svg";
 import redHeart from "../assets/MerryListPage/redHeart.svg"; //อยู่ในปุ่มที่คอมเมนท์ไว้
 import logo from "../assets/merryPackagePage/logo.svg";
 import facebookIcon from "../assets/merryPackagePage/facebook-circle-fill.svg";
@@ -31,6 +30,7 @@ function MerryListPage() {
   const [matchCount, setMatchCount] = useState();
   const [hasMoreData, setHasMoreData] = useState(true);
   const [displayedMerryLimit, setDisplayedMerryLimit] = useState();
+  const [isUnmerryCalled, setIsUnmerryCalled] = useState(false);
 
   {
     /* fetch user data */
@@ -38,7 +38,7 @@ function MerryListPage() {
 
   useEffect(() => {
     const id = user.user.id;
-
+    setIsUnmerryCalled(false);
     async function fetchMerryListData() {
       try {
         const response = await axios.get(
@@ -85,7 +85,7 @@ function MerryListPage() {
     return () => {
       // Cleanup logic, if needed
     };
-  }, [user.user.id]);
+  }, [isUnmerryCalled]);
 
   {
     /* Calculate estimate time until midnight */
@@ -95,7 +95,24 @@ function MerryListPage() {
     new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - now;
   const hoursLeft = Math.floor(timeUntilMidnight / (1000 * 60 * 60));
 
-  const HandleisUnmerry = () => {};
+  const HandleisUnmerry = async (idUnmatch) => {
+    const id = user.user.id;
+    try {
+      const response = await axios.put(
+        "http://localhost:4008/matching/api/v2/unmatch",
+        {
+          userId: id,
+          idUnmatch: idUnmatch,
+        }
+      );
+      console.log(response.data);
+      setIsUnmerryCalled(true);
+      // Optionally, you can update the UI or handle success response here
+    } catch (error) {
+      console.error("Error unmatching user:", error);
+      // Optionally, you can handle error response here
+    }
+  };
 
   {
     /* Fetch packages data */
@@ -223,7 +240,7 @@ function MerryListPage() {
 
                   {/* Right Content Section */}
                   <section className="flex flex-col items-end">
-                    {user.match_status === "match" ? (
+                    {profile.matches ? (
                       <img
                         src={matchedLabel}
                         alt="Match"
@@ -245,8 +262,8 @@ function MerryListPage() {
                         borderRadius="md"
                       >
                         <button
-                          className={`w-[48px] h-[48px] bg-white shadow-nav flex justify-center items-center rounded-2xl ${
-                            user.match_status === "match" ? "" : "hidden"
+                          className={`w-[48px] h-[48px] bg-white shadow-md flex justify-center items-center rounded-2xl ${
+                            profile.matches ? "" : "hidden"
                           }`}
                         >
                           <img
@@ -263,17 +280,19 @@ function MerryListPage() {
                         borderRadius="md"
                       >
                         <button className="w-[48px] h-[48px] shadow-md flex justify-center items-center rounded-2xl">
-                          {/*<img
-                            src={viewProfileIcon}
-                            alt="view profile icon"
-                            className="w-[24px] h-[24px]"
-                        />*/}
-
-                          <PopUpProfile />
+                          <PopUpProfile
+                            useMenu={true}
+                            isRound="false"
+                            variant="ghost"
+                            colorScheme="black"
+                            size="lg"
+                          />
                         </button>
                       </Tooltip>
 
-                      <UnmerryButton isUnmerry={HandleisUnmerry} />
+                      <UnmerryButton
+                        isUnmerry={() => HandleisUnmerry(profile.id)}
+                      />
 
                       {/* merry back button
                       <Tooltip

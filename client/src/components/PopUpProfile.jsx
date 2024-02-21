@@ -21,11 +21,11 @@ const PopUpProfile = (props) => {
   const IconOrButton = props.useMenu ? (
     <IconButton
       onClick={onOpen}
-      isRound={true}
-      variant="solid"
-      colorScheme="whiteAlpha"
+      isRound={props.isRound}
+      variant={props.variant}
+      colorScheme={props.colorScheme}
       icon={<ViewIcon />}
-      size="xs"
+      size={props.size}
     />
   ) : (
     <ChakraButton onClick={onOpen} />
@@ -108,5 +108,10 @@ const PopUpProfile = (props) => {
 };
 PopUpProfile.propTypes = {
   useMenu: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+  colorScheme: PropTypes.string,
+  isRound: PropTypes.bool,
+  variant: PropTypes.string,
+  size: PropTypes.string,
 };
+
 export default PopUpProfile;
