@@ -17,6 +17,7 @@ import AdminComplaint from "./pages/AdminComplaint.jsx";
 import ComplaintPage from "./pages/Complaint.jsx";
 import UserProfilePage from "./pages/UserProfilePage.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
+import UserMembership from "./pages/UserMembership.jsx";
 
 const NoMatch = () => {
   return (
@@ -70,6 +71,7 @@ function App() {
         <Route path="/profile" element={<UserProfilePage />} />
         <Route path="/merrylist" element={<MerryListPage />} />
         <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/usermembership" element={<UserMembership />} />
       </Routes>
     </BrowserRouter>
   );
