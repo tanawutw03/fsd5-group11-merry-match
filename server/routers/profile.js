@@ -131,4 +131,47 @@ profileRouter.get(
   }
 );
 
+profileRouter.get("/api/v1/profile/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const { data: userProfile, error: userProfileError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .single();
+
+    if (userProfileError) {
+      console.error("Error fetching profile:", userProfileError);
+      return res.status(500).json({ error: "Error fetching profile" });
+    }
+
+    if (!userProfile) {
+      return res.json({ message: "Profile not found", data: null });
+    }
+
+    const userProfileWithPublicUrls = await Promise.all(
+      userProfile.avatar_url.map(async (avatarUrl) => {
+        const { data: publicURL, error: storageError } = await supabase.storage
+          .from("avatars")
+          .getPublicUrl(`${userId}/${avatarUrl}`);
+
+        if (storageError) {
+          console.error("Error fetching public URL for avatar:", storageError);
+          return null;
+        }
+        return publicURL;
+      })
+    );
+
+    res.json({
+      message: "Profile retrieved successfully",
+      data: { ...userProfile, avatar_url: userProfileWithPublicUrls },
+    });
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    res.status(500).json({ error: "Unexpected error" });
+  }
+});
+
 export default profileRouter;
