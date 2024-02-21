@@ -159,4 +159,65 @@ matchRouter.put("/api/v1/match", async (req, res) => {
   }
 });
 
+// PUT /api/v1/unmatch
+matchRouter.put("/api/v1/unmatch", async (req, res) => {
+  const { userId, unmatchUserId } = req.body;
+
+  try {
+    // Retrieve the current unmatched profiles for the user
+    const { data: currentUserData, error: selectError } = await supabase
+      .from("profiles")
+      .select("unmatched_profiles")
+      .eq("id", userId)
+      .single();
+
+    if (selectError) {
+      console.error("Error fetching current unmatched profiles:", selectError);
+      return res.status(500).send("Error fetching current unmatched profiles");
+    }
+
+    // Initialize unmatched_profiles array as an empty array if it is null
+    const currentUnmatchedProfiles = currentUserData.unmatched_profiles || [];
+
+    // Normalize unmatchUserId to an array
+    const unmatchUserIdsArray = Array.isArray(unmatchUserId)
+      ? unmatchUserId
+      : [unmatchUserId];
+
+    // Filter out any IDs already present in the existing unmatched profiles
+    const uniqueNewUnmatchIds = unmatchUserIdsArray.filter(
+      (id) => !currentUnmatchedProfiles.includes(id)
+    );
+
+    // Only proceed if there are new, unique unmatches to add
+    if (uniqueNewUnmatchIds.length > 0) {
+      // Combine existing unmatched profiles with new, unique unmatch IDs
+      const updatedUnmatchedProfiles = [
+        ...currentUnmatchedProfiles,
+        ...uniqueNewUnmatchIds,
+      ];
+
+      // Update the unmatched_profiles array in the database
+      const { data: updatedData, error: updateError } = await supabase
+        .from("profiles")
+        .update({ unmatched_profiles: updatedUnmatchedProfiles })
+        .eq("id", userId)
+        .select();
+
+      if (updateError) {
+        console.error("Error updating unmatched profiles:", updateError);
+        return res.status(500).send("Error updating unmatched profiles");
+      }
+
+      res.json({ message: "User unmatched successfully", data: updatedData });
+    } else {
+      // If there are no new unmatches to add, respond appropriately
+      res.json({ message: "No new unmatches to add", data: currentUserData });
+    }
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    res.status(500).send("Unexpected error");
+  }
+});
+
 export default matchRouter;
