@@ -5,8 +5,8 @@ import adminComplaint from "./routers/adminComplaint.js";
 import userProfileRoute from "./routers/userProfile.js";
 import matchRouter from "./routers/match.js";
 import merryLimit from "./routers/merryLimit.js";
+import userPackage from "./routers/userPackage.js";
 import profileRouter from "./routers/profile.js";
-
 
 async function init() {
   const app = express();
@@ -20,9 +20,7 @@ async function init() {
   app.use("/matching", matchRouter);
   app.use("/merryLimit", merryLimit);
   app.use("/profile", profileRouter);
-
-
-
+  app.use("/userPackage", userPackage);
 
   app.get("/", (req, res) => {
     res.send("Hello Marry Porject!");

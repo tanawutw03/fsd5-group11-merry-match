@@ -8,7 +8,8 @@ adminPackageRoute.get("/package", async (req, res) => {
     const { data, error } = await supabase
       .from("packages")
       .select("*")
-      .neq("package_id", 69);
+      .neq("package_id", 69)
+      .order("package_id", { ascending: true });
 
     if (error) {
       throw error;
