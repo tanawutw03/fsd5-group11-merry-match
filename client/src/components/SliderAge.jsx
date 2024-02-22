@@ -41,7 +41,6 @@ function SliderAge() {
         <Tooltip
           hasArrow
           placement="bottom"
-          isOpen
           renderContent={() => getTooltipContent(sliderValues[0])}
           label={`${sliderValues[0]}`}
         >
@@ -50,7 +49,6 @@ function SliderAge() {
         <Tooltip
           hasArrow
           placement="bottom"
-          isOpen
           renderContent={() => getTooltipContent(sliderValues[1])}
           label={`${sliderValues[1]}`}
         >

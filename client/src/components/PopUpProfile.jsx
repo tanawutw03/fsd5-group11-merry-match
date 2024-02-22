@@ -28,7 +28,11 @@ const PopUpProfile = (props) => {
       size={props.size}
     />
   ) : (
-    <ChakraButton onClick={onOpen} />
+    <ChakraButton
+      onClick={onOpen}
+      colorScheme={props.colorScheme}
+      variant={props.variant}
+    />
   );
   const preferencesData = [
     { title: "Sexual identities", value: "Male" },
