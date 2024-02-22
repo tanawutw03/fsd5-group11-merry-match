@@ -139,10 +139,50 @@ matchRouter.put("/api/v1/match", async (req, res) => {
       }
 
       if (matchedUserData.matches && matchedUserData.matches.includes(userId)) {
-        // Mutual match detected, send notification
-        // Assuming you have some notification mechanism in place
-        // You can add code here to trigger notification
-        // For example, you can emit a socket event, send a push notification, etc.
+        const matchedId = uniqueNewMatchIds[0];
+
+        // Update mutual_matches column for user A
+        const updatedMutualMatchesA = [
+          ...(currentUserData.mutual_matches || []),
+          matchedId,
+        ];
+        await supabase
+          .from("profiles")
+          .update({ mutual_matches: updatedMutualMatchesA })
+          .eq("id", userId)
+          .single();
+
+        // Update mutual_matches column for user B
+        const updatedMutualMatchesB = [
+          ...(matchedUserData.mutual_matches || []),
+          userId,
+        ];
+        await supabase
+          .from("profiles")
+          .update({ mutual_matches: updatedMutualMatchesB })
+          .eq("id", matchedId)
+          .single();
+
+        // Remove the matched ID from the matches column for both users
+        const updatedMatchesA = currentUserData.matches
+          ? currentUserData.matches.filter((id) => id !== matchedId)
+          : [];
+
+        await supabase
+          .from("profiles")
+          .update({ matches: updatedMatchesA })
+          .eq("id", userId)
+          .single();
+
+        const updatedMatchesB = matchedUserData.matches
+          ? matchedUserData.matches.filter((id) => id !== userId)
+          : [];
+
+        await supabase
+          .from("profiles")
+          .update({ matches: updatedMatchesB })
+          .eq("id", matchedId)
+          .single();
 
         // Respond with mutual match data
         return res.json({ message: "Mutual match", data: updatedData });
@@ -202,7 +242,7 @@ matchRouter.put("/api/v1/unmatch", async (req, res) => {
         .from("profiles")
         .update({ unmatched_profiles: updatedUnmatchedProfiles })
         .eq("id", userId)
-        .select();
+        .single();
 
       if (updateError) {
         console.error("Error updating unmatched profiles:", updateError);
@@ -214,6 +254,12 @@ matchRouter.put("/api/v1/unmatch", async (req, res) => {
       // If there are no new unmatches to add, respond appropriately
       res.json({ message: "No new unmatches to add", data: currentUserData });
     }
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    res.status(500).send("Unexpected error");
+  }
+});
+
 matchRouter.put("/api/v2/unmatch", async (req, res) => {
   const { userId, idUnmatch } = req.body;
 

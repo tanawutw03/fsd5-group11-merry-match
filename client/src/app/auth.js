@@ -1,4 +1,5 @@
 import { supabase } from "../utils/supabaseClient.js";
+import axios from "axios";
 
 export const handleLogin = async (
   user,
@@ -10,29 +11,20 @@ export const handleLogin = async (
   try {
     const { data: sessionData, error: sessionError } =
       await supabase.auth.getSession();
-    console.log("Session Data:", sessionData);
-    console.log("Error Session Data:", sessionError);
 
     if (sessionData) {
       const { data: retriveUser, error: retriveError } =
         await supabase.auth.getUser();
-      console.log("User Data:", retriveUser);
 
       if (retriveUser) {
         if (retriveUser.user.id) {
-          console.log("Fetching user profile data...");
           const { data: userData, error: userDataError } = await supabase
             .from("profiles")
             .select("avatar_url")
             .eq("id", retriveUser.user.id);
 
-          console.log(userData);
           if (userData && userData.length > 0) {
             const avatarUrl = userData[0].avatar_url[0];
-            console.log("User Profile Data:", userData);
-            console.log("Avatar URL:", avatarUrl);
-            console.log("Error fetching user data", userDataError);
-            console.log(`User ID:`, retriveUser.user.id);
             const { data: imageData, error: imageError } =
               await supabase.storage
                 .from("avatars")
@@ -40,8 +32,6 @@ export const handleLogin = async (
 
             if (imageData) {
               const imageUrl = URL.createObjectURL(imageData);
-              console.log("Avatar Image Data:", imageData);
-              console.log("Avatar URL (after download):", imageUrl);
 
               setUser(retriveUser);
               setAvatarUrl(imageUrl);
@@ -80,11 +70,11 @@ export const handleLogout = async (
 ) => {
   try {
     const { error } = await supabase.auth.signOut();
+    await axios.put("http://localhost:4008/logout/api/v1/logout");
 
     if (error) {
       console.error("Error during sign out:", error.message);
     } else {
-      console.log("Logging out.");
       setUser(null);
       setAvatarUrl("");
       navigate("/");

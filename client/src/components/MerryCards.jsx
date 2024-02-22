@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import TinderCard from "react-tinder-card";
 import { supabase } from "../utils/supabaseClient.js";
 import action from "../assets/Matching/action button.svg";
@@ -7,21 +7,21 @@ import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import PropTypes from "prop-types";
 import MerryMatch from "./MerryMatch.jsx";
-
+import { useDisclosure } from "@chakra-ui/react";
 import PopUpProfile from "./PopUpProfile.jsx";
+
 function MerryCards({ user }) {
   const [people, setPeople] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [error, setError] = useState(null);
   const [mutualMatch, setMutualMatch] = useState(false);
-
+  const { isOpen, onClose } = useDisclosure();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [merryCount, setMerryCount] = useState();
   const [limitCount, setLimitCount] = useState();
   const [cardLeft, setCardLeft] = useState(0);
   const [totalCard, setTotalCard] = useState(0);
-  const isInitialMount = useRef(true);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -31,8 +31,6 @@ function MerryCards({ user }) {
         `http://localhost:4008/profile/api/v1/profile/${user.user.id}/5`
       );
       if (profileResponse.data.data.length === 0) {
-        // Handle case when no profiles are fetched
-        console.log(profileResponse.data.message);
         setPeople([]); // Set people to an empty array
         setCardLeft(0); // Set cardLeft to 0 when there are no profiles
         setTotalCard(0); // Set totalCard to 0 when there are no profiles
@@ -40,14 +38,9 @@ function MerryCards({ user }) {
         setDataLoaded(false); // Set dataLoaded to false when there are no profiles
       } else {
         setPeople(profileResponse.data.data);
-        console.log("Profiles set in state:", profileResponse.data.data);
-
         setCardLeft(profileResponse.data.data.length);
         setTotalCard(profileResponse.data.data.length);
 
-        profileResponse.data.data.forEach((profile) => {
-          console.log(profile.full_name);
-        });
         // Fetch merry count data
         const merryResponse = await axios.get(
           "http://localhost:4008/merryLimit/count/" + user.user.id
@@ -82,145 +75,80 @@ function MerryCards({ user }) {
     console.log(`Your Id:`, user.user.id);
     console.log(`Your Swipe:`, swipedUserId);
 
+    const swipedUserIdsArray = Array.isArray(swipedUserId)
+      ? swipedUserId
+      : [swipedUserId];
+
     if (direction === "right" && user.user.id) {
-      const response = await updateMatches(user.user.id, swipedUserId);
+      const response = await updateMatches(user.user.id, swipedUserIdsArray);
 
       const decreaseLimitResponse = await axios.put(
         "http://localhost:4008/merryLimit/count/" + user.user.id
       );
 
-      console.log(`decreaseLimitResponse:`, decreaseLimitResponse.data.message);
-      console.log(response.message);
       if (response.message === "Mutual match") {
         setMutualMatch(true);
       }
 
-      // Update merry count state
       const updatedMerryCount = merryCount - 1;
       setMerryCount(updatedMerryCount);
     } else if (direction === "left" && user.user.id) {
+      const response = await updatedUnmatched(user.user.id, swipedUserIdsArray);
     }
+
+    setCardLeft((prevCardLeft) => prevCardLeft - 1);
   };
 
   const onCardLeftScreen = (myIdentifier) => {
     console.log(myIdentifier + " left the screen");
   };
 
-  const updateMatches = async (swipingUserId, swipedUserId) => {
-    console.log(swipingUserId);
-    console.log(swipedUserId);
-
-    const swipedUserIdsArray = Array.isArray(swipedUserId)
-      ? swipedUserId
-      : [swipedUserId];
-    console.log(swipedUserIdsArray);
-
+  const updateMatches = async (swipingUserId, swipedUserIdsArray) => {
     try {
       const response = await axios.put(
-        "http://localhost:4008/matching/api/v1/match",
+        "http://localhost:4008/match/api/v1/match",
         {
           userId: swipingUserId,
           matchedUserId: swipedUserIdsArray,
         }
       );
 
-      console.log(response);
-      console.log(response.data);
-      return response.data; // Return the response for trigger modal
+      return response.data;
     } catch (error) {
       console.error("Error updating matches:", error);
       return null;
     }
   };
 
+  const updatedUnmatched = async (swipingUserId, swipedUserIdsArray) => {
+    try {
+      const response = await axios.put(
+        "http://localhost:4008/match/api/v1/unmatch",
+        {
+          userId: swipingUserId,
+          unmatchUserId: swipedUserIdsArray,
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Error updating unmatched:", error);
+      return null;
+    }
+  };
+
   useEffect(() => {
-    const fetchImages = async () => {
-      setIsLoading(true);
-      try {
-        const { data: profiles, error: errorQueryUUID } = await supabase
-          .from("profiles")
-          .select("id, full_name, age");
-
-        if (errorQueryUUID) {
-          console.error("Error querying UUIDs:", errorQueryUUID);
-          setError(errorQueryUUID.message);
-          return;
-        }
-
-        let allProfilesWithImages = [];
-
-        for (const profile of profiles) {
-          const { data: fileList, error: fileListError } =
-            await supabase.storage.from("avatars").list(profile.id, {
-              limit: 100,
-              offset: 0,
-              sortBy: { column: "name", order: "asc" },
-            });
-
-          if (fileListError) {
-            console.error(
-              `Error fetching images for UUID ${profile.id}:`,
-              fileListError
-            );
-            continue;
-          }
-
-          const avatarUrls = await Promise.all(
-            fileList.map(async (file) => {
-              const response = await supabase.storage
-                .from("avatars")
-                .getPublicUrl(`${profile.id}/${file.name}`);
-              if (response.error) {
-                console.error(
-                  `Error getting public URL for ${file.name}:`,
-                  response.error
-                );
-                return null;
-              } else {
-                return response.data.publicUrl; // Make sure this matches the actual property name in the response
-              }
-            })
-          );
-
-          const filteredAvatarUrls = avatarUrls.filter((url) => url !== null);
-
-          allProfilesWithImages.push({
-            ...profile,
-            avatarUrls: filteredAvatarUrls,
-          });
-        }
-
-        setPeople(allProfilesWithImages);
-      } catch (error) {
-        console.error("Unexpected error:", error);
-        setError("Unexpected error");
-      } finally {
-        setIsLoading(false);
-        setDataLoaded(true);
-      }
-    };
-
-    fetchImages();
+    fetchData();
   }, []);
 
   useEffect(() => {
-    // This code runs whenever the `people` state changes.
-    console.log("People state has changed:", people);
-
-    // Any other logic you want to execute when `people` changes.
-  }, [people]); // Includes `people` in the dependency array.
-
-  useEffect(() => {
-    if (!isInitialMount.current && cardLeft === 0) {
+    if (cardLeft === 0) {
       fetchData();
-    } else {
-      isInitialMount.current = false;
     }
-  }, [cardLeft]);
+  }, [cardLeft, totalCard]);
 
   useEffect(() => {
     if (mutualMatch) {
-      console.log(`Open the modal:`, mutualMatch);
       setIsModalOpen(true);
     }
   }, [mutualMatch]);
@@ -242,23 +170,24 @@ function MerryCards({ user }) {
 
           {[...people].reverse().map((person) => (
             <TinderCard
-              className=" absolute"
+              className=" absolute hover:cursor-grab active:cursor-grabbing"
               key={person.id}
               onSwipe={(dir) => onSwipe(dir, person.id)}
               onCardLeftScreen={() => onCardLeftScreen(person.full_name)}
             >
               <div
-                className="bg-center bg-no-repeat bg-[length:620px_720px]   p-5 relative w-[620px] h-[720px] rounded-2xl hover:cursor-grab active:cursor-grabbing"
+                className="bg-center bg-no-repeat bg-[length:620px_720px]   p-5 relative w-[620px] h-[720px] rounded-2xl "
                 style={{
-                  backgroundImage: `url(${person.avatarUrls[0]})`,
+                  backgroundImage: `url(${person.avatarUrl})`,
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent  rounded-2xl to-[#411849]"></div>
               <div className=" flex flex-row absolute w-full z-40 bottom-20  justify-between p-10 ">
-                <div className=" flex flex-row space-x-5">
+                <div className=" flex flex-row space-x-5 items-center">
                   <h1 className=" text-white font-bold text-xl   ">
                     {person.full_name}
                   </h1>
+                  <span className="text-white">{person.age}</span>
                   <PopUpProfile useMenu={true} />
                 </div>
                 <div>
@@ -275,7 +204,6 @@ function MerryCards({ user }) {
           isOpen={isModalOpen}
           onClose={() => {
             setMutualMatch(false);
-            console.log(`mutualMatch onClose:`, mutualMatch);
           }}
         />
       )}
