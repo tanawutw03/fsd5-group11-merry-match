@@ -87,7 +87,7 @@ matchRouter.put("/api/v1/match", async (req, res) => {
     // First, retrieve the current matches for the user
     const { data: currentUserData, error: selectError } = await supabase
       .from("profiles")
-      .select("matches")
+      .select("matches, mutual_matches")
       .eq("id", userId)
       .single();
 
@@ -129,7 +129,7 @@ matchRouter.put("/api/v1/match", async (req, res) => {
       // Check for mutual matches
       const { data: matchedUserData, error: matchedUserError } = await supabase
         .from("profiles")
-        .select("matches")
+        .select("matches, mutual_matches")
         .eq("id", uniqueNewMatchIds[0])
         .single();
 
@@ -141,11 +141,27 @@ matchRouter.put("/api/v1/match", async (req, res) => {
       if (matchedUserData.matches && matchedUserData.matches.includes(userId)) {
         const matchedId = uniqueNewMatchIds[0];
 
+        console.log(
+          "Type of currentUserData.mutual_matches:",
+          typeof currentUserData.mutual_matches
+        );
+        console.log(
+          "Type of matchedUserData.mutual_matches:",
+          typeof matchedUserData.mutual_matches
+        );
+
         // Update mutual_matches column for user A
         const updatedMutualMatchesA = [
           ...(currentUserData.mutual_matches || []),
           matchedId,
         ];
+
+        // Log data to be added to mutual_matches for user A
+        console.log(
+          "Data to be added to mutual_matches for user A:",
+          matchedId
+        );
+
         await supabase
           .from("profiles")
           .update({ mutual_matches: updatedMutualMatchesA })
@@ -157,6 +173,10 @@ matchRouter.put("/api/v1/match", async (req, res) => {
           ...(matchedUserData.mutual_matches || []),
           userId,
         ];
+
+        // Log data to be added to mutual_matches for user B
+        console.log("Data to be added to mutual_matches for user B:", userId);
+
         await supabase
           .from("profiles")
           .update({ mutual_matches: updatedMutualMatchesB })

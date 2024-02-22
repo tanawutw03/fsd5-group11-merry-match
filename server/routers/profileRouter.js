@@ -8,44 +8,44 @@ export function resetAllProfiles() {
   allProfiles = [];
 }
 
-// Create a function to handle inserts
-const handleInserts = (payload) => {
-  console.log("Insert received!", payload);
-  // Add your logic to handle inserts here
-};
+// // Create a function to handle inserts
+// const handleInserts = (payload) => {
+//   console.log("Insert received!", payload);
+//   // Add your logic to handle inserts here
+// };
 
-// Create a function to handle updates
-const handleUpdates = (payload) => {
-  console.log("Update received!", payload);
-  // Add your logic to handle updates here
-};
+// // Create a function to handle updates
+// const handleUpdates = (payload) => {
+//   console.log("Update received!", payload);
+//   // Add your logic to handle updates here
+// };
 
-// Create a function to handle both inserts and updates
-const handleChanges = (payload) => {
-  if (payload.eventType === "INSERT") {
-    handleInserts(payload);
-  } else if (payload.eventType === "UPDATE") {
-    handleUpdates(payload);
-  }
-};
+// // Create a function to handle both inserts and updates
+// const handleChanges = (payload) => {
+//   if (payload.eventType === "INSERT") {
+//     handleInserts(payload);
+//   } else if (payload.eventType === "UPDATE") {
+//     handleUpdates(payload);
+//   }
+// };
 
-// Listen to events
-const subscription = supabase
-  .channel("profiles")
-  .on(
-    "postgres_changes",
-    { event: "*", schema: "public", table: "profiles" },
-    handleChanges
-  )
-  .subscribe();
+// // Listen to events
+// const subscription = supabase
+//   .channel("profiles")
+//   .on(
+//     "postgres_changes",
+//     { event: "*", schema: "public", table: "profiles" },
+//     handleChanges
+//   )
+//   .subscribe();
 
-if (!subscription.closed) {
-  console.log("Currently subscribed to events");
-} else {
-  console.log("Currently not subscribed to events");
-}
+// if (!subscription.closed) {
+//   console.log("Currently subscribed to events");
+// } else {
+//   console.log("Currently not subscribed to events");
+// }
 
-subscription.unsubscribe();
+// subscription.unsubscribe();
 
 // GET /api/v1/profile/:excludeUserId/:offset
 profileRouter.get(
@@ -91,6 +91,8 @@ profileRouter.get(
       const excludeUserIdMatches = excludeUserProfile.matches || [];
       const excludeUserIdUnmatched =
         excludeUserProfile.unmatched_profiles || [];
+      const excludeUserIdMutualMatches =
+        excludeUserProfile.mutual_matches || [];
 
       // Filter out the excludeUserId and unmatched profiles from the fetched profiles
       const filteredProfiles = allProfiles.filter((profile) => {
@@ -98,7 +100,8 @@ profileRouter.get(
           profile.id !== excludeUserId &&
           profile.id !== "ff91e4bc-527c-48ec-b463-76e978058f28" && // Admin Id
           !excludeUserIdMatches.includes(profile.id) &&
-          !excludeUserIdUnmatched.includes(profile.id)
+          !excludeUserIdUnmatched.includes(profile.id) &&
+          !excludeUserIdMutualMatches.includes(profile.id)
         );
       });
 
