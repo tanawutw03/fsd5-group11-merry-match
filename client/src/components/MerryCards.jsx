@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import TinderCard from "react-tinder-card";
 import { supabase } from "../utils/supabaseClient.js";
 import action from "../assets/Matching/action button.svg";
