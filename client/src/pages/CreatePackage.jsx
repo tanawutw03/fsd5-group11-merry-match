@@ -16,6 +16,7 @@ import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
+import { useUser } from "../app/userContext.js";
 
 function CreatePackage() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -26,6 +27,11 @@ function CreatePackage() {
   const [price, setPrice] = useState(0);
   const navigate = useNavigate();
   const [newComplaintCount, setNewComplaintCount] = useState(0);
+  const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
+  if (user.user.role !== "admin") {
+    navigate("/homepage");
+    console.log("you not role admin");
+  }
 
   useEffect(() => {
     async function fetchNewComplaintCount() {

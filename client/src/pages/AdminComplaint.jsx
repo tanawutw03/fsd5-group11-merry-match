@@ -21,6 +21,7 @@ import { supabase } from "../utils/supabaseClient";
 import { Select } from "@chakra-ui/react";
 import { Badge } from "@chakra-ui/react";
 import axios from "axios";
+import { useUser } from "../app/userContext.js";
 
 function AdminComplaint() {
   const navigate = useNavigate();
@@ -28,6 +29,11 @@ function AdminComplaint() {
   const [newComplaintCount, setNewComplaintCount] = useState(0);
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
+  const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
+  if (user.user.role !== "admin") {
+    navigate("/homepage");
+    console.log("you not role admin");
+  }
 
   const handleRowClick = async (complaintId) => {
     try {

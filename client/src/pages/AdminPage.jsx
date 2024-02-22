@@ -22,15 +22,22 @@ import { Button } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { supabase } from "../utils/supabaseClient";
 import axios from "axios";
+import { useUser } from "../app/userContext.js";
 
 function AdminPage() {
   const navigate = useNavigate();
   const [packageData, setPackageData] = useState([]);
   const [newComplaintCount, setNewComplaintCount] = useState(0);
+  const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
+  if (user.user.role !== "admin") {
+    navigate("/homepage");
+    console.log("you not role admin");
+  }
 
   useEffect(() => {
     // Fetch data from Supabase or your backend API
     // Replace this with your actual Supabase query or API call
+
     const fetchData = async () => {
       // Example using Supabase
 
