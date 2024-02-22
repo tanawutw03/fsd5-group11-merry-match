@@ -214,6 +214,12 @@ matchRouter.put("/api/v1/unmatch", async (req, res) => {
       // If there are no new unmatches to add, respond appropriately
       res.json({ message: "No new unmatches to add", data: currentUserData });
     }
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    res.status(500).send("Unexpected error");
+  }
+});
+
 matchRouter.put("/api/v2/unmatch", async (req, res) => {
   const { userId, idUnmatch } = req.body;
 
