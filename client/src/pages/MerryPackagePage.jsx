@@ -7,14 +7,39 @@ import fillCheckbox from "../assets/MerryPackagePage/checkbox-circle-fill.svg";
 import facebookIcon from "../assets/MerryPackagePage/facebook-circle-fill.svg";
 import instagramIcon from "../assets/MerryPackagePage/instagram-fill.svg";
 import twitterIcon from "../assets/MerryPackagePage/twitter-fill.svg";
+import { supabase } from "../utils/supabaseClient";
 
 function PackagePage() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [selectedPackage, setSelectedPackage] = useState(null);
+  const [session, setSession] = useState(null);
+  const [userProfileId, setUserProfileId] = useState(null);
+  const [userProfileEmail, setUserProfileEmail] = useState(null);
   const API_PORT = "http://localhost:4008";
 
   useEffect(() => {
+    // supabase.auth.getSession().then(({ data: { session } }) => {
+    //   setSession(session);
+    //   setUserProfileId(session.user.id);
+    //   console.log("Get_Sess_UserProfileID : ", session.user.id); // Log here to ensure it's set correctly
+    //   userProfile_id = session.user.id;
+    // });
+    const authListener = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) {
+        setUserProfileId(session.user.id);
+        setUserProfileEmail(session.user.email);
+        // localStorage.setItem('userProfileId', session.user.id);
+        console.log("OnAuth_UserProfileID : ", session.user.id);
+        console.log("OnAuth_UserProfileEmail: ", session.user.email);
+      } else {
+        setUserProfileId(null);
+        // Clear userProfileId from local storage if user is not authenticated
+        localStorage.removeItem("userProfileId");
+      }
+    });
+
     const fetchData = async () => {
       try {
         const response = await axios.get(`${API_PORT}/admin/package`);
@@ -27,7 +52,6 @@ function PackagePage() {
     fetchData();
   }, []);
 
-  // Function to handle package selection
   const handlePackageSelection = (packageId, packageName, price) => {
     setSelectedPackage({ packageId, packageName, price });
     console.log({ packageId, packageName, price });
@@ -128,6 +152,16 @@ function PackagePage() {
             ))}
           </div>
         </div>
+        <body>
+          {selectedPackage && (
+            <OrderPackage
+              packageId={selectedPackage?.packageId}
+              packageName={selectedPackage?.packageName}
+              packagePrice={selectedPackage?.price}
+              userProfileId={userProfileId}
+            />
+          )}
+        </body>
       </section>
 
       <footer>
