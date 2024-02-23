@@ -1,22 +1,23 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import NavBar from "../components/common/NavBar";
 import logo from "../assets/MerryPackagePage/logo.svg";
 import fillCheckbox from "../assets/MerryPackagePage/checkbox-circle-fill.svg";
 import facebookIcon from "../assets/MerryPackagePage/facebook-circle-fill.svg";
 import instagramIcon from "../assets/MerryPackagePage/instagram-fill.svg";
 import twitterIcon from "../assets/MerryPackagePage/twitter-fill.svg";
-import NavBar from "../components/common/NavBar";
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import axios from "axios";
 
 function PackagePage() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
-  const API_ENDPOINT = "http://localhost:4008";
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  const API_PORT = "http://localhost:4008";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_ENDPOINT}/admin/package`);
+        const response = await axios.get(`${API_PORT}/admin/package`);
         setData(response.data);
       } catch (error) {
         console.error(error);
@@ -25,6 +26,13 @@ function PackagePage() {
 
     fetchData();
   }, []);
+
+  // Function to handle package selection
+  const handlePackageSelection = (packageId, packageName, price) => {
+    setSelectedPackage({ packageId, packageName, price });
+    console.log({ packageId, packageName, price });
+  };
+
   return (
     <>
       <div className="nav-container flex justify-center items-center">
@@ -33,8 +41,8 @@ function PackagePage() {
           secondMenuName="Merry Membership"
           name="login"
           color="red"
-          showBell="true"
-          useMenu="true"
+          showBell
+          useMenu
           onClickFirstMenu={() => navigate("/matching")}
           onClickSecondMenu={() => navigate("/package")}
         />
@@ -90,15 +98,28 @@ function PackagePage() {
                     </li>
                     <button
                       className="choose-package-btn flex justify-center items-center gap-[8px] w-[277px]   
-                           rounded-[99px]  bg-red-100  hover:bg-red-200 active:bg-red-300  shadow-setShadow01 h-12 p-[16px]"
+                                                rounded-[99px]  bg-red-100  hover:bg-red-200 active:bg-red-300  shadow-setShadow01 h-12 p-[16px]"
                       type="button"
-                      disabled
+                      onClick={() =>
+                        handlePackageSelection(
+                          packages.package_id,
+                          packages.name,
+                          packages.price
+                        )
+                      } // Pass the package id and name to the handler
+                      disabled={
+                        selectedPackage &&
+                        selectedPackage.packageId === packages.package_id
+                      } // Disable button if already selected
                     >
                       <label
                         className="font-nunito text-center text-[16px] font-bold text-red-600 p-[12px,24px]  "
                         htmlFor="ChoosePackageSection"
                       >
-                        Choose Package
+                        {selectedPackage &&
+                        selectedPackage.packageId === packages.package_id
+                          ? "Selected"
+                          : "Choose Package"}
                       </label>
                     </button>
                   </div>
@@ -114,7 +135,7 @@ function PackagePage() {
           <div className="flex justify-center items-center w-screen h-[371px] p-[48px,160px] bg-gray-100">
             <ul className="flex  flex-col justify-center items-center w-[1120px] h-[275px] flex-shrink-0">
               <li className="merry-match-logo ">
-                <img src={logo} />
+                <img src={logo} alt="logo" />
               </li>
               <li className="font-nunito text-center text-[20px] text-[#646D89] font-[600px] leading-[30px]">
                 New generation of online dating website for everyone
@@ -126,19 +147,19 @@ function PackagePage() {
                 <div className="flex flex-row gap-[16px] ">
                   <img
                     src={facebookIcon}
-                    alt=""
+                    alt="Facebook Icon"
                     className="p-[12px] rounded-[24px] bg-purple-500"
                   />
 
                   <img
                     src={instagramIcon}
-                    alt=""
+                    alt="Instagram Icon"
                     className="p-[12px]  rounded-[24px] bg-purple-500"
                   />
 
                   <img
                     src={twitterIcon}
-                    alt=""
+                    alt="Twitter Icon"
                     className="p-[12px] rounded-[24px] bg-purple-500"
                   />
                 </div>
