@@ -8,6 +8,7 @@ import merryLimit from "./routers/merryLimit.js";
 import userPackage from "./routers/userPackage.js";
 import profileRouter from "./routers/profileRouter.js";
 import logoutRouter from "./routers/logoutRouter.js";
+import userOrderRoute from "./routers/userOrder.js";
 
 async function init() {
   const app = express();
@@ -19,6 +20,8 @@ async function init() {
   app.use("/admin/complaint", adminComplaint);
   app.use("/user", userProfileRoute);
   app.use("/match", matchRouter);
+  app.use("/", userOrderRoute);
+  app.use("/matching", matchRouter);
   app.use("/merryLimit", merryLimit);
   app.use("/profile", profileRouter);
   app.use("/userPackage", userPackage);
