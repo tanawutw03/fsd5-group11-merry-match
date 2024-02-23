@@ -161,6 +161,97 @@ matchRouter.get("/api/v1/mutual_matches/:userId", async (req, res) => {
   }
 });
 
+// GET /api/v1/merged_matches/:userId
+matchRouter.get("/api/v1/merged_matches/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Retrieve the list of matched user IDs for the specified user
+    const { data: matchData, error: matchError } = await supabase
+      .from("profiles")
+      .select("matches")
+      .eq("id", userId)
+      .single();
+
+    if (matchError) {
+      console.error("Error fetching matches:", matchError);
+      return res.status(500).json({ error: "Error fetching matches" });
+    }
+
+    // If no data is returned or if matches is null, set matches to an empty array
+    const matches = matchData?.matches || [];
+
+    // Retrieve the list of mutual matches user IDs for the specified user
+    const { data: mutualMatchData, error: mutualMatchError } = await supabase
+      .from("profiles")
+      .select("mutual_matches")
+      .eq("id", userId)
+      .single();
+
+    if (mutualMatchError) {
+      console.error("Error fetching mutual matches:", mutualMatchError);
+      return res.status(500).json({ error: "Error fetching mutual matches" });
+    }
+
+    // If no data is returned or if mutual matches is null, set mutualMatches to an empty array
+    const mutualMatches = mutualMatchData?.mutual_matches || [];
+
+    // Fetch profiles of matched users for both matches and mutual matches
+    const { data: matchedProfiles, error: profileError } = await supabase
+      .from("profiles")
+      .select("*") // Can specify the column
+      .in("id", [...matches, ...mutualMatches]);
+
+    if (profileError) {
+      console.error("Error fetching matched profiles:", profileError);
+      return res.status(500).json({ error: "Error fetching matched profiles" });
+    }
+
+    // Modify each profile to include a public URL for the avatar
+    const profilesWithPublicUrls = await Promise.all(
+      matchedProfiles.map(async (profile) => {
+        const avatarUrls = profile.avatar_url || [];
+
+        // Fetch public URLs for all avatar URLs in the array
+        const publicUrls = await Promise.all(
+          avatarUrls.map(async (avatarUrl) => {
+            // Retrieve the public URL for each avatar from Supabase storage
+            const { data: publicURL, error: storageError } =
+              await supabase.storage
+                .from("avatars")
+                .getPublicUrl(`${profile.id}/${avatarUrl}`);
+
+            if (storageError) {
+              console.error(
+                "Error fetching public URL for avatar:",
+                storageError
+              );
+              return null; // Return null if there's an error
+            }
+
+            return publicURL; // Return the public URL
+          })
+        );
+        // Determine the source (matches or mutual_matches) of the profile
+        const source = matches.includes(profile.id)
+          ? "matches"
+          : "mutual_matches";
+
+        // Update the profile with the array of public URLs for all avatars
+        return { ...profile, avatar_url: publicUrls, source };
+      })
+    );
+
+    res.json({
+      message: "Merged matches retrieved successfully",
+      data: profilesWithPublicUrls,
+    });
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    res.status(500).json({ error: "Unexpected error" });
+  }
+});
+
 // PUT /api/v1/match/
 matchRouter.put("/api/v1/match", async (req, res) => {
   const { userId, matchedUserId } = req.body;
