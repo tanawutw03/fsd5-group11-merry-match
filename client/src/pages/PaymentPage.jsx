@@ -32,7 +32,28 @@ const PaymentPage = () => {
     }
   };
 
+  // const renderPage = () => {
+  //   switch (currentPage) {
+  //     case 1:
+  //       return (
+  //         <PaymentConfirmPage handlePaymentConfirm={handlePaymentConfirm} />
+  //       );
+  //     case 2:
+  //       return <PaymentSuccessPage />;
+  //     default:
+  //       return null;
+  //   }
+  // };
+
   const renderPage = () => {
+    // Check any condition here if you want to skip PaymentConfirmPage
+    // For example, directly navigate to PaymentSuccessPage
+    const shouldSkipPaymentConfirm = true; // Set this condition as needed
+
+    if (shouldSkipPaymentConfirm) {
+      return <PaymentSuccessPage />;
+    }
+
     switch (currentPage) {
       case 1:
         return (
@@ -47,6 +68,8 @@ const PaymentPage = () => {
 
   return <div>{renderPage()}</div>;
 };
+
+export default PaymentPage;
 
 const PaymentConfirmPage = ({ handlePaymentConfirm }) => {
   return (
@@ -263,5 +286,3 @@ const PaymentSuccessPage = () => {
     </>
   );
 };
-
-export default PaymentPage;
