@@ -79,6 +79,88 @@ matchRouter.get("/api/v1/match/:userId", async (req, res) => {
   }
 });
 
+// GET /api/v1/mutual_matches/:userId
+matchRouter.get("/api/v1/mutual_matches/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Retrieve the list of mutual matches user IDs for the specified user
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("mutual_matches")
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      console.error("Error fetching mutual matches:", error);
+      return res.status(500).json({ error: "Error fetching mutual matches" });
+    }
+
+    // If no data is returned or if mutual matches is null, return an empty array
+    if (!data || !data.mutual_matches || !Array.isArray(data.mutual_matches)) {
+      return res.json({ message: "No mutual matches found", data: [] });
+    }
+
+    const mutualMatches = data.mutual_matches;
+
+    // Fetch profiles of matched users
+    const { data: mutualMatchesProfiles, error: profileError } = await supabase
+      .from("profiles")
+      .select("*") // Can specific the column
+      .in("id", mutualMatches);
+
+    if (profileError) {
+      console.error("Error fetching mutual matches profiles:", profileError);
+      return res
+        .status(500)
+        .json({ error: "Error fetching mutual matches profiles" });
+    }
+
+    // Modify each profile to include a public URL for the avatar
+    const profilesWithPublicUrls = await Promise.all(
+      mutualMatchesProfiles.map(async (profile) => {
+        const avatarUrls =
+          profile.avatar_url && profile.avatar_url.length > 0
+            ? profile.avatar_url
+            : null;
+
+        // Fetch public URLs for all avatar URLs in the array
+        const publicUrls = await Promise.all(
+          avatarUrls.map(async (avatarUrl) => {
+            // Retrieve the public URL for each avatar from Supabase storage
+            const { data: publicURL, error: storageError } =
+              await supabase.storage
+                .from("avatars")
+                .getPublicUrl(`${profile.id}/${avatarUrl}`);
+
+            if (storageError) {
+              console.error(
+                "Error fetching public URL for avatar:",
+                storageError
+              );
+
+              return null; // Return null if there's an error
+            }
+
+            return publicURL; // Return the public URL
+          })
+        );
+
+        // Update the profile with the array of public URLs for all avatars
+        return { ...profile, avatar_url: publicUrls };
+      })
+    );
+
+    res.json({
+      message: "Matches retrieved successfully",
+      data: profilesWithPublicUrls,
+    });
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    res.status(500).json({ error: "Unexpected error" });
+  }
+});
+
 // PUT /api/v1/match/
 matchRouter.put("/api/v1/match", async (req, res) => {
   const { userId, matchedUserId } = req.body;
