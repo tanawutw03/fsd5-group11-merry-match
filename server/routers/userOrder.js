@@ -63,10 +63,9 @@ userOrderRoute.post("/checkout", express.json(), async (req, res) => {
     }
 
     res.json({
-      data,
       user,
       product,
-      order: data,
+      session_id: session.id,
     });
   } catch (error) {
     console.error("Error creating order:", error.message);
