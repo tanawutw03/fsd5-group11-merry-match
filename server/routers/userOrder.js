@@ -17,8 +17,11 @@ userOrderRoute.post("/checkout", express.json(), async (req, res) => {
     if (
       !user ||
       !product ||
+      !user.profile_id ||
+      !user.email ||
       !user.name ||
       !user.address ||
+      !product.package_id ||
       !product.name ||
       !product.price ||
       !product.quantity
@@ -48,6 +51,9 @@ userOrderRoute.post("/checkout", express.json(), async (req, res) => {
 
     const { data, error } = await supabase.from("orders").insert([
       {
+        profile_id: user.profile_id,
+        email: user.email,
+        package_id: product.package_id,
         fullname: user.name,
         address: user.address,
         session_id: session.id,
@@ -63,10 +69,9 @@ userOrderRoute.post("/checkout", express.json(), async (req, res) => {
     }
 
     res.json({
-      data,
       user,
       product,
-      order: data,
+      session_id: session.id,
     });
   } catch (error) {
     console.error("Error creating order:", error.message);
@@ -143,17 +148,17 @@ userOrderRoute.post("/webhook", async (req, res) => {
         return;
         break;
 
-      case "payment_intent.succeeded":
-        const paymentIntent = event.data.object;
-        break;
+      // case "payment_intent.succeeded":
+      //   const paymentIntent = event.data.object;
+      //   break;
 
-      case "payment_method.attached":
-        const paymentMethod = event.data.object;
-        break;
+      // case "payment_method.attached":
+      //   const paymentMethod = event.data.object;
+      //   break;
 
       // ... handle other event types
       default:
-        console.log(`Unhandled event type ${event.type}`);
+      // console.log(`Unhandled event type ${event.type}`);
     }
 
     // Return a response to acknowledge receipt of the event
@@ -161,6 +166,10 @@ userOrderRoute.post("/webhook", async (req, res) => {
   } catch (error) {
     console.error("Error processing webhook:", error);
   }
+});
+
+userOrderRoute.get("/order-all/order", (req, res) => {
+  res.json("Test, check Route Order!");
 });
 
 export default userOrderRoute;
