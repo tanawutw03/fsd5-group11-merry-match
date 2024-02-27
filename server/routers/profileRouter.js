@@ -88,8 +88,7 @@ profileRouter.get(
       }
 
       // Get the matches and unmatched profiles arrays of the excludeUserId, or an empty array if they don't exist
-      const excludeUserIdMatches =
-        (excludeUserProfile && excludeUserProfile.matches) ?? [];
+      const excludeUserIdMatches = excludeUserProfile.matches || [];
       const excludeUserIdUnmatched =
         excludeUserProfile.unmatched_profiles || [];
       const excludeUserIdMutualMatches =
