@@ -20,16 +20,13 @@ function PackagePage() {
   const [session, setSession] = useState(null);
   const [userProfileId, setUserProfileId] = useState(null);
   const [userProfileEmail, setUserProfileEmail] = useState(null);
+  const [userProfileFullname, setUserProfileFullname] = useState(null);
+  const [userProfileCity, setUserProfileCity] = useState(null);
+  const [userProfileCountry, setUserProfileCountry] = useState(null);
   const [loading, setLoading] = useState(false);
   const API_PORT = "http://localhost:4008";
 
   useEffect(() => {
-    // supabase.auth.getSession().then(({ data: { session } }) => {
-    //   setSession(session);
-    //   setUserProfileId(session.user.id);
-    //   console.log("Get_Sess_UserProfileID : ", session.user.id); // Log here to ensure it's set correctly
-    //   userProfile_id = session.user.id;
-    // });
     const authListener = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session) {
@@ -60,20 +57,23 @@ function PackagePage() {
         const resProfile = await axios.get(
           `${API_PORT}/user/profile/${userProfileId}`
         );
+        const profileFullname = resProfile.data[0].full_name;
+        const profileCity = resProfile.data[0].city;
+        const profileCountry = resProfile.data[0].country;
+        setUserProfileFullname(profileFullname);
+        setUserProfileCity(profileCity);
+        setUserProfileCountry(profileCountry);
         setDataProfile(resProfile.data);
-        updateValue(resProfile.data);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchData();
-    fetchDataProfiles();
-  }, []);
-
-  const updateValue = (data) => {
-    setDataProfile(data);
-  };
+    if (userProfileId) {
+      fetchDataProfiles();
+    }
+  }, [userProfileId]);
 
   const handlePackageSelection = (packageId, packageName, packagePrice) => {
     setSelectedPackage({ packageId, packageName, packagePrice });
@@ -82,8 +82,8 @@ function PackagePage() {
       try {
         const data = {
           user: {
-            name: `${dataProfile[0].full_name}`,
-            address: `${dataProfile[0].city}, ${dataProfile[0].country}`,
+            name: `${userProfileFullname}`,
+            address: `${userProfileCity}, ${userProfileCountry}`,
             profile_id: userProfileId,
             email: userProfileEmail,
           },
