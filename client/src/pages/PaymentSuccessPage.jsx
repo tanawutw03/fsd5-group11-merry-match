@@ -19,11 +19,7 @@ const PaymentSuccessPage = () => {
           `${API_PORT}/payment-success/${orderId}`
         );
         const data = response.data;
-        console.log("res.data: ", data);
-
         const dataZero = response.data[0];
-        console.log("res.dataZero[0]: ", dataZero);
-
         const packageId = dataZero.packages.package_id;
         const packageName = dataZero.packages.name;
         const packageLimit = dataZero.packages.merry_limit;
@@ -35,11 +31,12 @@ const PaymentSuccessPage = () => {
           package: packageName,
           merry_limit: packageLimit,
         };
-        console.log(packageId);
+
         const response2 = await axios.put(
           `${API_PORT}/userPackage/updatePackage/${packageId}`,
           dataToSend
         );
+        console.log("Response2: ", response2);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
