@@ -14,6 +14,8 @@ const PaymentSuccessPage = () => {
 
   const navigate = useNavigate();
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
