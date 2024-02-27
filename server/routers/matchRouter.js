@@ -173,6 +173,7 @@ matchRouter.get("/api/v1/merged_matches/:userId", async (req, res) => {
       .eq("id", userId)
       .single();
 
+    console.log(`matchData:`, matchData);
     if (matchError) {
       console.error("Error fetching matches:", matchError);
       return res.status(500).json({ error: "Error fetching matches" });
@@ -188,6 +189,7 @@ matchRouter.get("/api/v1/merged_matches/:userId", async (req, res) => {
       .eq("id", userId)
       .single();
 
+    console.log(`mutualMatchData:`, mutualMatchData);
     if (mutualMatchError) {
       console.error("Error fetching mutual matches:", mutualMatchError);
       return res.status(500).json({ error: "Error fetching mutual matches" });
@@ -433,132 +435,115 @@ matchRouter.put("/api/v1/unmatch", async (req, res) => {
   }
 });
 
+// PUT /api/v2/unmatch
 matchRouter.put("/api/v2/unmatch", async (req, res) => {
   const { userId, idUnmatch } = req.body;
 
   try {
-    // Fetch the user's matches
-    const { data: matchesData, error: matchesError } = await supabase
+    // Fetch the current user's profile
+    const { data: currentUserData, error: currentUserError } = await supabase
       .from("profiles")
-      .select("matches")
+      .select("matches, mutual_matches, unmatched_profiles")
       .eq("id", userId)
       .single();
-    console.log(matchesData);
-    // Fetch the user's unmatched profiles
-    const { data: unmatchedProfilesData, error: unmatchedProfilesError } =
-      await supabase
-        .from("profiles")
-        .select("unmatched_profiles")
-        .eq("id", userId)
-        .single();
-    console.log(unmatchedProfilesData);
-    if (matchesError || unmatchedProfilesError) {
-      console.error(
-        "Error fetching user profile:",
-        matchesError || unmatchedProfilesError
-      );
-      return res.status(500).send("Error fetching user profile");
+
+    if (currentUserError) {
+      console.error("Error fetching current user profile:", currentUserError);
+      return res.status(500).send("Error fetching current user profile");
     }
 
-    // Remove idUnmatch from matches
-    const updatedMatches = (matchesData.matches || []).filter(
+    // Remove idUnmatch from matches and add it to unmatched_profiles
+    const updatedMatches = (currentUserData.matches || []).filter(
       (id) => id !== idUnmatch
     );
 
-    // Initialize updatedUnmatchedProfiles as an empty array if it's null
-    let updatedUnmatchedProfiles =
-      unmatchedProfilesData.unmatched_profiles || [];
-
-    // Add idUnmatch to updatedUnmatchedProfiles if it's not already present
-    if (!updatedUnmatchedProfiles.includes(idUnmatch)) {
-      updatedUnmatchedProfiles.push(idUnmatch);
-    }
-
-    console.log("match", updatedMatches);
-    console.log("unmatch", updatedUnmatchedProfiles);
-
-    // Update the matches and unmatched_profiles arrays in the database
-    const { data: updatedData, error: updateError } = await supabase
-      .from("profiles")
-      .update({
-        matches: updatedMatches,
-        unmatched_profiles: updatedUnmatchedProfiles,
-      })
-      .eq("id", userId)
-      .single(); // Use .single() instead of .select() since we're updating a single row
-
-    if (updateError) {
-      console.error("Error updating profiles:", updateError);
-      return res.status(500).send("Error updating profiles");
-    }
-
-    res.json({ message: "Unmatch successful", data: updatedData });
-  } catch (error) {
-    console.error("Unexpected error:", error);
-    res.status(500).send("Unexpected error");
-  }
-});
-
-matchRouter.put("/api/v2/unmatch", async (req, res) => {
-  const { userId, idUnmatch } = req.body;
-
-  try {
-    // Fetch the user's matches
-    const { data: matchesData, error: matchesError } = await supabase
-      .from("profiles")
-      .select("matches")
-      .eq("id", userId)
-      .single();
-    console.log(matchesData);
-    // Fetch the user's unmatched profiles
-    const { data: unmatchedProfilesData, error: unmatchedProfilesError } =
-      await supabase
-        .from("profiles")
-        .select("unmatched_profiles")
-        .eq("id", userId)
-        .single();
-    console.log(unmatchedProfilesData);
-    if (matchesError || unmatchedProfilesError) {
-      console.error(
-        "Error fetching user profile:",
-        matchesError || unmatchedProfilesError
-      );
-      return res.status(500).send("Error fetching user profile");
-    }
-
-    // Remove idUnmatch from matches
-    const updatedMatches = (matchesData.matches || []).filter(
+    // Remove idUnmatch from mutual_matches and add it to unmatched_profiles
+    const updatedMutualMatches = (currentUserData.mutual_matches || []).filter(
       (id) => id !== idUnmatch
     );
 
-    // Initialize updatedUnmatchedProfiles as an empty array if it's null
-    let updatedUnmatchedProfiles =
-      unmatchedProfilesData.unmatched_profiles || [];
+    // Add idUnmatch to unmatched_profiles if it's not already present
+    const updatedUnmatchedProfiles = [
+      ...(currentUserData.unmatched_profiles || []),
+      idUnmatch,
+    ];
 
-    // Add idUnmatch to updatedUnmatchedProfiles if it's not already present
-    if (!updatedUnmatchedProfiles.includes(idUnmatch)) {
-      updatedUnmatchedProfiles.push(idUnmatch);
+    // Update the current user's profile with the modified arrays
+    const { data: updatedCurrentUserData, error: updateCurrentUserError } =
+      await supabase
+        .from("profiles")
+        .update({
+          matches: updatedMatches,
+          mutual_matches: updatedMutualMatches,
+          unmatched_profiles: updatedUnmatchedProfiles,
+        })
+        .eq("id", userId)
+        .select();
+
+    console.log(`updatedCurrentUserData:`, updatedCurrentUserData);
+    if (updateCurrentUserError) {
+      console.error(
+        "Error updating current user profile:",
+        updateCurrentUserError
+      );
+      return res.status(500).send("Error updating current user profile");
     }
 
-    console.log("match", updatedMatches);
-    console.log("unmatch", updatedUnmatchedProfiles);
-
-    // Update the matches and unmatched_profiles arrays in the database
-    const { data: updatedData, error: updateError } = await supabase
+    // Fetch the profile of the user being unmatched
+    const { data: unmatchUserData, error: unmatchUserError } = await supabase
       .from("profiles")
-      .update({
-        matches: updatedMatches,
-        unmatched_profiles: updatedUnmatchedProfiles,
-      })
-      .eq("id", userId)
-      .single(); // Use .single() instead of .select() since we're updating a single row
+      .select("matches, mutual_matches, unmatched_profiles")
+      .eq("id", idUnmatch)
+      .single();
 
-    if (updateError) {
-      console.error("Error updating profiles:", updateError);
-      return res.status(500).send("Error updating profiles");
+    if (unmatchUserError) {
+      console.error("Error fetching unmatch user profile:", unmatchUserError);
+      return res.status(500).send("Error fetching unmatch user profile");
     }
 
-    res.json({ message: "Unmatch successful", data: updatedData });
+    let updatedUnmatchMatches = [...(unmatchUserData.matches || [])];
+
+    // Remove userId from matches and mutual_matches and add it to unmatched_profiles
+    if (!unmatchUserData.matches.includes(userId)) {
+      updatedUnmatchMatches.push(userId);
+    }
+
+    let updatedUnmatchMutualMatches = unmatchUserData.mutual_matches || [];
+    // Check if userId is not in mutual_matches before updating
+    if (updatedUnmatchMutualMatches.includes(userId)) {
+      updatedUnmatchMutualMatches = updatedUnmatchMutualMatches.filter(
+        (id) => id !== userId
+      );
+    }
+
+    // Update the unmatch user's profile with the modified arrays
+    const { data: updatedUnmatchUserData, error: updateUnmatchUserError } =
+      await supabase
+        .from("profiles")
+        .update({
+          matches: updatedUnmatchMatches,
+          mutual_matches: updatedUnmatchMutualMatches,
+          // unmatched_profiles: updatedUnmatchUnmatchedProfiles,
+        })
+        .eq("id", idUnmatch)
+        .select();
+
+    console.log(`updatedUnmatchUserData:`, updatedUnmatchUserData);
+    if (updateUnmatchUserError) {
+      console.error(
+        "Error updating unmatch user profile:",
+        updateUnmatchUserError
+      );
+      return res.status(500).send("Error updating unmatch user profile");
+    }
+
+    res.json({
+      message: "Unmatch successful",
+      data: {
+        currentUser: updatedCurrentUserData,
+        unmatchUser: updatedUnmatchUserData,
+      },
+    });
   } catch (error) {
     console.error("Unexpected error:", error);
     res.status(500).send("Unexpected error");

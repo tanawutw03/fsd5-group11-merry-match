@@ -32,19 +32,16 @@ function MerryListPage() {
   const [displayedMerryLimit, setDisplayedMerryLimit] = useState();
   const [isUnmerryCalled, setIsUnmerryCalled] = useState(false);
 
-  {
-    /* fetch user data */
-  }
-
   useEffect(() => {
     const id = user.user.id;
     setIsUnmerryCalled(false);
     async function fetchMerryListData() {
       try {
         const response = await axios.get(
-          `http://localhost:4008/matching/api/v1/match/${id}`
+          `http://localhost:4008/match/api/v1/merged_matches/${id}`
         );
         const data = response.data.data;
+        console.log(data);
         setMerryList(data);
         if (data.length !== 5) {
           setHasMoreData(false);
@@ -99,7 +96,7 @@ function MerryListPage() {
     const id = user.user.id;
     try {
       const response = await axios.put(
-        "http://localhost:4008/matching/api/v2/unmatch",
+        "http://localhost:4008/match/api/v2/unmatch",
         {
           userId: id,
           idUnmatch: idUnmatch,
@@ -107,6 +104,13 @@ function MerryListPage() {
       );
       console.log(response.data);
       setIsUnmerryCalled(true);
+
+      // Update MerryList after unmatching
+      const updatedMerryList = merryList.filter(
+        (profile) => profile.id !== idUnmatch
+      );
+      setMerryList(updatedMerryList);
+
       // Optionally, you can update the UI or handle success response here
     } catch (error) {
       console.error("Error unmatching user:", error);
@@ -187,7 +191,7 @@ function MerryListPage() {
                 >
                   <section className="flex w-[674px]">
                     <img
-                      src={profile.avatar_url.publicUrl}
+                      src={profile.avatar_url[0].publicUrl}
                       alt="user's profile pic"
                       className="mr-[40px] rounded-3xl"
                       style={{
@@ -225,13 +229,23 @@ function MerryListPage() {
                           <p className="pb-[10px]">Meeting interests</p>
                         </div>
                         <div className="text-[#646d89]">
-                          <p className="pb-[10px]">{profile.sex_identities}</p>
-                          <p className="pb-[10px]">{profile.sex_preferences}</p>
                           <p className="pb-[10px]">
-                            {profile.racial_preferences}
+                            {profile.sex_identities.charAt(0).toUpperCase() +
+                              profile.sex_identities.slice(1)}
                           </p>
                           <p className="pb-[10px]">
-                            {profile.meeting_interest}
+                            {profile.sex_preferences.charAt(0).toUpperCase() +
+                              profile.sex_preferences.slice(1)}
+                          </p>
+                          <p className="pb-[10px]">
+                            {profile.racial_preferences
+                              .charAt(0)
+                              .toUpperCase() +
+                              profile.racial_preferences.slice(1)}
+                          </p>
+                          <p className="pb-[10px]">
+                            {profile.meeting_interest.charAt(0).toUpperCase() +
+                              profile.meeting_interest.slice(1)}
                           </p>
                         </div>
                       </section>
@@ -240,7 +254,7 @@ function MerryListPage() {
 
                   {/* Right Content Section */}
                   <section className="flex flex-col items-end">
-                    {profile.matches ? (
+                    {profile.source === "mutual_matches" ? (
                       <img
                         src={matchedLabel}
                         alt="Match"
@@ -263,7 +277,7 @@ function MerryListPage() {
                       >
                         <button
                           className={`w-[48px] h-[48px] bg-white shadow-md flex justify-center items-center rounded-2xl ${
-                            profile.matches ? "" : "hidden"
+                            profile.source === "mutual_matches" ? "" : "hidden"
                           }`}
                         >
                           <img
@@ -282,6 +296,7 @@ function MerryListPage() {
                         <button className="w-[48px] h-[48px] shadow-md flex justify-center items-center rounded-2xl">
                           <PopUpProfile
                             useMenu={true}
+                            profileData={profile}
                             isRound="false"
                             variant="ghost"
                             colorScheme="black"

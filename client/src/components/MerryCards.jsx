@@ -23,6 +23,8 @@ function MerryCards({ user }) {
   const [cardLeft, setCardLeft] = useState(0);
   const [totalCard, setTotalCard] = useState(0);
 
+  console.log(`people:`, people);
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -188,7 +190,7 @@ function MerryCards({ user }) {
                     {person.full_name}
                   </h1>
                   <span className="text-white">{person.age}</span>
-                  <PopUpProfile useMenu={true} />
+                  <PopUpProfile useMenu={true} profileData={person} />
                 </div>
                 <div>
                   <ArrowBackIcon w={5} h={5} color="white" />

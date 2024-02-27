@@ -10,17 +10,13 @@ const LeftSideMatching = () => {
   const [merryMatch, setMerryMatch] = useState([]);
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
 
-  {
-    /* fetch user data */
-  }
-
   useEffect(() => {
     const id = user.user.id;
 
     async function fetchMerryMatch() {
       try {
         const response = await axios.get(
-          `http://localhost:4008/match/api/v1/match/${id}`
+          `http://localhost:4008/match/api/v1/mutual_matches/${id}`
         );
         const data = response.data.data;
         setMerryMatch(data);
@@ -31,10 +27,10 @@ const LeftSideMatching = () => {
 
     fetchMerryMatch();
 
-    return () => {
-      // Cleanup logic, if needed
-    };
+    return () => {};
   }, [user.user.id]);
+
+  console.log(`merryMatch:`, merryMatch);
 
   return (
     <div className=" w-1/4 h-screen">
@@ -57,7 +53,7 @@ const LeftSideMatching = () => {
             <div key={index} className=" relative w-16 h-16 snap-start ">
               <img
                 className="rounded-2xl w-16 h-16"
-                src={profile.avatar_url.publicUrl}
+                src={profile.avatar_url[0].publicUrl}
               />
               <img
                 className="w-6 h-6 absolute bottom-0 right-0 "
@@ -76,7 +72,7 @@ const LeftSideMatching = () => {
               <div className="rounded-full w-20 h-20">
                 <img
                   className=" rounded-full w-16 h-16"
-                  src={profile.avatar_url.publicUrl}
+                  src={profile.avatar_url[0].publicUrl}
                 />
               </div>
               <div className="w-96 pl-2 ">
