@@ -5,28 +5,32 @@ import locationIcon from "../assets/MerryListPage/locationIcon.svg";
 import matchedLabel from "../assets/MerryListPage/matchedLabel.svg";
 import notMatchedLabel from "../assets/MerryListPage/notMatchedLabel.svg";
 import messageIcon from "../assets/MerryListPage/messageIcon.svg";
-import viewProfileIcon from "../assets/MerryListPage/eyeIcon.svg";
-import unMerryIcon from "../assets/MerryListPage/unMerryIcon.svg"; //อยู่ในปุ่มที่คอมเมนท์ไว้
+import redHeart from "../assets/MerryListPage/redHeart.svg"; //อยู่ในปุ่มที่คอมเมนท์ไว้
 import logo from "../assets/merryPackagePage/logo.svg";
 import facebookIcon from "../assets/merryPackagePage/facebook-circle-fill.svg";
 import instagramIcon from "../assets/merryPackagePage/instagram-fill.svg";
 import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
-import { supabase } from "../utils/supabaseClient";
 import { useEffect, useState } from "react";
 import { useUser } from "../app/userContext.js";
 import UnmerryButton from "../components/UnmerryButton.jsx";
 import axios from "axios";
+import PopUpProfile from "../components/PopUpProfile.jsx";
 
 function MerryListPage() {
   const navigate = useNavigate();
   const [merryList, setMerryList] = useState([]);
+  {
+    /* pagination
   const itemsPerPage = 5;
   const [page, setPage] = useState(1);
-  // const [packages, setPackages] = useState([]);
+  const [packages, setPackages] = useState([]);
+  */
+  }
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
   const [matchCount, setMatchCount] = useState();
   const [hasMoreData, setHasMoreData] = useState(true);
-  const displayedMerryLimit = 20;
+  const [displayedMerryLimit, setDisplayedMerryLimit] = useState();
+  const [isUnmerryCalled, setIsUnmerryCalled] = useState(false);
 
   {
     /* fetch user data */
@@ -34,7 +38,7 @@ function MerryListPage() {
 
   useEffect(() => {
     const id = user.user.id;
-
+    setIsUnmerryCalled(false);
     async function fetchMerryListData() {
       try {
         const response = await axios.get(
@@ -42,7 +46,6 @@ function MerryListPage() {
         );
         const data = response.data.data;
         setMerryList(data);
-        setMatchCount(displayedMerryLimit - data.length);
         if (data.length !== 5) {
           setHasMoreData(false);
         } else {
@@ -52,34 +55,67 @@ function MerryListPage() {
         console.error("Error fetching data:", error.message);
       }
     }
+    async function fetchMerryLimitData() {
+      try {
+        const response = await axios.get(
+          `http://localhost:4008/merryLimit/limit/` + id
+        );
+        const data = response.data.merry_limit;
+        setDisplayedMerryLimit(data);
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
+      }
+    }
+    async function fetchMerryCountData() {
+      try {
+        const response = await axios.get(
+          `http://localhost:4008/merryLimit/count/` + id
+        );
+        const data = response.data.remainingCount;
 
+        setMatchCount(data);
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
+      }
+    }
+    fetchMerryCountData();
+    fetchMerryLimitData();
     fetchMerryListData();
 
     return () => {
       // Cleanup logic, if needed
     };
-  }, [user.user.id]);
+  }, [isUnmerryCalled]);
 
   {
-    /* Calculate estimate time until midnight 
-    แยก component และตั้งค่าการแสดงผลให้เป็น boolean*/
+    /* Calculate estimate time until midnight */
   }
   const now = new Date();
   const timeUntilMidnight =
     new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - now;
   const hoursLeft = Math.floor(timeUntilMidnight / (1000 * 60 * 60));
 
-  const HandleisUnmerry = () => {
-    if (matchCount < displayedMerryLimit) {
-      setMatchCount((prevCount) => prevCount + 1);
-    } else {
-      alert("Daily limit reached. Try again tomorrow.");
+  const HandleisUnmerry = async (idUnmatch) => {
+    const id = user.user.id;
+    try {
+      const response = await axios.put(
+        "http://localhost:4008/matching/api/v2/unmatch",
+        {
+          userId: id,
+          idUnmatch: idUnmatch,
+        }
+      );
+      console.log(response.data);
+      setIsUnmerryCalled(true);
+      // Optionally, you can update the UI or handle success response here
+    } catch (error) {
+      console.error("Error unmatching user:", error);
+      // Optionally, you can handle error response here
     }
   };
 
   {
-    /* Fetch packages data 
-    แยก component */
+    /* Fetch packages data */
   }
   // useEffect(() => {
   //   async function fetchPackageData() {
@@ -153,7 +189,12 @@ function MerryListPage() {
                     <img
                       src={profile.avatar_url.publicUrl}
                       alt="user's profile pic"
-                      className="mr-[40px] w-[187px] h-[187px] bg rounded-3xl"
+                      className="mr-[40px] rounded-3xl"
+                      style={{
+                        width: "187px",
+                        height: "187px",
+                        objectFit: "cover",
+                      }}
                     />
                     <div>
                       <section className="flex justify-start pb-[24px]">
@@ -199,7 +240,7 @@ function MerryListPage() {
 
                   {/* Right Content Section */}
                   <section className="flex flex-col items-end">
-                    {user.match_status === "match" ? (
+                    {profile.matches ? (
                       <img
                         src={matchedLabel}
                         alt="Match"
@@ -221,8 +262,8 @@ function MerryListPage() {
                         borderRadius="md"
                       >
                         <button
-                          className={`w-[48px] h-[48px] bg-white shadow-nav flex justify-center items-center rounded-2xl ${
-                            user.match_status === "match" ? "" : "hidden"
+                          className={`w-[48px] h-[48px] bg-white shadow-md flex justify-center items-center rounded-2xl ${
+                            profile.matches ? "" : "hidden"
                           }`}
                         >
                           <img
@@ -239,17 +280,21 @@ function MerryListPage() {
                         borderRadius="md"
                       >
                         <button className="w-[48px] h-[48px] shadow-md flex justify-center items-center rounded-2xl">
-                          <img
-                            src={viewProfileIcon}
-                            alt="view profile icon"
-                            className="w-[24px] h-[24px]"
+                          <PopUpProfile
+                            useMenu={true}
+                            isRound="false"
+                            variant="ghost"
+                            colorScheme="black"
+                            size="lg"
                           />
                         </button>
                       </Tooltip>
 
-                      <UnmerryButton isUnmerry={HandleisUnmerry} />
+                      <UnmerryButton
+                        isUnmerry={() => HandleisUnmerry(profile.id)}
+                      />
 
-                      {/* merry button
+                      {/* merry back button
                       <Tooltip
                         bg="gray.400"
                         label="Merry"
@@ -258,7 +303,7 @@ function MerryListPage() {
                       >
                         <button className="w-[48px] h-[48px] bg-white shadow-md flex justify-center items-center rounded-2xl">
                           <img
-                            src={unMerryIcon}
+                            src={redHeart}
                             alt="merry icon"
                             className="w-[48px] h-[48px] ml-[5px] mt-[5px]"
                           />
@@ -272,7 +317,8 @@ function MerryListPage() {
           </div>
         </section>
       </main>
-      <div className="w-full flex flex-col justify-center items-center font-nunito bg-[#fcfcfe] gap-5">
+      {/*Pagination*/}
+      {/*<div className="w-full flex flex-col justify-center items-center font-nunito bg-[#fcfcfe] gap-5">
         <div>Page {page}</div>
         <div className="mb-[100px]">
           <button
@@ -290,7 +336,7 @@ function MerryListPage() {
             Next
           </button>
         </div>
-      </div>
+                    </div>*/}
       {/* Footer Section */}
       <footer className="flex w-screen h-96 px-8 justify-center items-center bg-gray-100">
         <div className="flex flex-col items-center max-w-screen-lg w-full h-64 justify-between">

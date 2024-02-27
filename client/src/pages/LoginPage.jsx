@@ -38,11 +38,11 @@ const Login = () => {
         email: formData.username,
         password: formData.password,
       });
-      console.log(data, error);
-      console.log("User Data:", data.user);
+
       if (error) {
         throw error;
       }
+
       setLoginSuccess(true);
       await handleLogin(user, setUser, avatarUrl, setAvatarUrl, navigate);
     } catch (error) {

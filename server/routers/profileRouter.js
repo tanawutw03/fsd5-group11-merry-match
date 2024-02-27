@@ -3,7 +3,49 @@ import { supabase } from "../utils/supabaseClient.js";
 
 const profileRouter = Router();
 
-let allProfiles = []; // Store all profiles globally to keep track of fetched profiles
+export let allProfiles = []; // Store all profiles globally to keep track of fetched profiles
+export function resetAllProfiles() {
+  allProfiles = [];
+}
+
+// // Create a function to handle inserts
+// const handleInserts = (payload) => {
+//   console.log("Insert received!", payload);
+//   // Add your logic to handle inserts here
+// };
+
+// // Create a function to handle updates
+// const handleUpdates = (payload) => {
+//   console.log("Update received!", payload);
+//   // Add your logic to handle updates here
+// };
+
+// // Create a function to handle both inserts and updates
+// const handleChanges = (payload) => {
+//   if (payload.eventType === "INSERT") {
+//     handleInserts(payload);
+//   } else if (payload.eventType === "UPDATE") {
+//     handleUpdates(payload);
+//   }
+// };
+
+// // Listen to events
+// const subscription = supabase
+//   .channel("profiles")
+//   .on(
+//     "postgres_changes",
+//     { event: "*", schema: "public", table: "profiles" },
+//     handleChanges
+//   )
+//   .subscribe();
+
+// if (!subscription.closed) {
+//   console.log("Currently subscribed to events");
+// } else {
+//   console.log("Currently not subscribed to events");
+// }
+
+// subscription.unsubscribe();
 
 // GET /api/v1/profile/:excludeUserId/:offset
 profileRouter.get(
@@ -14,20 +56,22 @@ profileRouter.get(
       const limit = 5; // Set the limit to 5 profiles per request
 
       // Fetch all profiles ordered by full_name if not already fetched
-      if (allProfiles.length === 0) {
-        const { data: fetchedProfiles, error: profilesError } = await supabase
-          .from("profiles")
-          .select("*")
-          .order("full_name", { ascending: true });
+      // if (allProfiles.length === 0) {
+      const { data: fetchedProfiles, error: profilesError } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("full_name", { ascending: true });
 
-        if (profilesError) {
-          console.error("Error fetching profiles:", profilesError);
-          return res.status(500).json({ error: "Error fetching profiles" });
-        }
-
-        allProfiles = fetchedProfiles;
+      if (profilesError) {
+        console.error("Error fetching profiles:", profilesError);
+        return res.status(500).json({ error: "Error fetching profiles" });
       }
 
+      allProfiles = fetchedProfiles;
+
+      // }
+
+      console.log(`allProfiles lenght:`, allProfiles.length);
       // Find the profile object for the excludeUserId
       const excludeUserProfile = allProfiles.find(
         (profile) => profile.id === excludeUserId
@@ -35,10 +79,10 @@ profileRouter.get(
 
       if (excludeUserProfile) {
         // Log the matches array for the excludeUserId
-        // console.log(
-        //   `Matches for exclude user (${excludeUserId}):`,
-        //   excludeUserProfile.matches
-        // );
+        console.log(
+          `Matches for exclude user (${excludeUserId}):`,
+          excludeUserProfile.matches
+        );
       } else {
         console.log(`Profile not found for user ${excludeUserId}`);
       }
@@ -47,15 +91,21 @@ profileRouter.get(
       const excludeUserIdMatches = excludeUserProfile.matches || [];
       const excludeUserIdUnmatched =
         excludeUserProfile.unmatched_profiles || [];
+      const excludeUserIdMutualMatches =
+        excludeUserProfile.mutual_matches || [];
 
       // Filter out the excludeUserId and unmatched profiles from the fetched profiles
       const filteredProfiles = allProfiles.filter((profile) => {
         return (
           profile.id !== excludeUserId &&
+          profile.id !== "ff91e4bc-527c-48ec-b463-76e978058f28" && // Admin Id
           !excludeUserIdMatches.includes(profile.id) &&
-          !excludeUserIdUnmatched.includes(profile.id)
+          !excludeUserIdUnmatched.includes(profile.id) &&
+          !excludeUserIdMutualMatches.includes(profile.id)
         );
       });
+
+      console.log(`Filtered profiles length:`, filteredProfiles.length);
 
       // Calculate the offset to start from the beginning of the profiles list
       let offset = 0;

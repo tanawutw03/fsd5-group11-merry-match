@@ -124,4 +124,5 @@ PopUpProfile.propTypes = {
   variant: PropTypes.string,
   size: PropTypes.string,
 };
+
 export default PopUpProfile;

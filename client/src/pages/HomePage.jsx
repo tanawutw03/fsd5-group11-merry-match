@@ -5,10 +5,6 @@ import { useEffect } from "react";
 function HomePage() {
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
 
-  useEffect(() => {
-    console.log(`avtarUrl in HomePage `, avatarUrl);
-  }, [avatarUrl]);
-
   return (
     <NonUserHomePage
       user={user}

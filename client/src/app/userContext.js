@@ -18,7 +18,6 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     localStorage.setItem("avatarUrl", avatarUrl || "");
-    console.log("avatarUrl in UserProvider:", avatarUrl);
   }, [avatarUrl]);
 
   return React.createElement(
