@@ -20,7 +20,7 @@ const LeftSideMatching = () => {
     async function fetchMerryMatch() {
       try {
         const response = await axios.get(
-          `http://localhost:4008/match/api/v1/match/${id}`
+          `http://localhost:4008/matching/api/v1/match/${id}`
         );
         const data = response.data.data;
         setMerryMatch(data);
@@ -37,7 +37,7 @@ const LeftSideMatching = () => {
   }, [user.user.id]);
 
   return (
-    <div className=" w-4/5 h-full   border-4 border-red-500 ">
+    <div className=" w-1/4 h-screen">
       <div className="flex flex-col items-center pt-5">
         <div className="flex  flex-col justify-center items-center w-[282px] h-[187px] border-[#A62D82] border rounded-[16px]">
           <img className="w-[55px] h-[55px]" src={seach} />
@@ -72,12 +72,13 @@ const LeftSideMatching = () => {
         <h1 className="text-xl font-bold">Chat with Merry Match</h1>
         <div className="flex flex-col pt-2 gap-3  ">
           {merryMatch.map((profile, index) => (
-            <div key={index} className="w-96  h-16  ">
-              <img
-                className=" rounded-full w-16 h-16"
-                src={profile.avatar_url.publicUrl}
-              />
-
+            <div key={index} className="w-96  h-16 flex flex-row ">
+              <div className="rounded-full w-20 h-20">
+                <img
+                  className=" rounded-full w-16 h-16"
+                  src={profile.avatar_url.publicUrl}
+                />
+              </div>
               <div className="w-96 pl-2 ">
                 <p>Ygritte</p>
                 <p>You know nothing Jon Snow</p>
