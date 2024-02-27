@@ -22,7 +22,6 @@ const PaymentSuccessPage = () => {
         );
         const data = response.data;
         const dataZero = response.data[0];
-        console.log("dataZero:", dataZero);
         const packageId = dataZero.packages.package_id;
         const packageName = dataZero.packages.name;
         const packageLimit = dataZero.packages.merry_limit;
