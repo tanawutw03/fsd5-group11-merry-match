@@ -46,7 +46,10 @@ const PopUpProfile = (props) => {
           <ModalBody>
             <div className="flex justify-center items-center h-full p-4 border-purple-300 border-4  ">
               <div className=" flex   flex-col  h-full  border-red-600 border-4  ">
-                <div className="rounded-2xl  bg-black border-red-600 border-4 h-72 w-72 " />
+                <div className="rounded-2xl bg-black border-red-600 border-4 h-72 w-72">
+                  <img className="rounded-2xl" />
+                </div>
+
                 <div className="flex flex-row  absolute bottom-14 left-40  ">
                   <img className=" w-12 h-12  " src={action} />
                   <img className=" w-12 h-12 " src={heart} />
@@ -54,8 +57,16 @@ const PopUpProfile = (props) => {
                 <div className=" flex flex-row justify-between mt-4 ">
                   <p className="text-[#646D89]">1/2</p>
                   <div className=" flex flex-row  z-30   ">
-                    <ArrowBackIcon w={5} h={5} color="gray" mr={4} />
-                    <ArrowForwardIcon w={5} h={5} color="gray" />
+                    <IconButton
+                      color="gray"
+                      variant="link"
+                      icon={<ArrowBackIcon />}
+                    />
+                    <IconButton
+                      color="gray"
+                      variant="link"
+                      icon={<ArrowForwardIcon />}
+                    />
                   </div>
                 </div>
               </div>

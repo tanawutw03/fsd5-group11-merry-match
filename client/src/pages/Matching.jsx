@@ -12,7 +12,7 @@ function Matching() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    console.log(`Clicked`);
+    console.log(Clicked);
   };
 
   return (
@@ -33,13 +33,9 @@ function Matching() {
         />
 
         <div className="flex flex-row">
-          <div>
-            <LeftSideMatching />
-          </div>
-          <div>
-            <MerryCards user={user} />
-          </div>
-          <div className="  flex-col flex ml-2  w-[220] h-[900px]  ">
+          <LeftSideMatching />
+          <MerryCards user={user} />
+          <div className="  flex-col flex  w-1/4 p-6 h-screen ">
             <p className=" text-[#191C77] text-base font-bold">
               Sex you interest
             </p>
@@ -54,10 +50,7 @@ function Matching() {
                 Non-bunary people
               </Checkbox>
             </div>
-            <div className="mt-[60px]">
-              <p>Age Range</p>
-              <SliderAge />
-            </div>
+            <SliderAge />
           </div>
         </div>
       </div>

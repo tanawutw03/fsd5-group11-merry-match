@@ -20,8 +20,8 @@ function MerryCards({ user }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [merryCount, setMerryCount] = useState();
   const [limitCount, setLimitCount] = useState();
-  const [cardLeft, setCardLeft] = useState(5);
-  const [totalCard, setTotalCard] = useState(5);
+  const [cardLeft, setCardLeft] = useState(0);
+  const [totalCard, setTotalCard] = useState(0);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -31,8 +31,6 @@ function MerryCards({ user }) {
         `http://localhost:4008/profile/api/v1/profile/${user.user.id}/5`
       );
       if (profileResponse.data.data.length === 0) {
-        // Handle case when no profiles are fetched
-        console.log(profileResponse.data.message);
         setPeople([]); // Set people to an empty array
         setCardLeft(0); // Set cardLeft to 0 when there are no profiles
         setTotalCard(0); // Set totalCard to 0 when there are no profiles
@@ -108,14 +106,13 @@ function MerryCards({ user }) {
   const updateMatches = async (swipingUserId, swipedUserIdsArray) => {
     try {
       const response = await axios.put(
-        "http://localhost:4008/matching/api/v1/match",
+        "http://localhost:4008/match/api/v1/match",
         {
           userId: swipingUserId,
           matchedUserId: swipedUserIdsArray,
         }
       );
 
-      console.log(response);
       return response.data;
     } catch (error) {
       console.error("Error updating matches:", error);
@@ -126,7 +123,7 @@ function MerryCards({ user }) {
   const updatedUnmatched = async (swipingUserId, swipedUserIdsArray) => {
     try {
       const response = await axios.put(
-        "http://localhost:4008/matching/api/v1/unmatch",
+        "http://localhost:4008/match/api/v1/unmatch",
         {
           userId: swipingUserId,
           unmatchUserId: swipedUserIdsArray,
@@ -145,9 +142,6 @@ function MerryCards({ user }) {
   }, []);
 
   useEffect(() => {
-    console.log(`cardLeft:`, cardLeft);
-    console.log(`totalCard:`, totalCard);
-
     if (cardLeft === 0) {
       fetchData();
     }
@@ -174,7 +168,7 @@ function MerryCards({ user }) {
             <p className="  text-[#FF1659]">{`${merryCount} / ${limitCount}`}</p>
           </div>
 
-          {people.map((person) => (
+          {[...people].reverse().map((person) => (
             <TinderCard
               className=" absolute hover:cursor-grab active:cursor-grabbing"
               key={person.id}
