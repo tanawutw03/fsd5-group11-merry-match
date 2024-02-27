@@ -106,12 +106,11 @@ function PackagePage() {
         if (urlData && urlData.length > 0) {
           const stripeUrl = urlData[0].stripe_url;
 
-          // Delay opening the link by 10 seconds
           setTimeout(() => {
             setLoading(false);
             console.log(stripeUrl);
             window.location.href = stripeUrl;
-          }, 6000); // 10 seconds delay
+          }, 6000);
         } else {
           console.log("No payment link found.");
         }
