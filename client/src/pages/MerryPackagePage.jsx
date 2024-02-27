@@ -8,14 +8,19 @@ import facebookIcon from "../assets/MerryPackagePage/facebook-circle-fill.svg";
 import instagramIcon from "../assets/MerryPackagePage/instagram-fill.svg";
 import twitterIcon from "../assets/MerryPackagePage/twitter-fill.svg";
 import { supabase } from "../utils/supabaseClient";
+// import stripe from "stripe";
+
+import { Spinner } from "@chakra-ui/react";
 
 function PackagePage() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const [dataProfile, setDataProfile] = useState([]);
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [session, setSession] = useState(null);
   const [userProfileId, setUserProfileId] = useState(null);
   const [userProfileEmail, setUserProfileEmail] = useState(null);
+  const [loading, setLoading] = useState(false);
   const API_PORT = "http://localhost:4008";
 
   useEffect(() => {
@@ -33,6 +38,7 @@ function PackagePage() {
         // localStorage.setItem('userProfileId', session.user.id);
         console.log("OnAuth_UserProfileID : ", session.user.id);
         console.log("OnAuth_UserProfileEmail: ", session.user.email);
+        console.log("OnAuth_User: ", session.user);
       } else {
         setUserProfileId(null);
         // Clear userProfileId from local storage if user is not authenticated
@@ -49,12 +55,74 @@ function PackagePage() {
       }
     };
 
+    const fetchDataProfiles = async () => {
+      try {
+        const resProfile = await axios.get(
+          `${API_PORT}/user/profile/${userProfileId}`
+        );
+        setDataProfile(resProfile.data);
+        console.log("resProfile", resProfile);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     fetchData();
+    fetchDataProfiles();
   }, []);
 
-  const handlePackageSelection = (packageId, packageName, price) => {
-    setSelectedPackage({ packageId, packageName, price });
-    console.log({ packageId, packageName, price });
+  const handlePackageSelection = (packageId, packageName, packagePrice) => {
+    setSelectedPackage({ packageId, packageName, packagePrice });
+
+    const sentOrderData = async () => {
+      try {
+        console.log({ packageId, packageName, packagePrice });
+        console.log({ userProfileId, userProfileEmail });
+        const data = {
+          user: {
+            name: "TestName8228",
+            address: "Test Address8228",
+            profile_id: userProfileId,
+            email: userProfileEmail,
+          },
+          product: {
+            name: packageName,
+            price: packagePrice,
+            quantity: 1,
+            package_id: packageId,
+          },
+        };
+
+        const response = await axios.post(`${API_PORT}/checkout`, data);
+        const resData = response.data;
+        const sessionId = resData.session_id;
+
+        const { data: urlData, error: errorUrlData } = await supabase
+          .from("orders")
+          .select("stripe_url")
+          .eq("session_id", sessionId);
+
+        if (urlData && urlData.length > 0) {
+          const stripeUrl = urlData[0].stripe_url;
+
+          // Delay opening the link by 10 seconds
+          setTimeout(() => {
+            setLoading(false);
+            console.log(stripeUrl);
+            window.location.href = stripeUrl;
+          }, 6000); // 10 seconds delay
+        } else {
+          console.log("No payment link found.");
+        }
+      } catch (error) {
+        console.log("error message: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // stripe.redirectToCheckout({ sessionId });
+    sentOrderData();
   };
 
   return (
@@ -72,7 +140,17 @@ function PackagePage() {
         />
       </div>
 
-      <section>
+      <section className="relative">
+        {loading && ( // Show spinner if loading state is true
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+          />
+        )}
+
         <div className="package-container flex flex-col mt-[80px] mb-[160px] ml-[160px] mr-[160px]">
           <p className="merry-membership-title  font-nunito text-[14px] text-[#7B4429]">
             MERRY MEMBERSHIP
@@ -152,16 +230,6 @@ function PackagePage() {
             ))}
           </div>
         </div>
-        <body>
-          {selectedPackage && (
-            <OrderPackage
-              packageId={selectedPackage?.packageId}
-              packageName={selectedPackage?.packageName}
-              packagePrice={selectedPackage?.price}
-              userProfileId={userProfileId}
-            />
-          )}
-        </body>
       </section>
 
       <footer>

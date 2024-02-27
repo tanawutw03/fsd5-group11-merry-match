@@ -45,8 +45,8 @@ userOrderRoute.post("/checkout", express.json(), async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `http://localhost:8888/success.html?id=${orderId}`,
-      cancel_url: `http://localhost:8888/cancel.html?id=${orderId}`,
+      success_url: `http://localhost:5173/paymentSuccessPage?id=${orderId}`,
+      cancel_url: `http://localhost:5173/package`,
     });
 
     const { data, error } = await supabase.from("orders").insert([
@@ -148,15 +148,6 @@ userOrderRoute.post("/webhook", async (req, res) => {
         return;
         break;
 
-      // case "payment_intent.succeeded":
-      //   const paymentIntent = event.data.object;
-      //   break;
-
-      // case "payment_method.attached":
-      //   const paymentMethod = event.data.object;
-      //   break;
-
-      // ... handle other event types
       default:
       // console.log(`Unhandled event type ${event.type}`);
     }
@@ -168,8 +159,61 @@ userOrderRoute.post("/webhook", async (req, res) => {
   }
 });
 
-userOrderRoute.get("/order-all/order", (req, res) => {
-  res.json("Test, check Route Order!");
+userOrderRoute.get("/payment/:id", (req, res) => {
+  const { id } = req.query;
+
+  if (id) {
+    res.send("Payment successful. Redirecting to payment success page...");
+  } else {
+    res.status(400).send("Error: Missing payment id");
+  }
+});
+
+userOrderRoute.get("/payment-success", async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("orders")
+      .select(
+        `
+    fullname,address,order_id,session_id,status,
+    packages (package_id, name, price, merry_limit),
+    profiles (full_name, email,city,country)
+    
+    `
+      )
+      .eq("status", "complete");
+    if (error) {
+      throw error;
+    }
+    res.json(data);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+userOrderRoute.get("/payment-success/:id", async (req, res) => {
+  const orderId = req.params.id;
+  try {
+    const { data, error } = await supabase
+      .from("orders")
+      .select(
+        `
+    fullname,address,order_id,session_id,status,
+    packages (package_id, name, price, merry_limit),
+    profiles (full_name, email,city,country)
+    
+    `
+      )
+      .eq("order_id", orderId);
+    if (error) {
+      throw error;
+    }
+    res.json(data);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 export default userOrderRoute;
