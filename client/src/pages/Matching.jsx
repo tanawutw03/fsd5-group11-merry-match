@@ -6,13 +6,19 @@ import SliderAge from "../components/SliderAge";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../app/userContext";
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 function Matching() {
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
+  const [mutualMatch, setMutualMatch] = useState(false);
   const navigate = useNavigate();
 
   const handleClick = () => {
     console.log(Clicked);
+  };
+
+  const handleMutualMatch = (value) => {
+    setMutualMatch(value);
   };
 
   return (
@@ -33,8 +39,8 @@ function Matching() {
         />
 
         <div className="flex flex-row">
-          <LeftSideMatching />
-          <MerryCards user={user} />
+          <LeftSideMatching mutualMatch={mutualMatch} />
+          <MerryCards user={user} onMutualMatch={handleMutualMatch} />
           <div className="  flex-col flex  w-1/4 p-6 h-screen ">
             <p className=" text-[#191C77] text-base font-bold">
               Sex you interest

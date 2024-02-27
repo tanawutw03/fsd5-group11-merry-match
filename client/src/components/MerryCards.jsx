@@ -10,7 +10,7 @@ import MerryMatch from "./MerryMatch.jsx";
 import { useDisclosure } from "@chakra-ui/react";
 import PopUpProfile from "./PopUpProfile.jsx";
 
-function MerryCards({ user }) {
+function MerryCards({ user, onMutualMatch }) {
   const [people, setPeople] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [dataLoaded, setDataLoaded] = useState(false);
@@ -152,6 +152,7 @@ function MerryCards({ user }) {
   useEffect(() => {
     if (mutualMatch) {
       setIsModalOpen(true);
+      onMutualMatch(true);
     }
   }, [mutualMatch]);
 
@@ -205,7 +206,9 @@ function MerryCards({ user }) {
         <MerryMatch
           isOpen={isModalOpen}
           onClose={() => {
+            console.log("Closing MerryMatch modal");
             setMutualMatch(false);
+            onMutualMatch(false);
           }}
         />
       )}
@@ -215,6 +218,7 @@ function MerryCards({ user }) {
 
 MerryCards.propTypes = {
   user: PropTypes.object,
+  onMutualMatch: PropTypes.func,
 };
 
 export default MerryCards;
