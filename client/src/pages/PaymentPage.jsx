@@ -211,6 +211,7 @@ const PaymentConfirmPage = ({ handlePaymentConfirm }) => {
               </div>
             </div>
           </form>
+
           <footer className="flex justify-between items-center w-[548px] h-[104px] border p-[24px,24px,32px,24px] ">
             <button
               className="choose-package-btn flex justify-center items-center  w-[170px] font-nunito text-[16px] text-red-600 font-bold  
