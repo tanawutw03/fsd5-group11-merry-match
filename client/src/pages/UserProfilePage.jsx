@@ -10,6 +10,8 @@ import ConfirmDeleteBtn from "../components/ConfirmDeleteBtn";
 import PopUpProfile from "../components/PopUpProfile";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../app/userContext";
+import axios from "axios";
+
 function UserProfilePage() {
   const navigate = useNavigate();
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
@@ -19,9 +21,9 @@ function UserProfilePage() {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
   const [session, setSession] = useState(null);
-  const [userProfileId, setUserProfileId] = useState(null);
-  const SERVER_API_URL = "http://localhost:4008";
-  let userProfile_id;
+  const [userProfileID, setUserProfileId] = useState(null);
+  const API_PORT = "http://localhost:4008";
+  let userProfile_id = null;
   const [formData, setFormData] = useState({
     id: "",
     full_name: "",
@@ -39,68 +41,40 @@ function UserProfilePage() {
   });
 
   useEffect(() => {
-    // Fetch session and set userProfileId
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUserProfileId(session.user.id);
-      console.log("UserProfileID : ", session.user.id); // Log here to ensure it's set correctly
-      userProfile_id = session.user.id;
-
-      // Update formData with userProfileId
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        id: session.user.id,
-      }));
-      console.log("fromData.id", formData.id);
-    });
-
-    //for testing
-    //matthewdonaldson@merrymatch.com
-    //6d92b715-febd-42a3-8c74-7bbadbf74b28
-    // larryprice@merrymatch.com
-    // 013e2ffe-b12d-45b5-afbf-8261b91ee847
-
-    // Listen to auth state changes
     const authListener = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session) {
-        setUserProfileId(session.user.id);
-
-        // localStorage.setItem('userProfileId', session.user.id);
-
+        const userProfileId = session.user.id;
+        setUserProfileId(userProfileId);
         setFormData((prevFormData) => ({
           ...prevFormData,
-          id: session.user.id,
+          id: userProfileId,
         }));
-        console.log("UserProfileID : ", session.user.id); // Log here to ensure it's set correctly
-        console.log("formData.Id: ", formData.id); // Log here to ensure it's set correctly
-        console.log("userProfile_id: ", userProfile_id); // Log here to ensure it's set correctly
+        console.log("userProfileId ", userProfileId);
+        console.log("formData.Id: ", formData.id);
+        fetchUserData(userProfileId);
       } else {
         setUserProfileId(null);
-        // Clear userProfileId from local storage if user is not authenticated
         localStorage.removeItem("userProfileId");
       }
-      fetchUserData();
     });
   }, []);
 
-  const fetchUserData = async () => {
+  const fetchUserData = async (userId) => {
+    // passing userId as argument
     try {
-      // const UserProfileId = await localStorage.getItem("userProfileId");
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userProfile_id)
-        .single();
+      const response = await axios.get(
+        `${API_PORT}/user/profile/${userId}` // using userId instead of userProfileID
+      );
+      const data = response.data[0];
 
-      if (error) {
-        throw error;
+      if (response.status !== 200) {
+        throw new Error(data.error || "Failed to fetch profile data");
       }
 
       if (data) {
-        // Update form data with the retrieved user data
         setFormData(data);
-        setIsEditMode(true); // Enable edit mode to populate the form fields
+        setIsEditMode(true);
       }
     } catch (error) {
       console.error("Error fetching user data:", error.message);
@@ -132,33 +106,57 @@ function UserProfilePage() {
 
   const handleUpdateProfile = async () => {
     try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .update({
-          full_name: formData.full_name,
-          date_of_birth: formData.date_of_birth,
-          country: formData.country,
-          city: formData.city,
-          username: formData.username,
-          email: formData.email,
-          sex_identities: formData.sex_identities,
-          sex_preferences: formData.sex_preferences,
-          racial_preferences: formData.racial_preferences,
-          meeting_interest: formData.meeting_interest,
-          hobbies: formData.hobbies,
-          about_me: formData.about_me,
-        })
-        .eq("id", formData.id);
+      const response = await axios.post(`${API_PORT}/user/updateProfile`, {
+        full_name: formData.full_name,
+        date_of_birth: formData.date_of_birth,
+        country: formData.country,
+        city: formData.city,
+        username: formData.username,
+        email: formData.email,
+        sex_identities: formData.sex_identities,
+        sex_preferences: formData.sex_preferences,
+        racial_preferences: formData.racial_preferences,
+        meeting_interest: formData.meeting_interest,
+        hobbies: formData.hobbies,
+        about_me: formData.about_me,
+        id: formData.id,
+      });
 
-      if (error) {
-        console.error(error);
-      } else {
-        console.log(data);
-      }
+      console.log(response.data);
     } catch (error) {
       console.error(error);
     }
   };
+
+  // const handleUpdateProfile = async () => {
+  //   try {
+  //     const { data, error } = await supabase
+  //       .from("profiles")
+  //       .update({
+  //         full_name: formData.full_name,
+  //         date_of_birth: formData.date_of_birth,
+  //         country: formData.country,
+  //         city: formData.city,
+  //         username: formData.username,
+  //         email: formData.email,
+  //         sex_identities: formData.sex_identities,
+  //         sex_preferences: formData.sex_preferences,
+  //         racial_preferences: formData.racial_preferences,
+  //         meeting_interest: formData.meeting_interest,
+  //         hobbies: formData.hobbies,
+  //         about_me: formData.about_me,
+  //       })
+  //       .eq("id", formData.id);
+
+  //     if (error) {
+  //       console.error(error);
+  //     } else {
+  //       console.log(data);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

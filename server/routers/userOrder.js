@@ -175,11 +175,10 @@ userOrderRoute.get("/payment-success", async (req, res) => {
       .from("orders")
       .select(
         `
-    fullname,address,order_id,session_id,status,
+    fullname,address,order_id,session_id,status,profile_id,
     packages (package_id, name, price, merry_limit, iconurl),
     profiles (full_name, email,city,country)
-    
-    `
+     `
       )
       .eq("status", "complete");
     if (error) {
@@ -199,11 +198,10 @@ userOrderRoute.get("/payment-success/:id", async (req, res) => {
       .from("orders")
       .select(
         `
-    fullname,address,order_id,session_id,status,
+    fullname,address,order_id,session_id,status,profile_id,
     packages (package_id, name, price, merry_limit, iconurl),
     profiles (full_name, email,city,country)
-    
-    `
+        `
       )
       .eq("order_id", orderId);
     if (error) {

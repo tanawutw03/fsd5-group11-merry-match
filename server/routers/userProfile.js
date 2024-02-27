@@ -138,27 +138,40 @@ userProfileRoute.put("/saveImageUrlSets", async (req, res) => {
   }
 });
 
-//------- leang for userprofilePage  saveImageUrl------
-// userProfileRoute.post("/createImageUrls", async (req, res) => {
-//   try {
-//     const { userId, imageUrl } = req.body;
-//     const { data, error } = await supabase
-//       .from("user2_profiles_url")
-//       .insert([{ id: 51, storage_location: imageUrl }]);
+userProfileRoute.post("/updateProfile", async (req, res) => {
+  const formData = req.body;
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .update({
+        full_name: formData.full_name,
+        date_of_birth: formData.date_of_birth,
+        country: formData.country,
+        city: formData.city,
+        username: formData.username,
+        email: formData.email,
+        sex_identities: formData.sex_identities,
+        sex_preferences: formData.sex_preferences,
+        racial_preferences: formData.racial_preferences,
+        meeting_interest: formData.meeting_interest,
+        hobbies: formData.hobbies,
+        about_me: formData.about_me,
+      })
+      .eq("id", formData.id);
 
-//     if (error) {
-//       throw new Error(`Database Error: ${error.message}`);
-//     }
-
-//     res.status(200).json({ success: true });
-//   } catch (error) {
-//     console.error("Error saving image URL to database:", error.message);
-//     res.status(500).json({ error: error.message });
-//   }
-// });
-//**Leang don't delete
-// userProfileRoute.post("/upload", upload.single("file"), (req, res) => {
-//   res.status(200).json({ message: "Hello OK" });
-// });
+    if (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ error: "An error occurred while updating profile" });
+    } else {
+      console.log(data);
+      res.status(200).json({ message: "Profile updated successfully" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while updating profile" });
+  }
+});
 
 export default userProfileRoute;
