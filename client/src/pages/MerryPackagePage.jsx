@@ -61,7 +61,6 @@ function PackagePage() {
           `${API_PORT}/user/profile/${userProfileId}`
         );
         setDataProfile(resProfile.data);
-        console.log("resProfile", resProfile);
       } catch (error) {
         console.error(error);
       }
@@ -76,12 +75,10 @@ function PackagePage() {
 
     const sentOrderData = async () => {
       try {
-        console.log({ packageId, packageName, packagePrice });
-        console.log({ userProfileId, userProfileEmail });
         const data = {
           user: {
-            name: "TestName8228",
-            address: "Test Address8228",
+            name: `${dataProfile[0].full_name}`,
+            address: `${dataProfile[0].city}, ${dataProfile[0].country}`,
             profile_id: userProfileId,
             email: userProfileEmail,
           },
@@ -96,7 +93,6 @@ function PackagePage() {
         const response = await axios.post(`${API_PORT}/checkout`, data);
         const resData = response.data;
         const sessionId = resData.session_id;
-
         const { data: urlData, error: errorUrlData } = await supabase
           .from("orders")
           .select("stripe_url")

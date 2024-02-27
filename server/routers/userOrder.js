@@ -176,7 +176,7 @@ userOrderRoute.get("/payment-success", async (req, res) => {
       .select(
         `
     fullname,address,order_id,session_id,status,
-    packages (package_id, name, price, merry_limit),
+    packages (package_id, name, price, merry_limit, iconurl),
     profiles (full_name, email,city,country)
     
     `
