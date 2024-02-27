@@ -4,13 +4,15 @@ import { useUser } from "../app/userContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
-const LeftSideMatching = () => {
+const LeftSideMatching = ({ mutualMatch }) => {
   const navigate = useNavigate();
   const [merryMatch, setMerryMatch] = useState([]);
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
 
   useEffect(() => {
+    console.log(`mutualMatch:`, mutualMatch);
     const id = user.user.id;
 
     async function fetchMerryMatch() {
@@ -18,6 +20,7 @@ const LeftSideMatching = () => {
         const response = await axios.get(
           `http://localhost:4008/match/api/v1/mutual_matches/${id}`
         );
+
         const data = response.data.data;
         setMerryMatch(data);
       } catch (error) {
@@ -25,12 +28,14 @@ const LeftSideMatching = () => {
       }
     }
 
+    // Always fetch data when mutualMatch changes
+    if (mutualMatch) {
+      fetchMerryMatch();
+    }
+
     fetchMerryMatch();
-
     return () => {};
-  }, [user.user.id]);
-
-  console.log(`merryMatch:`, merryMatch);
+  }, [user.user.id, mutualMatch]);
 
   return (
     <div className=" w-1/4 h-screen">
@@ -49,8 +54,8 @@ const LeftSideMatching = () => {
       <div className="p-5">
         <h1 className="text-xl font-bold">Merry Match!</h1>
         <div className="flex gap-2 w-full">
-          {merryMatch.map((profile, index) => (
-            <div key={index} className=" relative w-16 h-16 snap-start ">
+          {[...merryMatch].reverse().map((profile) => (
+            <div key={profile.id} className=" relative w-16 h-16 snap-start ">
               <img
                 className="rounded-2xl w-16 h-16"
                 src={profile.avatar_url[0].publicUrl}
@@ -67,8 +72,8 @@ const LeftSideMatching = () => {
       <div className="mt-5 ml-5">
         <h1 className="text-xl font-bold">Chat with Merry Match</h1>
         <div className="flex flex-col pt-2 gap-3  ">
-          {merryMatch.map((profile, index) => (
-            <div key={index} className="w-96  h-16 flex flex-row ">
+          {[...merryMatch].reverse().map((profile) => (
+            <div key={profile.id} className="w-96  h-16 flex flex-row ">
               <div className="rounded-full w-20 h-20">
                 <img
                   className=" rounded-full w-16 h-16"
@@ -85,6 +90,9 @@ const LeftSideMatching = () => {
       </div>
     </div>
   );
+};
+LeftSideMatching.propTypes = {
+  mutualMatch: PropTypes.bool,
 };
 
 export default LeftSideMatching;
