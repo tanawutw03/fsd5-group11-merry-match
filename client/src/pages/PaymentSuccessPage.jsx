@@ -11,6 +11,7 @@ const PaymentSuccessPage = () => {
   const [packageLIMIT, setPackageLimit] = useState("");
   const [packageICON, setPackageIcon] = useState("");
   const [packagePrice, setPackagePrice] = useState("");
+  const [profileID, setProfileId] = useState("");
 
   const navigate = useNavigate();
 
@@ -26,28 +27,32 @@ const PaymentSuccessPage = () => {
           `${API_PORT}/payment-success/${orderId}`
         );
         const data = response.data;
+
         const dataZero = response.data[0];
         const packageId = dataZero.packages.package_id;
         const packageName = dataZero.packages.name;
         const packageLimit = dataZero.packages.merry_limit;
         const packageIcon = dataZero.packages.iconurl;
         const packagePrice = dataZero.packages.price;
+        const profileId = dataZero.profile_id;
+        console.log("profileId:", profileId);
         setPackageId(packageId);
         setPackageName(packageName);
         setPackageLimit(packageLimit);
         setPackageIcon(packageIcon);
         setPackagePrice(packagePrice);
+        setProfileId(profileId);
 
         const dataToSend = {
           package: packageName,
           merry_limit: packageLimit,
         };
 
-        // const response2 = await axios.put(
-        //   `${API_PORT}/userPackage/updatePackage/${packageId}`,
-        //   dataToSend
-        // );
-        // console.log("Response2: ", response2);
+        const response2 = await axios.put(
+          `${API_PORT}/userPackage/updatePackage/${profileId}`,
+          dataToSend
+        );
+        console.log("Response2: ", response2);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -56,9 +61,6 @@ const PaymentSuccessPage = () => {
     fetchData();
   }, []);
 
-  {
-    /*calculate date*/
-  }
   const currentDate = new Date();
 
   const endDate = new Date(currentDate);
