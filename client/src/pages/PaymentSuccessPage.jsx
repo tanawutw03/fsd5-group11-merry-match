@@ -14,8 +14,6 @@ const PaymentSuccessPage = () => {
 
   const navigate = useNavigate();
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -124,12 +122,16 @@ const PaymentSuccessPage = () => {
         {/* Right Section */}
         <div className="text-white w-[357px] h-[454px] border rounded-3xl bg-gradient-to-r from-[#742138] from-20% to-[#a878bf] to-95% ml-28 mt-28 border-gray-200 grid grid-rows-[25%_20%_20%_10%_1%_24%]">
           <div className="ml-10 mt-10 w-[60px] h-[60px] rounded-2xl bg-gray-100 flex justify-center items-center">
-            <img src="" alt="package icon" className="w-[36px] h-[36px]" />
+            <img
+              src={packageICON}
+              alt="package icon"
+              className="w-[36px] h-[36px]"
+            />
           </div>
           <div className="ml-10  text-[32px] font-bold">
             {packageNAME}
             <div className="text-[20px] font-normal">
-              Price.00
+              {packagePrice}.00
               <span className="text-[16px] font-light"> /Month</span>
             </div>
           </div>
