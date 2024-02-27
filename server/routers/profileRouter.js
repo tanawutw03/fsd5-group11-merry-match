@@ -91,13 +91,9 @@ profileRouter.get(
       const excludeUserIdMatches =
         (excludeUserProfile && excludeUserProfile.matches) ?? [];
       const excludeUserIdUnmatched =
-<<<<<<< HEAD:server/routers/profileRouter.js
         excludeUserProfile.unmatched_profiles || [];
       const excludeUserIdMutualMatches =
         excludeUserProfile.mutual_matches || [];
-=======
-        (excludeUserProfile && excludeUserProfile.unmatched_profiles) ?? [];
->>>>>>> 7a86c5b (fix loading data):server/routers/profile.js
 
       // Filter out the excludeUserId and unmatched profiles from the fetched profiles
       const filteredProfiles = allProfiles.filter((profile) => {
