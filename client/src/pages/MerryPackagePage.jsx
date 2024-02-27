@@ -61,6 +61,7 @@ function PackagePage() {
           `${API_PORT}/user/profile/${userProfileId}`
         );
         setDataProfile(resProfile.data);
+        updateValue(resProfile.data);
       } catch (error) {
         console.error(error);
       }
@@ -69,6 +70,10 @@ function PackagePage() {
     fetchData();
     fetchDataProfiles();
   }, []);
+
+  const updateValue = (data) => {
+    setDataProfile(data);
+  };
 
   const handlePackageSelection = (packageId, packageName, packagePrice) => {
     setSelectedPackage({ packageId, packageName, packagePrice });

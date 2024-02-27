@@ -32,11 +32,11 @@ const PaymentSuccessPage = () => {
           merry_limit: packageLimit,
         };
 
-        const response2 = await axios.put(
-          `${API_PORT}/userPackage/updatePackage/${packageId}`,
-          dataToSend
-        );
-        console.log("Response2: ", response2);
+        // const response2 = await axios.put(
+        //   `${API_PORT}/userPackage/updatePackage/${packageId}`,
+        //   dataToSend
+        // );
+        // console.log("Response2: ", response2);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
