@@ -18,7 +18,7 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 import axios from "axios";
-
+import { useUser } from "../app/userContext.js";
 function ComplaintPage() {
   const navigate = useNavigate();
   const { complaint_Id } = useParams();
@@ -26,6 +26,11 @@ function ComplaintPage() {
   const [newComplaintCount, setNewComplaintCount] = useState(0);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showResolveModal, setShowResolveModal] = useState(false);
+  const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
+  if (user.user.role !== "admin") {
+    navigate("/homepage");
+    console.log("you not role admin");
+  }
 
   useEffect(() => {
     async function fetchComplaintData() {

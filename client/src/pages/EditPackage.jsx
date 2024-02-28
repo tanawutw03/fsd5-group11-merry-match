@@ -18,9 +18,11 @@ import {
 import { SmallAddIcon, SmallCloseIcon, DragHandleIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useUser } from "../app/userContext.js";
 
 function EditPackage() {
   const [selectedFile, setSelectedFile] = useState(null);
+  const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
   const [packageDetails, setPackageDetails] = useState([]);
   const [newDetail, setNewDetail] = useState("");
   const [packageName, setPackageName] = useState("");
@@ -29,6 +31,10 @@ function EditPackage() {
   const navigate = useNavigate();
   const { package_id } = useParams();
   const [newComplaintCount, setNewComplaintCount] = useState(0);
+  if (user.user.role !== "admin") {
+    navigate("/homepage");
+    console.log("you not role admin");
+  }
 
   useEffect(() => {
     async function fetchNewComplaintCount() {
