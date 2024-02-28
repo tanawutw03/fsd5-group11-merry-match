@@ -151,18 +151,14 @@ function PackagePage() {
           />
         )}
 
-        <div className="package-container flex flex-col mt-[80px] mb-[160px] ml-[160px] mr-[160px]">
-          <p className="merry-membership-title  font-nunito text-[14px] text-[#7B4429]">
+        <div className="package-container flex flex-col mt-[80px] mb-[160px] ml-[160px] mr-[160px] font-nunito">
+          <p className="merry-membership-title text-[14px] text-[#7B4429]">
             MERRY MEMBERSHIP
           </p>
 
-          <div className="merry-membership-ads">
-            <p className="font-nunito text-[46px]  text-purple-500">
-              Be part of Merry Membership
-            </p>
-            <p className="font-nunito text-[46px]  text-purple-500">
-              to make more Merry!
-            </p>
+          <div className="merry-membership-ads text-[46px] text-[#a62d82] font-black">
+            <p>Be part of Merry Membership</p>
+            <p>to make more Merry!</p>
           </div>
           <div className="flex justify-center items-center max-[1120px]:flex-col gap-[24px] mt-[80px]">
             {data.map((packages, index) => (
@@ -179,7 +175,7 @@ function PackagePage() {
                         className="w-[36px] h-[36px] flex-shrink-0"
                       />
                     </li>
-                    <li className="card-category font-nunito text-[32px] font-bold text-purple-800">
+                    <li className="card-category font-nunito text-[32px] font-bold text-[#411032]">
                       {packages.name}
                     </li>
                     <li className="card-paid-condition mb-[24px]">
@@ -199,8 +195,8 @@ function PackagePage() {
                       </div>
                     </li>
                     <button
-                      className="choose-package-btn flex justify-center items-center gap-[8px] w-[277px]   
-                                                rounded-[99px]  bg-red-100  hover:bg-red-200 active:bg-red-300  shadow-setShadow01 h-12 p-[16px]"
+                      className="choose-package-btn flex justify-center items-center gap-[8px] w-[277px] shadow-setShadow01 h-12 p-[16px] rounded-[99px]
+                                                 bg-[#ffe1ea] text-[#95002b] hover:bg-[#ffb1c8] active:bg-[#ff6390] disabled:bg-[#e4e6ed] disabled:text-[#9aa1b9]"
                       type="button"
                       onClick={() =>
                         handlePackageSelection(
@@ -211,17 +207,19 @@ function PackagePage() {
                       } // Pass the package id and name to the handler
                       disabled={
                         selectedPackage &&
-                        selectedPackage.packageId === packages.package_id
+                        selectedPackage.packageId !== packages.package_id
                       } // Disable button if already selected
                     >
                       <label
-                        className="font-nunito text-center text-[16px] font-bold text-red-600 p-[12px,24px]  "
+                        className="font-nunito text-center text-[16px] font-bold p-[12px,24px]"
                         htmlFor="ChoosePackageSection"
                       >
                         {selectedPackage &&
-                        selectedPackage.packageId === packages.package_id
-                          ? "Selected"
-                          : "Choose Package"}
+                        selectedPackage.packageId === packages.package_id ? (
+                          <Spinner size="md" color="red.500" />
+                        ) : (
+                          "Choose Package"
+                        )}
                       </label>
                     </button>
                   </div>
