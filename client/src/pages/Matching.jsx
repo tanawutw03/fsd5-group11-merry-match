@@ -13,6 +13,7 @@ function Matching() {
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
   const [mutualMatch, setMutualMatch] = useState(false);
   const [showChatroom, setShowChatroom] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(null);
 
   const navigate = useNavigate();
 
@@ -24,8 +25,9 @@ function Matching() {
     setMutualMatch(value);
   };
 
-  const toggleChatroom = () => {
+  const toggleChatroom = (profile) => {
     setShowChatroom(true);
+    setSelectedProfile(profile);
     console.log(
       "Chatroom status:",
       showChatroom === true ? "opened" : "closed"
@@ -49,14 +51,14 @@ function Matching() {
           onClick={handleClick}
         />
 
-        <div className="flex flex-row">
+        <div className="flex flex-row h-screen">
           <LeftSideMatching
             mutualMatch={mutualMatch}
             onMutualMatchClick={toggleChatroom}
           />
 
           {showChatroom ? (
-            <Chatroom />
+            <Chatroom profile={selectedProfile} />
           ) : (
             <>
               <MerryCards user={user} onMutualMatch={handleMutualMatch} />
