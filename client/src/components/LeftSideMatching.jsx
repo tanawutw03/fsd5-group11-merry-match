@@ -18,6 +18,7 @@ const LeftSideMatching = ({ mutualMatch }) => {
     async function fetchMerryMatch() {
       try {
         const response = await axios.get(
+<<<<<<< HEAD
           `http://localhost:4008/match/api/v1/mutual_matches/${id}`
         );
 <<<<<<< HEAD
@@ -25,6 +26,15 @@ const LeftSideMatching = ({ mutualMatch }) => {
 =======
         console.log("response", response.data.data);
 >>>>>>> 61cc1b5 (feat(LeftSideMatching): call mutual_matches api in LeftSideMatching page)
+=======
+<<<<<<< HEAD
+          `http://localhost:4008/match/api/v1/mutual_matches/${id}`
+=======
+          `http://localhost:4008/match/api/v1/match/${id}`
+>>>>>>> 93805072cba76c85c871b30edd2f3835f6365285
+        );
+        console.log("response", response.data.data);
+>>>>>>> 2752d808031feaf4d9cdbf76b7b6dbb0bec72826
         const data = response.data.data;
         setMerryMatch(data);
       } catch (error) {
@@ -32,6 +42,7 @@ const LeftSideMatching = ({ mutualMatch }) => {
       }
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     // Always fetch data when mutualMatch changes
     if (mutualMatch) {
@@ -42,6 +53,8 @@ const LeftSideMatching = ({ mutualMatch }) => {
     return () => {};
   }, [user.user.id, mutualMatch]);
 =======
+=======
+>>>>>>> 2752d808031feaf4d9cdbf76b7b6dbb0bec72826
     fetchMerryMatch();
   }, [user.user.id]);
 >>>>>>> 61cc1b5 (feat(LeftSideMatching): call mutual_matches api in LeftSideMatching page)
