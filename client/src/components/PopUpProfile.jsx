@@ -60,23 +60,26 @@ const PopUpProfile = ({
                     }
                   />
                 </div>
-
-                <div className="flex flex-row  absolute bottom-14 left-40  ">
-                  <img className=" w-12 h-12  " src={action} />
-                  <img className=" w-12 h-12 " src={heart} />
+                <div className="flex flex-row absolute bottom-14 left-40">
+                  <img className="w-12 h-12" src={action} alt="Action Icon" />
+                  <img className="w-12 h-12" src={heart} alt="Heart Icon" />
                 </div>
-                <div className=" flex flex-row justify-between mt-4 ">
-                  <p className="text-[#646D89]">1/2</p>
-                  <div className=" flex flex-row  z-30   ">
+                <div className="flex flex-row justify-between mt-4">
+                  <p className="text-[#646D89]"></p>
+                  <div className="flex flex-row z-30">
+                    {/* Render backward arrow icon */}
                     <IconButton
                       color="gray"
                       variant="link"
                       icon={<ArrowBackIcon />}
+                      onClick={handleBackwardClick}
                     />
+                    {/* Render forward arrow icon */}
                     <IconButton
                       color="gray"
                       variant="link"
                       icon={<ArrowForwardIcon />}
+                      onClick={handleForwardClick}
                     />
                   </div>
                 </div>
