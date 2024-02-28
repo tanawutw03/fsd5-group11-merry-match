@@ -10,22 +10,29 @@ function Chatroom({ profile, user }) {
   const chatContainerRef = useRef(null);
 
   useEffect(() => {
-    // Access the channel you want to interact with
-    const chatChannel = supabase.realtime.channel(
-      `from-${user.user.id}-to-${profile.id}`
-    );
+    // Join a room/topic. Can be anything except for 'realtime'.
+    const chatChannel = supabase.channel("chatroom");
 
-    // Subscribe to the channel
-    chatChannel.subscribe();
+    console.log(`chatChannel on mounted:`, chatChannel);
 
-    // Log to see if the channel is successfully created
-    console.log("Chat channel created:", chatChannel);
+    // Simple function to log any messages we receive
+    function messageReceived(payload) {
+      console.log(payload);
+      // Update the chat messages state with the new message
+      setChatMessages((prevMessages) => [...prevMessages, payload]);
+      fetchMessages();
+    }
+
+    // Subscribe to the Channel and listen for the 'broadcast' event with event type '*' wildcards
+    chatChannel
+      .on("broadcast", { event: "*" }, (payload) => messageReceived(payload))
+      .subscribe();
 
     return () => {
       // Unsubscribe when the component unmounts
       chatChannel.unsubscribe();
     };
-  }, [profile.id]);
+  }, [chatMessages]);
 
   const fetchMessages = async () => {
     try {
@@ -74,15 +81,50 @@ function Chatroom({ profile, user }) {
 
   useEffect(() => {
     // Scroll to the bottom when chatMessages change
-    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    const chatContainer = chatContainerRef.current;
+    const lastMessage = chatContainer.lastElementChild;
+    if (lastMessage) {
+      lastMessage.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
   }, [chatMessages]);
 
   const handleSendMessage = async () => {
     try {
-      await axios.put(`http://localhost:4008/chat/api/v1/chat/`, {
-        userId: user.user.id,
-        profileId: profile.id,
-        messages: message,
+      const response = await axios.put(
+        `http://localhost:4008/chat/api/v1/chat/`,
+        {
+          userId: user.user.id,
+          profileId: profile.id,
+          messages: message,
+        }
+      );
+
+      // Extract the ID of the newly inserted message from the response
+      const messageId = response.data.data[0].id;
+      console.log(`messageId:`, messageId);
+
+      // Join a room/topic. Can be anything except for 'realtime'.
+      const chatChannel = supabase.channel("chatroom");
+      console.log(`chatChannel on broadcast:`, chatChannel);
+
+      chatChannel.subscribe((status) => {
+        // Wait for successful connection
+        if (status !== "SUBSCRIBED") {
+          return null;
+        }
+
+        // Send a broadcast message
+        chatChannel.send({
+          type: "broadcast",
+          event: "new_message",
+          payload: {
+            id: messageId,
+            message: message,
+            from_userid: user.user.id,
+            to_userid: profile.id,
+            fromCurrentUser: true,
+          },
+        });
       });
 
       setMessage("");
@@ -109,16 +151,18 @@ function Chatroom({ profile, user }) {
         </div>
 
         <div className="w-full h-4/5 overflow-auto" ref={chatContainerRef}>
-          {chatMessages.map((msg) => (
+          {chatMessages.map((msg, index) => (
             <div
-              key={msg.id}
+              key={index}
               className={`text-white mb-2 border-2 flex flex-col ${
                 msg.from_userid === user.user.id
                   ? "border-green-500 items-end"
                   : "border-orange-500 items-start"
               }`}
             >
-              {msg.message}
+              <p>From: {msg.from_userid}</p>
+              <p>To: {msg.to_userid}</p>
+              <p>{msg.message}</p>
             </div>
           ))}
         </div>
