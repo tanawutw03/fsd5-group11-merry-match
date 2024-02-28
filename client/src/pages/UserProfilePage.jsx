@@ -50,8 +50,7 @@ function UserProfilePage() {
           ...prevFormData,
           id: userProfileId,
         }));
-        console.log("userProfileId ", userProfileId);
-        console.log("formData.Id: ", formData.id);
+
         fetchUserData(userProfileId);
       } else {
         setUserProfileId(null);
@@ -85,11 +84,10 @@ function UserProfilePage() {
     const files = Array.from(fileInputRef.current.files);
     const newSelectedFiles = files.slice(0, 5);
 
-    const randomFileNames = newSelectedFiles.map((file) => {
+    const uniqueFileNames = newSelectedFiles.map((file) => {
       const fileExt = file.name.split(".").pop();
-      const randomString = Math.random().toString(36).substring(7);
-      const randomFileName = `${randomString}.${fileExt}`;
-      return { file, name: randomFileName };
+      const uniqueFileName = `${Date.now()}-${file.name}`;
+      return { file, name: uniqueFileName };
     });
 
     setSelectedFiles((prevSelectedFiles) => [
