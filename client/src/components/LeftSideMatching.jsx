@@ -13,7 +13,7 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
 
   const openChat = (profile) => {
     console.log("Open chatroom with mutual match:", profile);
-    onMutualMatchClick();
+    onMutualMatchClick(profile);
   };
 
   useEffect(() => {
