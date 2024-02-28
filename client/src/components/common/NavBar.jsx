@@ -69,7 +69,6 @@ const NavBar = (props) => {
             alignItems="center"
             justifyContent="center"
             onClick={handleClick}
-            colorScheme="whiteAlpha"
           >
             <div className="w-[179px] h-[41px]  rounded-full bg-gradient-to-r from-[#742138] to-[#A878BF] flex flex-row justify-center items-center">
               <img className=" w-4 h-4 mr-2  " src={star} />
