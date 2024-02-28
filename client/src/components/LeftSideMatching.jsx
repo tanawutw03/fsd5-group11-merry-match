@@ -20,7 +20,11 @@ const LeftSideMatching = () => {
     async function fetchMerryMatch() {
       try {
         const response = await axios.get(
+<<<<<<< HEAD
           `http://localhost:4008/match/api/v1/mutual_matches/${id}`
+=======
+          `http://localhost:4008/match/api/v1/match/${id}`
+>>>>>>> 93805072cba76c85c871b30edd2f3835f6365285
         );
         console.log("response", response.data.data);
         const data = response.data.data;

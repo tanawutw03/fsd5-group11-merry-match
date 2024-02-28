@@ -80,7 +80,7 @@ userPackage.put("/updatePackage/:id", async (req, res) => {
     // Update package details in the "merry_limits" table
     const { data, error } = await supabase
       .from("merry_limits")
-      .update({ package: packageName, merry_limit: merryLimit })
+      .update({ name: packageName, merry_limit: merryLimit })
       .eq("id", Id);
 
     if (error) {

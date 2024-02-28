@@ -44,14 +44,14 @@ function UserProfilePage() {
       setSession(session);
       setUserProfileId(session.user.id);
       console.log("UserProfileID : ", session.user.id); // Log here to ensure it's set correctly
-      userProfile_id=session.user.id;
-  
+      userProfile_id = session.user.id;
+
       // Update formData with userProfileId
-      setFormData(prevFormData => ({
+      setFormData((prevFormData) => ({
         ...prevFormData,
-        id: session.user.id
+        id: session.user.id,
       }));
-      console.log("fromData.id",formData.id)
+      console.log("fromData.id", formData.id);
     });
 
     //for testing
@@ -59,18 +59,18 @@ function UserProfilePage() {
     //6d92b715-febd-42a3-8c74-7bbadbf74b28
     // larryprice@merrymatch.com
     // 013e2ffe-b12d-45b5-afbf-8261b91ee847
-  
+
     // Listen to auth state changes
     const authListener = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session) {
         setUserProfileId(session.user.id);
-        
+
         // localStorage.setItem('userProfileId', session.user.id);
-       
-        setFormData(prevFormData => ({
+
+        setFormData((prevFormData) => ({
           ...prevFormData,
-          id: session.user.id
+          id: session.user.id,
         }));
         console.log("UserProfileID : ", session.user.id); // Log here to ensure it's set correctly
         console.log("formData.Id: ", formData.id); // Log here to ensure it's set correctly
@@ -78,38 +78,34 @@ function UserProfilePage() {
       } else {
         setUserProfileId(null);
         // Clear userProfileId from local storage if user is not authenticated
-        localStorage.removeItem('userProfileId');
+        localStorage.removeItem("userProfileId");
       }
       fetchUserData();
     });
   }, []);
 
-    const fetchUserData = async () => {
-      try {
-        // const UserProfileId = await localStorage.getItem("userProfileId");
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", userProfile_id)
-          .single();
+  const fetchUserData = async () => {
+    try {
+      // const UserProfileId = await localStorage.getItem("userProfileId");
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userProfile_id)
+        .single();
 
-        if (error) {
-          throw error;
-        }
-
-        if (data) {
-          // Update form data with the retrieved user data
-          setFormData(data);
-          setIsEditMode(true); // Enable edit mode to populate the form fields
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error.message);
+      if (error) {
+        throw error;
       }
-    };
 
-   
-
-  
+      if (data) {
+        // Update form data with the retrieved user data
+        setFormData(data);
+        setIsEditMode(true); // Enable edit mode to populate the form fields
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error.message);
+    }
+  };
 
   const handleFileInputChange = () => {
     const files = Array.from(fileInputRef.current.files);
