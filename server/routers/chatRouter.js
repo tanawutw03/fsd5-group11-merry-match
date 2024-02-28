@@ -3,8 +3,8 @@ import { supabase } from "../utils/supabaseClient.js";
 
 const chatRouter = Router();
 
-// GET api/v1/chat
-chatRouter.get(`/api/v1/chat`, async (req, res) => {
+// GET /api/v1/to-other-user
+chatRouter.get(`/api/v1/to-other-user`, async (req, res) => {
   const { userId, profileId } = req.query; // Retrieve query parameters instead of body
 
   try {
@@ -13,6 +13,34 @@ chatRouter.get(`/api/v1/chat`, async (req, res) => {
       .select("messages")
       .eq("from_userid", userId)
       .eq("to_userid", profileId)
+      .order("created_at", { ascending: true })
+      .select();
+
+    if (error) {
+      throw error;
+    }
+
+    console.log(data);
+    res.json({
+      messages: "Fetch message successfully",
+      data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" }); // Handle error response
+  }
+});
+
+// GET /api/v1/from-other-user
+chatRouter.get(`/api/v1/from-other-user`, async (req, res) => {
+  const { userId, profileId } = req.query; // Retrieve query parameters instead of body
+
+  try {
+    const { data, error } = await supabase
+      .from("messages")
+      .select("messages")
+      .eq("from_userid", profileId)
+      .eq("to_userid", userId)
       .order("created_at", { ascending: true })
       .select();
 

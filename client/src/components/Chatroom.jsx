@@ -29,8 +29,8 @@ function Chatroom({ profile, user }) {
 
   const fetchMessages = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:4008/chat/api/v1/chat`,
+      const messageToOtherUserResponse = await axios.get(
+        `http://localhost:4008/chat/api/v1/to-other-user`,
         {
           params: {
             userId: user.user.id,
@@ -39,7 +39,30 @@ function Chatroom({ profile, user }) {
         }
       );
 
-      setChatMessages(response.data.data);
+      const messageFromOtherUserResponse = await axios.get(
+        `http://localhost:4008/chat/api/v1/from-other-user`,
+        {
+          params: {
+            userId: user.user.id,
+            profileId: profile.id,
+          },
+        }
+      );
+
+      const messageToOtherUser = messageToOtherUserResponse.data.data.map(
+        (msg) => ({ ...msg, fromCurrentUser: true })
+      );
+      const messageFromOtherUser = messageFromOtherUserResponse.data.data.map(
+        (msg) => ({ ...msg, fromCurrentUser: false })
+      );
+      const allMessages = [...messageToOtherUser, ...messageFromOtherUser];
+
+      // Sort the combined messages based on created_at timestamps
+      const sortedMessages = allMessages.sort(
+        (a, b) => new Date(a.created_at) - new Date(b.created_at)
+      );
+
+      setChatMessages(sortedMessages);
     } catch (error) {
       console.log(error);
     }
@@ -61,8 +84,8 @@ function Chatroom({ profile, user }) {
         profileId: profile.id,
         messages: message,
       });
-      setMessage("");
 
+      setMessage("");
       // Fetch messages again after sending a new message
       fetchMessages();
     } catch (error) {
@@ -89,7 +112,11 @@ function Chatroom({ profile, user }) {
           {chatMessages.map((msg) => (
             <div
               key={msg.id}
-              className="text-white mb-2 border-2 border-red-500"
+              className={`text-white mb-2 border-2 flex flex-col ${
+                msg.from_userid === user.user.id
+                  ? "border-green-500 items-end"
+                  : "border-orange-500 items-start"
+              }`}
             >
               {msg.message}
             </div>
