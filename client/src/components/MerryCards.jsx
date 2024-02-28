@@ -191,11 +191,7 @@ function MerryCards({ user, onMutualMatch }) {
                     {person.full_name}
                   </h1>
                   <span className="text-white">{person.age}</span>
-<<<<<<< HEAD
                   <PopUpProfile useMenu={true} profileData={person} />
-=======
-                  <PopUpProfile useMenu={true} userId={person.id} />
->>>>>>> 61cc1b5 (feat(LeftSideMatching): call mutual_matches api in LeftSideMatching page)
                 </div>
                 <div>
                   <ArrowBackIcon w={5} h={5} color="white" />
