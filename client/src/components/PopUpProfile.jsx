@@ -39,7 +39,14 @@ const PopUpProfile = ({
     <ChakraButton onClick={onOpen} />
   );
 
-  // console.log(`profileData:`, profileData);
+  console.log(`profileData:`, profileData);
+
+  const handleBackwardClick = () => {
+    console.log(`handleBackwardClick`);
+  };
+  const handleForwardClick = () => {
+    console.log(`handleForwardClick`);
+  };
 
   return (
     <>
@@ -141,7 +148,7 @@ PopUpProfile.propTypes = {
   isRound: PropTypes.bool,
   variant: PropTypes.string,
   size: PropTypes.string,
-  profileData: PropTypes.arrayOf(PropTypes.object),
+  profileData: PropTypes.object,
 };
 
 export default PopUpProfile;
