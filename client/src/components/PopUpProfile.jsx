@@ -71,8 +71,10 @@ const PopUpProfile = ({
                   <img
                     className="h-[250px]"
                     src={
-                      profileData.avatarUrls[avatarIndex] ||
-                      profileData.avatar_url[avatarIndex].publicUrl
+                      profileData.avatarUrls &&
+                      profileData.avatarUrls[avatarIndex]
+                        ? profileData.avatarUrls[avatarIndex]
+                        : profileData.avatar_url[avatarIndex]?.publicUrl
                     }
                   />
                 </div>
