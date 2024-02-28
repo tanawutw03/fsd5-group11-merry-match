@@ -42,8 +42,8 @@ const NavBar = (props) => {
   };
   const images = [
     { src: person, name: "Profile", link: "/profile" },
-    { src: heart, name: "Merry list" },
-    { src: box, name: "Merry Membership" },
+    { src: heart, name: "Merry list", link: "/merrylist" },
+    { src: box, name: "Merry Membership", link: "/usermembership " },
     { src: warn, name: "Compliant", link: "/usercomplaint" },
   ];
   const linkClick = (link) => {
