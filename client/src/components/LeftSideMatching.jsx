@@ -26,12 +26,6 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
           `http://localhost:4008/match/api/v1/mutual_matches/${id}`
         );
 
-<<<<<<< HEAD
-=======
-        console.log("response", response.data.data);
->>>>>>> 61cc1b5 (feat(LeftSideMatching): call mutual_matches api in LeftSideMatching page)
-=======
->>>>>>> 209eae5 (fix: conflict LeftSideMatching)
         const data = response.data.data;
         setMerryMatch(data);
       } catch (error) {
@@ -39,10 +33,6 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
       }
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 209eae5 (fix: conflict LeftSideMatching)
     // Always fetch data when mutualMatch changes
     if (mutualMatch) {
       fetchMerryMatch();
@@ -51,13 +41,6 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
     fetchMerryMatch();
     return () => {};
   }, [user.user.id, mutualMatch]);
-<<<<<<< HEAD
-=======
-    fetchMerryMatch();
-  }, [user.user.id]);
->>>>>>> 61cc1b5 (feat(LeftSideMatching): call mutual_matches api in LeftSideMatching page)
-=======
->>>>>>> 209eae5 (fix: conflict LeftSideMatching)
 
   return (
     <div className="w-1/4 h-screen">
