@@ -36,7 +36,7 @@ function Matching() {
 
   return (
     <>
-      <div className="w-screen">
+      <div className="w-screen h-screen">
         <NavBar
           firstMenuName="Start Matching!"
           secondMenuName="Merry Membership"
@@ -58,7 +58,7 @@ function Matching() {
           />
 
           {showChatroom ? (
-            <Chatroom profile={selectedProfile} />
+            <Chatroom profile={selectedProfile} user={user} />
           ) : (
             <>
               <MerryCards user={user} onMutualMatch={handleMutualMatch} />

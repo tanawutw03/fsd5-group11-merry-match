@@ -9,6 +9,7 @@ import userPackage from "./routers/userPackage.js";
 import userOrderRoute from "./routers/userOrder.js";
 import profileRouter from "./routers/profileRouter.js";
 import logoutRouter from "./routers/logoutRouter.js";
+import chatRouter from "./routers/chatRouter.js";
 
 async function init() {
   const app = express();
@@ -25,6 +26,7 @@ async function init() {
   app.use("/profile", profileRouter);
   app.use("/userPackage", userPackage);
   app.use("/logout", logoutRouter);
+  app.use("/chat", chatRouter);
 
   app.get("/", (req, res) => {
     res.send("Hello Marry Porject!");
