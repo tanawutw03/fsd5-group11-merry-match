@@ -20,11 +20,13 @@ const LeftSideMatching = ({ mutualMatch }) => {
         const response = await axios.get(
           `http://localhost:4008/match/api/v1/mutual_matches/${id}`
         );
-<<<<<<< HEAD
 
+<<<<<<< HEAD
 =======
         console.log("response", response.data.data);
 >>>>>>> 61cc1b5 (feat(LeftSideMatching): call mutual_matches api in LeftSideMatching page)
+=======
+>>>>>>> 209eae5 (fix: conflict LeftSideMatching)
         const data = response.data.data;
         setMerryMatch(data);
       } catch (error) {
@@ -33,6 +35,9 @@ const LeftSideMatching = ({ mutualMatch }) => {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 209eae5 (fix: conflict LeftSideMatching)
     // Always fetch data when mutualMatch changes
     if (mutualMatch) {
       fetchMerryMatch();
@@ -41,10 +46,13 @@ const LeftSideMatching = ({ mutualMatch }) => {
     fetchMerryMatch();
     return () => {};
   }, [user.user.id, mutualMatch]);
+<<<<<<< HEAD
 =======
     fetchMerryMatch();
   }, [user.user.id]);
 >>>>>>> 61cc1b5 (feat(LeftSideMatching): call mutual_matches api in LeftSideMatching page)
+=======
+>>>>>>> 209eae5 (fix: conflict LeftSideMatching)
 
   return (
     <div className=" w-1/4 h-screen">
@@ -90,8 +98,8 @@ const LeftSideMatching = ({ mutualMatch }) => {
                 />
               </div>
               <div className="w-96 pl-2 ">
-                <p>{profile.full_name}</p>
-                <p>You know nothing {profile.full_name}</p>
+                <p>Ygritte</p>
+                <p>You know nothing Jon Snow</p>
               </div>
             </div>
           ))}
