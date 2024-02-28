@@ -22,6 +22,7 @@ import { useUser } from "../app/userContext.js";
 
 function EditPackage() {
   const [selectedFile, setSelectedFile] = useState(null);
+  const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
   const [packageDetails, setPackageDetails] = useState([]);
   const [newDetail, setNewDetail] = useState("");
   const [packageName, setPackageName] = useState("");
