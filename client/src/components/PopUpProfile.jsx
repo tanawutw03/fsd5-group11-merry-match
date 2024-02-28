@@ -15,6 +15,7 @@ import heart from "../assets/Matching/heart button (1).svg";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 import location from "../assets/PopupProfile/location.png";
 import { propTypes } from "react-tinder-card";
+import { useState } from "react";
 
 const PopUpProfile = ({
   useMenu,
@@ -25,6 +26,7 @@ const PopUpProfile = ({
   size,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [avatarIndex, setAvatarIndex] = useState(0);
 
   const IconOrButton = useMenu ? (
     <IconButton
@@ -41,10 +43,17 @@ const PopUpProfile = ({
 
   console.log(`profileData:`, profileData);
 
+  // Define handleBackwardClick function
   const handleBackwardClick = () => {
+    const newIndex = Math.max(0, avatarIndex - 1); // Ensure index doesn't go below 0
+    setAvatarIndex(newIndex);
     console.log(`handleBackwardClick`);
   };
+
+  // Define handleForwardClick function
   const handleForwardClick = () => {
+    const newIndex = Math.min(4, avatarIndex + 1); // Ensure index doesn't exceed 4
+    setAvatarIndex(newIndex);
     console.log(`handleForwardClick`);
   };
 
@@ -62,8 +71,8 @@ const PopUpProfile = ({
                   <img
                     className="h-[250px]"
                     src={
-                      profileData.avatarUrl ||
-                      profileData.avatar_url[0].publicUrl
+                      profileData.avatarUrls[avatarIndex] ||
+                      profileData.avatar_url[avatarIndex].publicUrl
                     }
                   />
                 </div>

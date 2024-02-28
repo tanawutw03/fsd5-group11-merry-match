@@ -135,7 +135,7 @@ profileRouter.get(
           const userId = profile.id;
           const { data: avatarFiles, error: avatarFilesError } =
             await supabase.storage.from("avatars").list(userId, {
-              limit: 1,
+              limit: 5,
               offset: 0,
               sortBy: { column: "name", order: "asc" },
             });
@@ -152,21 +152,27 @@ profileRouter.get(
             return { ...profile, avatarUrl: null };
           }
 
-          const avatarFileName = avatarFiles[0].name;
-          const { data: avatarUrlData, error: avatarUrlError } =
-            await supabase.storage
-              .from("avatars")
-              .getPublicUrl(`${userId}/${avatarFileName}`);
+          const avatarUrls = [];
 
-          if (avatarUrlError) {
-            console.error(
-              `Error getting public URL for avatar ${avatarFileName}:`,
-              avatarUrlError
-            );
-            return { ...profile, avatarUrl: null };
+          for (const avatarFile of avatarFiles) {
+            const avatarFileName = avatarFile.name;
+            const { data: avatarUrlData, error: avatarUrlError } =
+              await supabase.storage
+                .from("avatars")
+                .getPublicUrl(`${userId}/${avatarFileName}`);
+
+            if (avatarUrlError) {
+              console.error(
+                `Error getting public URL for avatar ${avatarFileName}:`,
+                avatarUrlError
+              );
+              avatarUrls.push(null);
+            } else {
+              avatarUrls.push(avatarUrlData.publicUrl);
+            }
           }
 
-          return { ...profile, avatarUrl: avatarUrlData.publicUrl };
+          return { ...profile, avatarUrls }; // Assuming you want to store all URLs in an array
         })
       );
 
