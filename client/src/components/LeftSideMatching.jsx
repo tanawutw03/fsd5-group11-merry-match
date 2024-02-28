@@ -20,8 +20,9 @@ const LeftSideMatching = () => {
     async function fetchMerryMatch() {
       try {
         const response = await axios.get(
-          `http://localhost:4008/matching/api/v1/match/${id}`
+          `http://localhost:4008/match/api/v1/mutual_matches/${id}`
         );
+        console.log("response", response.data.data);
         const data = response.data.data;
         setMerryMatch(data);
       } catch (error) {
@@ -30,10 +31,6 @@ const LeftSideMatching = () => {
     }
 
     fetchMerryMatch();
-
-    return () => {
-      // Cleanup logic, if needed
-    };
   }, [user.user.id]);
 
   return (
@@ -57,7 +54,7 @@ const LeftSideMatching = () => {
             <div key={index} className=" relative w-16 h-16 snap-start ">
               <img
                 className="rounded-2xl w-16 h-16"
-                src={profile.avatar_url.publicUrl}
+                src={profile.avatar_url[0].publicUrl}
               />
               <img
                 className="w-6 h-6 absolute bottom-0 right-0 "
@@ -76,12 +73,12 @@ const LeftSideMatching = () => {
               <div className="rounded-full w-20 h-20">
                 <img
                   className=" rounded-full w-16 h-16"
-                  src={profile.avatar_url.publicUrl}
+                  src={profile.avatar_url[0].publicUrl}
                 />
               </div>
               <div className="w-96 pl-2 ">
-                <p>Ygritte</p>
-                <p>You know nothing Jon Snow</p>
+                <p>{profile.full_name}</p>
+                <p>You know nothing {profile.full_name}</p>
               </div>
             </div>
           ))}

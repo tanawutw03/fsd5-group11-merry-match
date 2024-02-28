@@ -31,10 +31,10 @@ const PopUpProfile = (props) => {
     <ChakraButton onClick={onOpen} />
   );
   const preferencesData = [
-    { title: "Sexual identities", value: "Male" },
-    { title: "Sexual preferences", value: "Female" },
-    { title: "Racial preferences", value: "Asian" },
-    { title: "Meeting interests", value: "Friends" },
+    { title: "Sexual identities" },
+    { title: "Sexual preferences" },
+    { title: "Racial preferences" },
+    { title: "Meeting interests" },
   ];
   return (
     <>
@@ -45,27 +45,31 @@ const PopUpProfile = (props) => {
           <ModalCloseButton />
           <ModalBody>
             <div className="flex justify-center items-center h-full p-4 border-purple-300 border-4  ">
-              <div className=" flex   flex-col  h-full  border-red-600 border-4  ">
+              <div className="flex flex-col h-full border-red-600 border-4">
                 <div className="rounded-2xl bg-black border-red-600 border-4 h-72 w-72">
-                  <img className="rounded-2xl" />
+                  {/* Display avatar based on avatarIndex */}
+                  <img className="rounded-2xl" alt="Avatar" />
                 </div>
-
-                <div className="flex flex-row  absolute bottom-14 left-40  ">
-                  <img className=" w-12 h-12  " src={action} />
-                  <img className=" w-12 h-12 " src={heart} />
+                <div className="flex flex-row absolute bottom-14 left-40">
+                  <img className="w-12 h-12" src={action} alt="Action Icon" />
+                  <img className="w-12 h-12" src={heart} alt="Heart Icon" />
                 </div>
-                <div className=" flex flex-row justify-between mt-4 ">
-                  <p className="text-[#646D89]">1/2</p>
-                  <div className=" flex flex-row  z-30   ">
+                <div className="flex flex-row justify-between mt-4">
+                  <p className="text-[#646D89]"></p>
+                  <div className="flex flex-row z-30">
+                    {/* Render backward arrow icon */}
                     <IconButton
                       color="gray"
                       variant="link"
                       icon={<ArrowBackIcon />}
+                      onClick={handleBackwardClick}
                     />
+                    {/* Render forward arrow icon */}
                     <IconButton
                       color="gray"
                       variant="link"
                       icon={<ArrowForwardIcon />}
+                      onClick={handleForwardClick}
                     />
                   </div>
                 </div>
@@ -73,15 +77,15 @@ const PopUpProfile = (props) => {
               <div className=" h-full w-1/2 pl-10 flex  border-purple-800 border-4 flex-row">
                 <div className="w-[418px] ">
                   <div className="flex ">
-                    <p className="text-3xl font-bold mr-4 ">John Snow</p>
-                    <p className="text-3xl font-bold  text-[#646D89] ">26</p>
+                    <p className="text-xl font-bold mr-4 "></p>
+                    <p className="text-3xl font-bold  text-[#646D89] "></p>
                   </div>
                   <div className="flex">
                     <img className=" w-5 h-5 " src={location} />
                     <div className="flex  text-[#646D89]">
-                      <p>Bankok</p>
+                      <p></p>
                       <p>,</p>
-                      <p>Thailand</p>
+                      <p></p>
                     </div>
                   </div>
                   <div className=" flex flex-col ">
@@ -98,15 +102,10 @@ const PopUpProfile = (props) => {
 
                     <h1 className=" text-[24px]">About me</h1>
                     <div className="">
-                      <p>I know nothing..but you</p>
+                      <p></p>
                     </div>
                     <h1 className=" text-[24px]">Hobbies and Interests</h1>
-                    <div className="flex ">
-                      <div className="w-[86px] h-[40px] text-[#7D2262] border border-[#DF89C6] rounded-lg mr-2 flex items-center justify-center">
-                        {" "}
-                        <p> e-sport</p>
-                      </div>
-                    </div>
+                    <div className="flex "></div>
                   </div>
                 </div>
               </div>

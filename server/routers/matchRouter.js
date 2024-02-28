@@ -91,6 +91,8 @@ matchRouter.get("/api/v1/mutual_matches/:userId", async (req, res) => {
       .eq("id", userId)
       .single();
 
+    console.log("data", data);
+
     if (error) {
       console.error("Error fetching mutual matches:", error);
       return res.status(500).json({ error: "Error fetching mutual matches" });
@@ -179,7 +181,7 @@ matchRouter.get("/api/v1/merged_matches/:userId", async (req, res) => {
     }
 
     // If no data is returned or if matches is null, set matches to an empty array
-    const matches = matchData?.matches || [];
+    const matches = matchData ? matchData.matches || [] : [];
 
     // Retrieve the list of mutual matches user IDs for the specified user
     const { data: mutualMatchData, error: mutualMatchError } = await supabase
@@ -194,7 +196,9 @@ matchRouter.get("/api/v1/merged_matches/:userId", async (req, res) => {
     }
 
     // If no data is returned or if mutual matches is null, set mutualMatches to an empty array
-    const mutualMatches = mutualMatchData?.mutual_matches || [];
+    const mutualMatches = mutualMatchData
+      ? mutualMatchData.mutual_matches || []
+      : [];
 
     // Fetch profiles of matched users for both matches and mutual matches
     const { data: matchedProfiles, error: profileError } = await supabase

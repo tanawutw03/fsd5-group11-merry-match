@@ -188,7 +188,7 @@ function MerryCards({ user }) {
                     {person.full_name}
                   </h1>
                   <span className="text-white">{person.age}</span>
-                  <PopUpProfile useMenu={true} />
+                  <PopUpProfile useMenu={true} userId={person.id} />
                 </div>
                 <div>
                   <ArrowBackIcon w={5} h={5} color="white" />
