@@ -99,4 +99,38 @@ userPackage.put("/updatePackage/:id", async (req, res) => {
   }
 });
 
+userPackage.get("/history/:id", async (req, res) => {
+  try {
+    const Id = req.params.id;
+
+    // Fetch complaint data by ID from "merry_limits"
+    const { data: packageHistoryData, error: packageHistoryError } =
+      await supabase
+        .from("orders")
+        .select("created, packages(package_id, price)")
+        .eq("profile_id", Id)
+        .eq("status", "complete")
+        .order("created", { ascending: false });
+    if (packageHistoryError) {
+      console.error(
+        "Error fetching history data:",
+        packageHistoryError.message
+      );
+      res.status(500).json({ error: "Internal server error" });
+      return;
+    }
+
+    if (!packageHistoryData || packageHistoryData.length === 0) {
+      res.status(404).json({ error: "No data found for the provided ID" });
+      return;
+    }
+    // Send the package data as a response
+    res.status(200).json(packageHistoryData);
+    console.log("historydata:", packageHistoryData);
+  } catch (error) {
+    console.error("Error:", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 export default userPackage;

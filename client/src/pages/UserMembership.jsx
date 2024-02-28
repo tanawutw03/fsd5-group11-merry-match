@@ -25,6 +25,8 @@ function UserMembership() {
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
   const [dataPackage, setDataPackage] = useState({});
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [lastBill, setLastBill] = useState();
 
   const navigate = useNavigate();
 
@@ -46,6 +48,20 @@ function UserMembership() {
         console.error("Error fetching package data:", error.message);
       }
     }
+    async function fetchHistoryData() {
+      try {
+        const response = await axios.get(
+          `http://localhost:4008/userPackage/history/${user.user.id}`
+        );
+        const historyData = response.data;
+        setHistory(historyData);
+        setLastBill(handlelastBill(historyData[0].created));
+        console.log("historyData", history);
+      } catch (error) {
+        console.error("Error fetching package data:", error.message);
+      }
+    }
+    fetchHistoryData();
     fetchPackageData();
   }, [user.user.id]);
   // Logging the updated state value outside of useEffect to ensure it reflects the updated value
@@ -60,6 +76,39 @@ function UserMembership() {
 
   const handleCancelPackage = () => {
     setShowCancelModal(true);
+  };
+
+  const handlelastBill = (inputText) => {
+    // Split the input text by spaces to separate date and time
+    const parts = inputText.split(" ");
+
+    // Extract the date part
+    const datePart = parts[0];
+
+    // Split the date part by "/"
+    const dateParts = datePart.split("/");
+
+    // Create a Date object with the extracted date
+    const currentDate = new Date(
+      `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`
+    );
+
+    // Add 30 days to the current date
+    currentDate.setDate(currentDate.getDate() + 30);
+
+    // Get the day, month, and year components of the new date
+    const day = currentDate.getDate();
+    const month = currentDate.getMonth() + 1; // Month is zero-based, so add 1
+    const year = currentDate.getFullYear();
+
+    // Format the date as "DD/MM/YYYY"
+    const formattedDate =
+      (day < 10 ? "0" + day : day) +
+      "/" +
+      (month < 10 ? "0" + month : month) +
+      "/" +
+      year;
+    return formattedDate;
   };
 
   const handleCancelConfirmation = async () => {
@@ -112,7 +161,7 @@ function UserMembership() {
           user={user}
         />
       )}
-      <div className="MerryMembershipSection w-[1440px] h-[1585px] pl-[254px] pr-[255px] pt-20 pb-28 bg-white flex-col justify-start items-center  inline-flex">
+      <div className="MerryMembershipSection w-[1440px]  pl-[254px] pr-[255px] mt-[50px] pb-28 bg-white flex-col justify-start items-center  inline-flex">
         <div className="MerryMembershipContainer self-stretch flex-col justify-start items-center gap-20 inline-flex">
           <div className="Header w-[930px] justify-start items-end gap-4 inline-flex">
             <div className="RegsterWrapper grow shrink basis-0 flex-col justify-start items-end gap-[37px] inline-flex">
@@ -232,58 +281,28 @@ function UserMembership() {
               <div className="Email w-[931px] text-fuchsia-800 text-2xl font-bold font-['Nunito'] leading-[30px]">
                 Billing History
               </div>
-              <div className="PackageCard h-[470px] px-8 pt-8 pb-6 bg-white rounded-[32px] border border-gray-300 flex-col justify-start items-end gap-4 flex">
+              <div className="PackageCard  px-8 pt-8 pb-6 bg-white rounded-[32px] border border-gray-300 flex-col justify-start items-end gap-4 flex">
                 <div className="Table w-[866px] py-2 border-b border-gray-200 justify-start items-start gap-4 inline-flex">
                   <div className="NextBilling01092022 grow shrink basis-0 text-slate-500 text-xl font-semibold font-['Nunito'] leading-[30px]">
-                    Next billing : 01/09/2022{" "}
+                    Next billing : {lastBill ? lasybill : "No Packages"}
                   </div>
                 </div>
                 <div className="BillingDetail pb-6 border-b border-gray-200 flex-col justify-start items-start flex">
-                  <div className="Table w-[866px] p-4 justify-start items-start gap-4 inline-flex">
-                    <div className="082022 grow shrink basis-0 text-slate-500 text-base font-normal font-['Nunito'] leading-normal">
-                      01/08/2022
+                  {history.map((billingRecord, index) => (
+                    <div
+                      key={index}
+                      className={`Table w-[866px] p-4 ${
+                        index % 2 === 0 ? "bg-slate-50 rounded-lg" : ""
+                      } justify-start items-start gap-4 inline-flex`}
+                    >
+                      <div className="Date grow shrink basis-0 text-slate-500 text-base font-normal font-['Nunito'] leading-normal">
+                        {billingRecord.created}
+                      </div>
+                      <div className="Amount text-slate-600 text-base font-normal font-['Nunito'] leading-normal">
+                        THB {billingRecord.packages.price} bath
+                      </div>
                     </div>
-                    <div className="Thb14900 text-slate-600 text-base font-normal font-['Nunito'] leading-normal">
-                      THB 149.00
-                    </div>
-                  </div>
-                  <div className="Table w-[866px] p-4 bg-slate-50 rounded-lg justify-start items-start gap-4 inline-flex">
-                    <div className="072022 grow shrink basis-0 text-slate-500 text-base font-normal font-['Nunito'] leading-normal">
-                      01/07/2022
-                    </div>
-                    <div className="Thb14900 text-slate-600 text-base font-normal font-['Nunito'] leading-normal">
-                      THB 149.00
-                    </div>
-                  </div>
-                  <div className="Table w-[866px] p-4 justify-start items-start gap-4 inline-flex">
-                    <div className="062022 grow shrink basis-0 text-slate-500 text-base font-normal font-['Nunito'] leading-normal">
-                      01/06/2022
-                    </div>
-                    <div className="Thb5900 text-slate-600 text-base font-normal font-['Nunito'] leading-normal">
-                      THB 59.00
-                    </div>
-                  </div>
-                  <div className="Table w-[866px] p-4 bg-slate-50 rounded-lg justify-start items-start gap-4 inline-flex">
-                    <div className="052022 grow shrink basis-0 text-slate-500 text-base font-normal font-['Nunito'] leading-normal">
-                      01/05/2022
-                    </div>
-                    <div className="Thb5900 text-slate-600 text-base font-normal font-['Nunito'] leading-normal">
-                      THB 59.00
-                    </div>
-                  </div>
-                  <div className="Table w-[866px] p-4 justify-start items-start gap-4 inline-flex">
-                    <div className="042022 grow shrink basis-0 text-slate-500 text-base font-normal font-['Nunito'] leading-normal">
-                      01/04/2022
-                    </div>
-                    <div className="Thb5900 text-slate-600 text-base font-normal font-['Nunito'] leading-normal">
-                      THB 59.00
-                    </div>
-                  </div>
-                </div>
-                <div className="ButtonGhost px-2 py-1 rounded-2xl justify-center items-center gap-2 inline-flex">
-                  <div className="Ghost text-rose-700 text-base font-bold font-['Nunito'] leading-normal">
-                    Reqeust PDF
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
