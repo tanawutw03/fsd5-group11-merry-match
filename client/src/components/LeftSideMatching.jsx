@@ -6,10 +6,15 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-const LeftSideMatching = ({ mutualMatch }) => {
+const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
   const navigate = useNavigate();
   const [merryMatch, setMerryMatch] = useState([]);
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
+
+  const openChat = (profile) => {
+    console.log("Open chatroom with mutual match:", profile);
+    onMutualMatchClick();
+  };
 
   useEffect(() => {
     console.log(`mutualMatch:`, mutualMatch);
@@ -55,7 +60,7 @@ const LeftSideMatching = ({ mutualMatch }) => {
 >>>>>>> 209eae5 (fix: conflict LeftSideMatching)
 
   return (
-    <div className=" w-1/4 h-screen">
+    <div className="w-1/4 h-screen">
       <div className="flex flex-col items-center pt-5">
         <div className="flex  flex-col justify-center items-center w-[282px] h-[187px] border-[#A62D82] border rounded-[16px]">
           <img className="w-[55px] h-[55px]" src={seach} />
@@ -69,20 +74,26 @@ const LeftSideMatching = ({ mutualMatch }) => {
       </div>
 
       <div className="p-5">
-        <h1 className="text-xl font-bold">Merry Match!</h1>
-        <div className="flex gap-2 w-full">
-          {[...merryMatch].reverse().map((profile) => (
-            <div key={profile.id} className=" relative w-16 h-16 snap-start ">
-              <img
-                className="rounded-2xl w-16 h-16"
-                src={profile.avatar_url[0].publicUrl}
-              />
-              <img
-                className="w-6 h-6 absolute bottom-0 right-0 "
-                src={merrymatch}
-              />
-            </div>
-          ))}
+        <div>
+          <h1 className="text-xl font-bold">Merry Match!</h1>
+          <div className="flex gap-2 w-full">
+            {[...merryMatch].reverse().map((profile) => (
+              <div
+                key={profile.id}
+                className=" relative w-16 h-16 snap-start "
+                onClick={() => openChat(profile)}
+              >
+                <img
+                  className="rounded-2xl w-16 h-16"
+                  src={profile.avatar_url[0].publicUrl}
+                />
+                <img
+                  className="w-6 h-6 absolute bottom-0 right-0 "
+                  src={merrymatch}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -108,8 +119,10 @@ const LeftSideMatching = ({ mutualMatch }) => {
     </div>
   );
 };
+
 LeftSideMatching.propTypes = {
   mutualMatch: PropTypes.bool,
+  onMutualMatchClick: PropTypes.func,
 };
 
 export default LeftSideMatching;

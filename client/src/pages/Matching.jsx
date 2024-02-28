@@ -7,18 +7,29 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../app/userContext";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import Chatroom from "../components/Chatroom";
 
 function Matching() {
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
   const [mutualMatch, setMutualMatch] = useState(false);
+  const [showChatroom, setShowChatroom] = useState(false);
+
   const navigate = useNavigate();
 
   const handleClick = () => {
-    console.log(Clicked);
+    console.log(`Clicked`);
   };
 
   const handleMutualMatch = (value) => {
     setMutualMatch(value);
+  };
+
+  const toggleChatroom = () => {
+    setShowChatroom(true);
+    console.log(
+      "Chatroom status:",
+      showChatroom === true ? "opened" : "closed"
+    );
   };
 
   return (
@@ -39,25 +50,35 @@ function Matching() {
         />
 
         <div className="flex flex-row">
-          <LeftSideMatching mutualMatch={mutualMatch} />
-          <MerryCards user={user} onMutualMatch={handleMutualMatch} />
-          <div className="  flex-col flex  w-1/4 p-6 h-screen ">
-            <p className=" text-[#191C77] text-base font-bold">
-              Sex you interest
-            </p>
-            <div className="mt-2 flex flex-col">
-              <Checkbox colorScheme="pink" defaultChecked mt={2}>
-                Default
-              </Checkbox>
-              <Checkbox colorScheme="pink" defaultChecked mt={2}>
-                Female
-              </Checkbox>
-              <Checkbox colorScheme="pink" defaultChecked mt={2}>
-                Non-bunary people
-              </Checkbox>
-            </div>
-            <SliderAge />
-          </div>
+          <LeftSideMatching
+            mutualMatch={mutualMatch}
+            onMutualMatchClick={toggleChatroom}
+          />
+
+          {showChatroom ? (
+            <Chatroom />
+          ) : (
+            <>
+              <MerryCards user={user} onMutualMatch={handleMutualMatch} />
+              <div className="  flex-col flex  w-1/4 p-6 h-screen ">
+                <p className=" text-[#191C77] text-base font-bold">
+                  Sex you interest
+                </p>
+                <div className="mt-2 flex flex-col">
+                  <Checkbox colorScheme="pink" defaultChecked mt={2}>
+                    Default
+                  </Checkbox>
+                  <Checkbox colorScheme="pink" defaultChecked mt={2}>
+                    Female
+                  </Checkbox>
+                  <Checkbox colorScheme="pink" defaultChecked mt={2}>
+                    Non-bunary people
+                  </Checkbox>
+                </div>
+                <SliderAge />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>
