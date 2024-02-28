@@ -181,7 +181,7 @@ function MerryCards({ user, onMutualMatch }) {
               <div
                 className="bg-center bg-no-repeat bg-[length:620px_720px]   p-5 relative w-[620px] h-[720px] rounded-2xl "
                 style={{
-                  backgroundImage: `url(${person.avatarUrl})`,
+                  backgroundImage: `url(${person.avatarUrls[0]})`,
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent  rounded-2xl to-[#411849]"></div>
