@@ -38,7 +38,7 @@ userProfileRoute.get("/profile/:id", async (req, res) => {
     const { id } = req.params;
     const { data, error } = await supabase
       .from("profiles")
-      .select("*")
+      .select(`*,user_profiles_url(storage_location)`)
       .eq("id", id);
 
     if (error) {
@@ -51,37 +51,6 @@ userProfileRoute.get("/profile/:id", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
-//------- leang for upload userprofilePage------
-// userProfileRoute.post("/upload", upload.single('file'), async (req, res) => {
-//   try {
-//     const file = req.file;
-//     if (!file) {
-//       throw new Error("No file received");
-//     }
-//     const uniqueFileName = `${Date.now()}_${file.name}`
-//     const imagePath = `images/${uniqueFileName}`;
-//     console.log("imagePath88: ",imagePath)
-
-//     // Upload file to Supabase Storage
-//     const { data, error } = await supabase.storage
-//       .from("profile_images")
-//       .upload(file.path,file)
-
-//     // Delete the temporary file after upload
-//     fs.unlinkSync(file.path);
-
-//     if (error) {
-//       throw new Error(`Storage Error: ${error.message}`);
-//     }
-
-//     // Return the uploaded file URL
-//     res.status(200).json({ imageUrl: data.Key });
-//   } catch (error) {
-//     console.error("Error uploading image:", error.message);
-//     res.status(500).json({ error: error.message });
-//   }
-// });
 
 userProfileRoute.post("/upload", upload.single("file"), async (req, res) => {
   const fileName = req.files;
