@@ -23,13 +23,14 @@ const PopUpProfile = ({
   variant,
   colorScheme,
   size,
+  name,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [avatarIndex, setAvatarIndex] = useState(0);
 
   const IconOrButton = useMenu ? (
     <IconButton
-      onClick={onOpen}
+      onClick={isOpen}
       isRound={isRound}
       variant={variant}
       colorScheme={colorScheme}
@@ -37,7 +38,13 @@ const PopUpProfile = ({
       size={size}
     />
   ) : (
-    <ChakraButton onClick={onOpen} />
+    <ChakraButton
+      onClick={onOpen}
+      name={name}
+      variant={variant}
+      colorScheme={colorScheme}
+      w="100%"
+    />
   );
 
   console.log(`profileData:`, profileData);
@@ -80,7 +87,15 @@ const PopUpProfile = ({
                       profileData.avatarUrls &&
                       profileData.avatarUrls[avatarIndex]
                         ? profileData.avatarUrls[avatarIndex]
-                        : profileData.avatar_url[avatarIndex]?.publicUrl
+                        : profileData.avatar_url &&
+                          profileData.avatar_url[avatarIndex]?.publicUrl
+                        ? profileData.avatar_url[avatarIndex]?.publicUrl
+                        : profileData.user_profiles_url &&
+                          profileData.user_profiles_url[0]?.storage_location
+                        ? profileData.user_profiles_url[0]?.storage_location[
+                            `url${avatarIndex + 1}`
+                          ]
+                        : null // Or any fallback value you want to use if none of the conditions are met
                     }
                   />
                 </div>
@@ -89,7 +104,7 @@ const PopUpProfile = ({
                   <img className="w-20 h-20" src={heart} alt="Heart Icon" />
                 </div>
                 <div className="flex flex-row justify-between mt-4">
-                  <p className="text-[#646D89]">1/2</p>
+                  <p className="text-[#646D89]">{avatarIndex + 1}/5</p>
                   <div className="flex flex-row z-30">
                     {/* Render backward arrow icon */}
                     <IconButton
@@ -147,14 +162,15 @@ const PopUpProfile = ({
                     </div>
                     <h1 className=" text-[24px] pt-6">Hobbies and Interests</h1>
                     <div className="flex pt-3 ">
-                      {profileData.hobbies.map((hobby, index) => (
-                        <div
-                          key={index}
-                          className="w-[86px] h-[40px] text-[#7D2262] border border-[#DF89C6] rounded-lg mr-2 flex items-center justify-center"
-                        >
-                          <p>{hobby}</p>
-                        </div>
-                      ))}
+                      {Array.isArray(profileData.hobbies) &&
+                        profileData.hobbies.map((hobby, index) => (
+                          <div
+                            key={index}
+                            className="w-[86px] h-[40px] text-[#7D2262] border border-[#DF89C6] rounded-lg mr-2 flex items-center justify-center"
+                          >
+                            <p>{hobby}</p>
+                          </div>
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -173,6 +189,7 @@ PopUpProfile.propTypes = {
   variant: PropTypes.string,
   size: PropTypes.string,
   profileData: PropTypes.object,
+  name: PropTypes.string,
 };
 
 export default PopUpProfile;
