@@ -157,11 +157,11 @@ function MerryCards({ user, onMutualMatch }) {
   }, [mutualMatch]);
 
   return (
-    <div className="w-[700px] flex justify-center items-center ">
+    <div className="w-4/5  flex justify-center items-center ">
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
       {dataLoaded && !isLoading && !error && people.length > 0 && (
-        <div className="h-[936px] w-full bg-[#160404] flex justify-center relative items-center gap-5 border-2 overflow-hidden borer-4 border-amber-500 ">
+        <div className="h-screen w-full bg-[#160404] flex justify-center relative items-center gap-5 border-2 overflow-hidden ">
           <div className="flex  flex-row absolute bottom-16 z-30 ">
             <img className=" w-[90px] h-[90px]  " src={action} />
             <img className=" w-[90px] h-[90px] " src={heart} />
@@ -179,7 +179,7 @@ function MerryCards({ user, onMutualMatch }) {
               onCardLeftScreen={() => onCardLeftScreen(person.full_name)}
             >
               <div
-                className="bg-center bg-no-repeat bg-[length:620px_720px]   p-5 relative w-[620px] h-[720px] rounded-2xl "
+                className="bg-center bg-no-repeat bg-[length:720px_720px]   p-5 relative w-[720px] h-[720px] rounded-2xl "
                 style={{
                   backgroundImage: `url(${person.avatarUrl})`,
                 }}
@@ -191,7 +191,14 @@ function MerryCards({ user, onMutualMatch }) {
                     {person.full_name}
                   </h1>
                   <span className="text-white">{person.age}</span>
-                  <PopUpProfile useMenu={true} profileData={person} />
+                  <PopUpProfile
+                    useMenu={true}
+                    profileData={person}
+                    colorScheme="whiteAlpha"
+                    variant="solid"
+                    isRound={true}
+                    size="xs"
+                  />
                 </div>
                 <div>
                   <ArrowBackIcon w={5} h={5} color="white" />

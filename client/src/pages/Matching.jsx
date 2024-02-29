@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../app/userContext";
 import PropTypes from "prop-types";
 import { useState } from "react";
-
+import ChakraButton from "../components/common/ChakraButton";
 function Matching() {
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
   const [mutualMatch, setMutualMatch] = useState(false);
@@ -23,7 +23,7 @@ function Matching() {
 
   return (
     <>
-      <div className="w-screen">
+      <div className="w-full  ">
         <NavBar
           firstMenuName="Start Matching!"
           secondMenuName="Merry Membership"
@@ -38,10 +38,10 @@ function Matching() {
           onClick={handleClick}
         />
 
-        <div className="flex flex-row">
+        <div className="flex flex-row w-full  m-0 p-0 ">
           <LeftSideMatching mutualMatch={mutualMatch} />
           <MerryCards user={user} onMutualMatch={handleMutualMatch} />
-          <div className="  flex-col flex  w-1/4 p-6 h-screen ">
+          <div className="  flex-col flex w-1/6  p-6  ">
             <p className=" text-[#191C77] text-base font-bold">
               Sex you interest
             </p>
@@ -57,6 +57,22 @@ function Matching() {
               </Checkbox>
             </div>
             <SliderAge />
+            <div className="flex flex-col pl-5 mt-40 border-t border-solid border-t-[color:var(--gray-300,#E4E6ED)] ">
+              <div className="flex gap-5 justify-between pl-6">
+                <ChakraButton
+                  name=" Clear"
+                  colorScheme="red"
+                  variant="ghost"
+                  rounded="20px"
+                ></ChakraButton>
+                <ChakraButton
+                  name=" Search"
+                  colorScheme="red"
+                  variant="solid"
+                  rounded="20px"
+                ></ChakraButton>
+              </div>
+            </div>
           </div>
         </div>
       </div>
