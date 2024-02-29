@@ -91,13 +91,13 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
     <>
       <div className="w-full h-full flex flex-col items-center justify-start p-5 gap-5">
         <ButtonNewMatch />
-        <div className=" w-full h-48">
+        <div className="w-full h-48">
           <h1 className="text-xl font-bold">Merry Match!</h1>
           <div className="flex overflow-auto w-full h-full gap-5">
             {[...merryMatch].reverse().map((profile) => (
               <div
                 key={profile.id}
-                className="flex relative flex-col pt-12 pl-36"
+                className="relative pt-12 pl-36"
                 onClick={() => openChat(profile)}
               >
                 <img
