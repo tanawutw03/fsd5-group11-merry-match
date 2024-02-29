@@ -10,7 +10,7 @@ chatRouter.get(`/api/v1/to-other-user`, async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("messages")
-      .select("messages")
+      .select("message")
       .eq("from_userid", userId)
       .eq("to_userid", profileId)
       .order("created_at", { ascending: true })
@@ -38,7 +38,7 @@ chatRouter.get(`/api/v1/from-other-user`, async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("messages")
-      .select("messages")
+      .select("message")
       .eq("from_userid", profileId)
       .eq("to_userid", userId)
       .order("created_at", { ascending: true })

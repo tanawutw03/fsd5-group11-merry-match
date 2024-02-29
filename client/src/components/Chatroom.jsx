@@ -3,7 +3,7 @@ import ChakraButton from "./common/ChakraButton";
 import { supabase } from "../utils/supabaseClient.js";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-
+import moment from "moment";
 function Chatroom({ profile, user }) {
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
@@ -101,7 +101,9 @@ function Chatroom({ profile, user }) {
 
       // Extract the ID of the newly inserted message from the response
       const messageId = response.data.data[0].id;
-      console.log(`messageId:`, messageId);
+      console.log(`messageId:`, response.data.data);
+
+      const created_at = response.data.data[0].created_at;
 
       // Join a room/topic. Can be anything except for 'realtime'.
       const chatChannel = supabase.channel("chatroom");
@@ -119,9 +121,10 @@ function Chatroom({ profile, user }) {
           event: "new_message",
           payload: {
             id: messageId,
-            message: message,
+            created_at: created_at,
             from_userid: user.user.id,
             to_userid: profile.id,
+            message: message,
             fromCurrentUser: true,
           },
         });
