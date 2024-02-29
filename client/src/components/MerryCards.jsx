@@ -191,7 +191,6 @@ function MerryCards({ user, onMutualMatch }) {
                     {person.full_name}
                   </h1>
                   <span className="text-white">{person.age}</span>
-<<<<<<< HEAD
                   <PopUpProfile
                     useMenu={true}
                     profileData={person}
@@ -200,9 +199,6 @@ function MerryCards({ user, onMutualMatch }) {
                     isRound={true}
                     size="xs"
                   />
-=======
-                  <PopUpProfile useMenu={true} profileData={person} />
->>>>>>> f554ce6 (feat:create API endpoint for supporting Data,userProfilePage)
                 </div>
                 <div>
                   <ArrowBackIcon w={5} h={5} color="white" />

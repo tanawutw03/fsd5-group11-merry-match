@@ -55,7 +55,10 @@ function UserMembership() {
         );
         const historyData = response.data;
         setHistory(historyData);
-        setLastBill(handlelastBill(historyData[0].created));
+        const last = handlelastBill(historyData[0].created);
+        setLastBill(last);
+        console.log("lastData", last);
+        console.log("lastbillData", lastBill);
         console.log("historyData", history);
       } catch (error) {
         console.error("Error fetching package data:", error.message);
@@ -284,7 +287,7 @@ function UserMembership() {
               <div className="PackageCard  px-8 pt-8 pb-6 bg-white rounded-[32px] border border-gray-300 flex-col justify-start items-end gap-4 flex">
                 <div className="Table w-[866px] py-2 border-b border-gray-200 justify-start items-start gap-4 inline-flex">
                   <div className="NextBilling01092022 grow shrink basis-0 text-slate-500 text-xl font-semibold font-['Nunito'] leading-[30px]">
-                    Next billing : {lastBill ? lastbill : "No Packages"}
+                    Next billing : {lastBill ? lastBill : "No Packages"}
                   </div>
                 </div>
                 <div className="BillingDetail pb-6 border-b border-gray-200 flex-col justify-start items-start flex">
