@@ -116,7 +116,7 @@ const NavBar = (props) => {
 
   return (
     <>
-      <nav className=" w-screen  flex  items-center p-2  justify-between shadow-md bg-opacity-20">
+      <nav className=" w-full  flex  items-center p-2  justify-between shadow-md bg-opacity-20">
         <ul className="pl-32">
           <img src={logo} />
         </ul>

@@ -1,15 +1,18 @@
-import seach from "../assets/Matching/search.svg";
 import merrymatch from "../assets/MerryMatch/merrymatch.png";
 import { useUser } from "../app/userContext";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+<<<<<<< HEAD
 
 const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
   const navigate = useNavigate();
+=======
+import ButtonNewMatch from "./ButtonNewMatch";
+const LeftSideMatching = ({ mutualMatch }) => {
+>>>>>>> 2b69d08 (feat(LeftSideMatching) add scrollbar in marry match and chat)
   const [merryMatch, setMerryMatch] = useState([]);
-  const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
+  const { user } = useUser();
 
   const openChat = (profile) => {
     console.log("Open chatroom with mutual match:", profile);
@@ -43,48 +46,37 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
   }, [user.user.id, mutualMatch]);
 
   return (
-    <div className="w-1/4 h-screen">
-      <div className="flex flex-col items-center pt-5">
-        <div className="flex  flex-col justify-center items-center w-[282px] h-[187px] border-[#A62D82] border rounded-[16px]">
-          <img className="w-[55px] h-[55px]" src={seach} />
-          <h1 className="text-xl font-bold text-[#95002B]">
-            Discover New Match
-          </h1>
-          <p className="text-xs h-[42px] w-[234px] text-center">
-            Start find and Merry to get know and connect with new friend!.
-          </p>
-        </div>
+    <div className="w-2/6 h-screen">
+      <div className="flex flex-col items-center pt-5 ">
+        <ButtonNewMatch />
       </div>
 
-      <div className="p-5">
-        <div>
-          <h1 className="text-xl font-bold">Merry Match!</h1>
-          <div className="flex gap-2 w-full">
-            {[...merryMatch].reverse().map((profile) => (
-              <div
-                key={profile.id}
-                className=" relative w-16 h-16 snap-start "
-                onClick={() => openChat(profile)}
-              >
-                <img
-                  className="rounded-2xl w-16 h-16"
-                  src={profile.avatar_url[0].publicUrl}
-                />
-                <img
-                  className="w-6 h-6 absolute bottom-0 right-0 "
-                  src={merrymatch}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-5 ml-5">
-        <h1 className="text-xl font-bold">Chat with Merry Match</h1>
-        <div className="flex flex-col pt-2 gap-3  ">
+      <div className="pl-5 mt-10 border-t border-solid border-t-[color:var(--gray-300,#E4E6ED)] ">
+        <h1 className="text-xl font-bold">Merry Match!</h1>
+        <div className="flex overflow-x-auto gap-3 px-5 mt-4 w-96 h-36 scrollbar-hide md:scrollbar-default hover:cursor-grab active:cursor-grabbing ">
           {[...merryMatch].reverse().map((profile) => (
-            <div key={profile.id} className="w-96  h-16 flex flex-row ">
+            <div
+              key={profile.id}
+              className="flex overflow-hidden relative flex-col     pt-12 pl-36 rounded-xl "
+            >
+              <img
+                className="object-cover absolute inset-0 w-36 h-36"
+                src={profile.avatar_url[0].publicUrl}
+              />
+              <img
+                className="w-6 h-6 absolute bottom-0 right-0 "
+                src={merrymatch}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-5 ml-5 ">
+        <h1 className="text-xl font-bold">Chat with Merry Match</h1>
+        <div className="flex flex-col pt-5 gap-3 h-[420px] overflow-y-auto scrollbar-hide md:scrollbar-default hover:cursor-grab active:cursor-grabbing    ">
+          {[...merryMatch].reverse().map((profile) => (
+            <div key={profile.id} className="w-96  h-20 flex flex-row  ">
               <div className="rounded-full w-20 h-20">
                 <img
                   className=" rounded-full w-16 h-16"
@@ -92,7 +84,7 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
                 />
               </div>
               <div className="w-96 pl-2 ">
-                <p>Ygritte</p>
+                <p>{profile.full_name}</p>
                 <p>You know nothing Jon Snow</p>
               </div>
             </div>

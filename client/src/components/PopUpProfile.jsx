@@ -14,8 +14,11 @@ import action from "../assets/Matching/action button.svg";
 import heart from "../assets/Matching/heart button (1).svg";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 import location from "../assets/PopupProfile/location.png";
+<<<<<<< HEAD
 import { propTypes } from "react-tinder-card";
 import { useState } from "react";
+=======
+>>>>>>> 2b69d08 (feat(LeftSideMatching) add scrollbar in marry match and chat)
 
 const PopUpProfile = ({
   useMenu,
@@ -57,19 +60,26 @@ const PopUpProfile = ({
     console.log(`handleForwardClick`);
   };
 
+  // console.log(`profileData:`, profileData);
+  const values = [
+    { title: "Sexual identities", value: profileData.sex_identities },
+    { title: "Sexual preferences", value: profileData.sex_preferences },
+    { title: "Racial preferences", value: profileData.racial_preferences },
+    { title: "Meeting interests", value: profileData.meeting_interest },
+  ];
   return (
     <>
       <ul>{IconOrButton}</ul>
-      <Modal isOpen={isOpen} size="3xl" onClose={onClose}>
+      <Modal isOpen={isOpen} size="4xl" onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
           <ModalBody>
-            <div className="flex justify-center items-center h-full p-4 border-purple-300 border-4  ">
-              <div className=" flex   flex-col  h-full  border-red-600 border-4  ">
-                <div className="rounded-2x border-red-600 border-4 h-72 w-72">
+            <div className="flex justify-between items-center h-full p-6  ">
+              <div className=" flex   flex-col  h-full   ">
+                <div className=" h-96 w-96">
                   <img
-                    className="h-[250px]"
+                    className="h-96 w-96 rounded-2xl"
                     src={
                       profileData.avatarUrls &&
                       profileData.avatarUrls[avatarIndex]
@@ -78,31 +88,29 @@ const PopUpProfile = ({
                     }
                   />
                 </div>
-                <div className="flex flex-row absolute bottom-14 left-40">
-                  <img className="w-12 h-12" src={action} alt="Action Icon" />
-                  <img className="w-12 h-12" src={heart} alt="Heart Icon" />
+                <div className="flex flex-row absolute bottom-10 left-40">
+                  <img className="w-20 h-20" src={action} alt="Action Icon" />
+                  <img className="w-20 h-20" src={heart} alt="Heart Icon" />
                 </div>
                 <div className="flex flex-row justify-between mt-4">
-                  <p className="text-[#646D89]"></p>
+                  <p className="text-[#646D89]">1/2</p>
                   <div className="flex flex-row z-30">
                     {/* Render backward arrow icon */}
                     <IconButton
                       color="gray"
                       variant="link"
                       icon={<ArrowBackIcon />}
-                      onClick={handleBackwardClick}
                     />
                     {/* Render forward arrow icon */}
                     <IconButton
                       color="gray"
                       variant="link"
                       icon={<ArrowForwardIcon />}
-                      onClick={handleForwardClick}
                     />
                   </div>
                 </div>
               </div>
-              <div className=" h-full w-1/2 pl-10 flex  border-purple-800 border-4 flex-row">
+              <div className=" h-full w-1/2 flex flex-row pl-5 ">
                 <div className="w-[418px] ">
                   <div className="flex ">
                     <p className="text-3xl font-bold mr-4 ">
@@ -112,28 +120,35 @@ const PopUpProfile = ({
                       {profileData.age}
                     </p>
                   </div>
-                  <div className="flex">
-                    <img className=" w-5 h-5 " src={location} />
-                    <div className="flex  text-[#646D89]">
-                      <p>{profileData.city}</p>
-                      <p>,</p>
-                      <p>{profileData.country}</p>
+                  <div className="flex gap-4 justify-between mt-2 text-xl font-semibold leading-8 text-slate-500 max-md:flex-wrap max-md:max-w-full">
+                    <img src={location} className="my-auto w-6 aspect-square" />
+                    <div className="grow">
+                      {profileData.city}, {profileData.country}{" "}
                     </div>
                   </div>
-                  <div className=" flex flex-col ">
-                    <div className="flex flex-col">
-                      <div className="flex">
-                        <p className="w-[191px] text-[16px]"></p>
-                        <p className="text-[#646D89]"></p>
-                      </div>
+                  <div className=" flex flex-col pt-5 ">
+                    <div className=" flex-col justify-start items-start inline-flex ">
+                      {values.map((item, index) => (
+                        <div
+                          key={index}
+                          className=" justify-start items-baseline inline-flex self-stretch py-1   "
+                        >
+                          <p className="Label w-[191px] text-slate-800 text-base font-normal font-['Nunito'] leading-normal">
+                            {item.title}
+                          </p>
+                          <p className="Placeholder grow shrink basis-0 self-stretch text-slate-500 text-xl font-semibold font-['Nunito'] leading-[30px]">
+                            {item.value}
+                          </p>
+                        </div>
+                      ))}
                     </div>
 
-                    <h1 className=" text-[24px]">About me</h1>
+                    <h1 className=" text-[24px] pt-4">About me</h1>
                     <div className="">
                       <p>{profileData.description}</p>
                     </div>
-                    <h1 className=" text-[24px]">Hobbies and Interests</h1>
-                    <div className="flex ">
+                    <h1 className=" text-[24px] pt-6">Hobbies and Interests</h1>
+                    <div className="flex pt-3 ">
                       {profileData.hobbies.map((hobby, index) => (
                         <div
                           key={index}
