@@ -29,28 +29,40 @@ function Matching() {
   const toggleChatroom = (profile) => {
     setShowChatroom(true);
     setSelectedProfile(profile);
-    console.log(
-      "Chatroom status:",
-      showChatroom === true ? "opened" : "closed"
-    );
   };
 
   return (
     <>
       <div className="w-screen h-screen">
-        <NavBar
-          firstMenuName="Start Matching!"
-          secondMenuName="Merry Membership"
-          name="login"
-          color="red"
-          showBell={true}
-          useMenu={user}
-          onClickFirstMenu={() => navigate("/matching")}
-          onClickSecondMenu={() => navigate("/package")}
-          setUser={setUser}
-          user={user}
-          onClick={handleClick}
-        />
+        {showChatroom ? (
+          <NavBar
+            firstMenuName="Start Matching!"
+            secondMenuName="Merry Membership"
+            name="login"
+            color="red"
+            showBell={true}
+            useMenu={user}
+            onClickFirstMenu={() => setShowChatroom(false)}
+            onClickSecondMenu={() => navigate("/package")}
+            setUser={setUser}
+            user={user}
+            onClick={handleClick}
+          />
+        ) : (
+          <NavBar
+            firstMenuName="Start Matching!"
+            secondMenuName="Merry Membership"
+            name="login"
+            color="red"
+            showBell={true}
+            useMenu={user}
+            onClickFirstMenu={() => navigate("/matching")}
+            onClickSecondMenu={() => navigate("/package")}
+            setUser={setUser}
+            user={user}
+            onClick={handleClick}
+          />
+        )}
 
         <div className="flex">
           <div className="w-1/5">
