@@ -8,7 +8,7 @@ function ButtonNewMatch() {
   return (
     <button
       onClick={handleClick}
-      className="flex  flex-col justify-center items-center w-[282px] h-[187px] border-[#A62D82] border rounded-[16px]"
+      className="flex flex-col justify-center items-center w-[282px] h-[187px] border-[#A62D82] border rounded-[16px]"
     >
       <img className="w-[55px] h-[55px]" src={seach} />
       <h1 className="text-xl font-bold text-[#95002B]">Discover New Match</h1>

@@ -144,7 +144,7 @@ function Chatroom({ profile, user }) {
 
   return (
     <>
-      <div className="bg-black w-full h-full p-5 flex flex-col justify-between items-center">
+      <div className="bg-black w-full h-3/5 p-5 flex flex-col justify-between items-center">
         <div className="bg-white rounded p-5 w-fit border-2 border-green-500 flex flex-col justify-center items-start">
           <h1>Now you and {profile.full_name} are Merry Match!</h1>
           <h1>
@@ -153,7 +153,7 @@ function Chatroom({ profile, user }) {
           </h1>
         </div>
 
-        <div className="w-full h-4/5 overflow-auto" ref={chatContainerRef}>
+        <div className="overflow-auto" ref={chatContainerRef}>
           {chatMessages.map((msg, index) => (
             <div
               key={index}

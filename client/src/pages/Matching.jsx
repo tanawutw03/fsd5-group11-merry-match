@@ -37,7 +37,7 @@ function Matching() {
 
   return (
     <>
-      <div className="w-full  ">
+      <div className="w-screen h-screen">
         <NavBar
           firstMenuName="Start Matching!"
           secondMenuName="Merry Membership"
@@ -52,22 +52,27 @@ function Matching() {
           onClick={handleClick}
         />
 
-        <div className="flex flex-row w-full  m-0 p-0 ">
-          <LeftSideMatching
-            mutualMatch={mutualMatch}
-            onMutualMatchClick={toggleChatroom}
-          />
+        <div className="flex">
+          <div className="w-1/5">
+            <LeftSideMatching
+              mutualMatch={mutualMatch}
+              onMutualMatchClick={toggleChatroom}
+            />
+          </div>
 
           {showChatroom ? (
             <Chatroom profile={selectedProfile} user={user} />
           ) : (
             <>
-              <MerryCards user={user} onMutualMatch={handleMutualMatch} />
-              <div className="  flex-col flex w-1/6  p-6  ">
-                <p className=" text-[#191C77] text-base font-bold">
-                  Sex you interest
-                </p>
-                <div className="mt-2 flex flex-col">
+              <div className="w-full  flex">
+                <div className="w-4/5">
+                  <MerryCards user={user} onMutualMatch={handleMutualMatch} />
+                </div>
+                <div className="w-1/5">
+                  <p className=" text-[#191C77] text-base font-bold">
+                    Sex you interest
+                  </p>
+
                   <Checkbox colorScheme="pink" defaultChecked mt={2}>
                     Default
                   </Checkbox>
@@ -77,23 +82,21 @@ function Matching() {
                   <Checkbox colorScheme="pink" defaultChecked mt={2}>
                     Non-bunary people
                   </Checkbox>
-                </div>
-                <SliderAge />
-                <div className="flex flex-col pl-5 mt-40 border-t border-solid border-t-[color:var(--gray-300,#E4E6ED)] ">
-                  <div className="flex gap-5 justify-between pl-6">
-                    <ChakraButton
-                      name=" Clear"
-                      colorScheme="red"
-                      variant="ghost"
-                      rounded="20px"
-                    ></ChakraButton>
-                    <ChakraButton
-                      name=" Search"
-                      colorScheme="red"
-                      variant="solid"
-                      rounded="20px"
-                    ></ChakraButton>
-                  </div>
+
+                  <SliderAge />
+
+                  <ChakraButton
+                    name=" Clear"
+                    colorScheme="red"
+                    variant="ghost"
+                    rounded="20px"
+                  ></ChakraButton>
+                  <ChakraButton
+                    name=" Search"
+                    colorScheme="red"
+                    variant="solid"
+                    rounded="20px"
+                  ></ChakraButton>
                 </div>
               </div>
             </>

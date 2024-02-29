@@ -157,29 +157,25 @@ function MerryCards({ user, onMutualMatch }) {
   }, [mutualMatch]);
 
   return (
-    <div className="w-4/5  flex justify-center items-center ">
+    <>
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
       {dataLoaded && !isLoading && !error && people.length > 0 && (
-        <div className="h-screen w-full bg-[#160404] flex justify-center relative items-center gap-5 border-2 overflow-hidden ">
-          <div className="flex  flex-row absolute bottom-16 z-30 ">
-            <img className=" w-[90px] h-[90px]  " src={action} />
-            <img className=" w-[90px] h-[90px] " src={heart} />
-          </div>
-          <div className=" flex flex-row  absolute z-20 bottom-4 ">
+        <div className="h-[850px] w-full bg-black flex justify-center relative items-start">
+          <div className="flex absolute bottom-5">
             <p className="text-[#646D89]">Merry limit today</p>
             <p className="  text-[#FF1659]">{`${merryCount} / ${limitCount}`}</p>
           </div>
 
           {[...people].reverse().map((person) => (
             <TinderCard
-              className=" absolute hover:cursor-grab active:cursor-grabbing"
+              className="absolute hover:cursor-grab active:cursor-grabbing mt-10"
               key={person.id}
               onSwipe={(dir) => onSwipe(dir, person.id)}
               onCardLeftScreen={() => onCardLeftScreen(person.full_name)}
             >
               <div
-                className="bg-center bg-no-repeat bg-[length:720px_720px]   p-5 relative w-[720px] h-[720px] rounded-2xl "
+                className="bg-center bg-no-repeat bg-[length:720px_720px] p-5 relative w-[720px] h-[720px] rounded-2xl "
                 style={{
                   backgroundImage: `url(${person.avatarUrls[0]})`,
                 }}
@@ -205,6 +201,12 @@ function MerryCards({ user, onMutualMatch }) {
                   <ArrowForwardIcon w={5} h={5} color="white" />
                 </div>
               </div>
+              <div className="absolute -bottom-10 left-0 w-full flex justify-center">
+                <div className="flex">
+                  <img className="w-[90px] h-[90px]" src={action} />
+                  <img className="w-[90px] h-[90px]" src={heart} />
+                </div>
+              </div>
             </TinderCard>
           ))}
         </div>
@@ -219,7 +221,7 @@ function MerryCards({ user, onMutualMatch }) {
           }}
         />
       )}
-    </div>
+    </>
   );
 }
 

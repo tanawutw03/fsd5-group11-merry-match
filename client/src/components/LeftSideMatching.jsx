@@ -9,7 +9,7 @@ import ButtonNewMatch from "./ButtonNewMatch.jsx";
 
 const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
   const [merryMatch, setMerryMatch] = useState([]);
-  const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
+  const { user } = useUser();
   const [lastMessages, setLastMessages] = useState([]);
 
   useEffect(() => {
@@ -31,17 +31,6 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
     function lastMessageReceived(payload) {
       console.log(`payload:`, payload);
       const newMessage = payload.new;
-
-      // const currentTime = moment().format(); // Current time
-      // console.log(`currentTime:`, currentTime);
-      // const messageTime = newMessage.created_at; // Time from payload
-      // console.log(`messageTime:`, messageTime);
-      // const timeDifference = currentTime.diff(messageTime);
-
-      // if (timeDifference > 2) {
-      //   // If more than 1 minute has passed, trigger a re-render
-      //   setLastMessages((prevMessages) => [...prevMessages, newMessage]);
-      // }
 
       // Find the index of the existing message for the same profile icon, if any
       const existingMessageIndex = lastMessages.findIndex(
@@ -69,15 +58,11 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
     return () => changes.unsubscribe();
   }, [lastMessages]);
 
-  console.log(`lastMessages:`, lastMessages);
-
   const openChat = (profile) => {
-    console.log("Open chatroom with mutual match:", profile);
     onMutualMatchClick(profile);
   };
 
   useEffect(() => {
-    console.log(`mutualMatch:`, mutualMatch);
     const id = user.user.id;
 
     async function fetchMerryMatch() {
@@ -102,41 +87,34 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
     return () => {};
   }, [user.user.id, mutualMatch]);
 
-  console.log(`merryMatch:`, merryMatch);
-
   return (
-    <div className="w-2/6 h-screen">
-      <div className="flex flex-col items-center pt-5 ">
+    <>
+      <div className="w-full h-full flex flex-col items-center justify-start p-5 gap-5">
         <ButtonNewMatch />
-      </div>
-
-      <div className="p-5">
-        <div>
+        <div className=" w-full h-48">
           <h1 className="text-xl font-bold">Merry Match!</h1>
-          <div className="flex gap-2 w-full">
+          <div className="flex overflow-auto w-full h-full gap-5">
             {[...merryMatch].reverse().map((profile) => (
               <div
                 key={profile.id}
-                className=" relative w-16 h-16 snap-start "
+                className="flex relative flex-col pt-12 pl-36"
                 onClick={() => openChat(profile)}
               >
                 <img
-                  className="rounded-2xl w-16 h-16"
+                  className="absolute inset-0 w-36 h-36 rounded-3xl"
                   src={profile.avatar_url[0].publicUrl}
                 />
                 <img
-                  className="w-6 h-6 absolute bottom-0 right-0 "
+                  className="w-6 h-6 absolute bottom-7 -right-1"
                   src={merrymatch}
                 />
               </div>
             ))}
           </div>
         </div>
-      </div>
 
-      <div className="mt-5 ml-5">
-        <h1 className="text-xl font-bold">Chat with Merry Match</h1>
-        <div className="flex flex-col pt-2 gap-3">
+        <div className="w-full h-full truncate ...">
+          <h1 className="text-xl font-bold mt-5">Chat with Merry Match</h1>
           {lastMessages.map((message) => {
             const profile = merryMatch.find(
               (profile) =>
@@ -145,10 +123,10 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
             );
 
             const isCurrentUser = user.user.id === message.from_userid;
-            console.log("Avatar URL:", profile);
-            console.log(`message`, message);
+            const firstName = profile?.full_name.split(" ")[0];
+
             return (
-              <div key={message.id} className="w-96 h-16 flex flex-row">
+              <div key={message.id} className="w-96 h-16 flex flex-row mt-5">
                 <div className="rounded-full w-20 h-20">
                   {profile && profile.avatar_url && profile.avatar_url[0] && (
                     <img
@@ -158,17 +136,20 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
                     />
                   )}
                 </div>
-                <div className="w-96 pl-2">
+                <div className="w-full pl-2 flex flex-col justify-center items-start">
+                  <p className="font-bold">{firstName}</p>
+                  <div className="flex gap-2 ">
+                    {isCurrentUser && <p>You:</p>}
+                    <p className="">{message.message}</p>
+                  </div>{" "}
                   <p>{moment(message.created_at).fromNow()}</p>
-                  {isCurrentUser && <p>You: </p>}
-                  <p>{message.message}</p>
                 </div>
               </div>
             );
           })}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
