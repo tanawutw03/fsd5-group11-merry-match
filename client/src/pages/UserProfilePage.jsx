@@ -7,7 +7,8 @@ import NavBar from "../components/common/NavBar";
 import { supabase } from "../utils/supabaseClient";
 import UserProfileUpload from "../components/UserProfileUpload";
 import ConfirmDeleteBtn from "../components/ConfirmDeleteBtn";
-import UserProfilePopup from "../components/PopUpProfile";
+import PropTypes from "prop-types";
+import PopUpProfile from "../components/PopUpProfile.jsx";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../app/userContext";
 import axios from "axios";
@@ -24,6 +25,7 @@ function UserProfilePage() {
   const [userProfileID, setUserProfileId] = useState(null);
   const API_PORT = "http://localhost:4008";
   let userProfile_id = null;
+
   const [formData, setFormData] = useState({
     id: "",
     full_name: "",
@@ -42,23 +44,26 @@ function UserProfilePage() {
   });
 
   useEffect(() => {
-    const authListener = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      if (session) {
-        const userProfileId = session.user.id;
-        setUserProfileId(userProfileId);
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          id: userProfileId,
-        }));
+    const authListener = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        setSession(session);
 
-        fetchUserData(userProfileId);
-        console.log("session: ", session);
-      } else {
-        setUserProfileId(null);
-        localStorage.removeItem("userProfileId");
+        if (session) {
+          const userProfileId = session.user.id;
+          setUserProfileId(userProfileId);
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            id: userProfileId,
+          }));
+
+          fetchUserData(userProfileId);
+          console.log("session: ", session);
+        } else {
+          setUserProfileId(null);
+          localStorage.removeItem("userProfileId");
+        }
       }
-    });
+    );
   }, []);
 
   const fetchUserData = async (userId) => {
@@ -71,11 +76,6 @@ function UserProfilePage() {
       }
 
       if (data) {
-        console.log(data);
-        console.log(
-          "url-index:",
-          data.user_profiles_url[0].storage_location.url1
-        );
         setFormData(data);
         setIsEditMode(true);
       }
@@ -98,12 +98,6 @@ function UserProfilePage() {
       ...prevSelectedFiles,
       ...randomFileNames,
     ]);
-  };
-
-  const handlePreviewProfile = async () => {
-    setIsPopUpOpen(true);
-
-    console.log("handlePreviewProfileActive");
   };
 
   const handleUpdateProfile = async () => {
@@ -129,36 +123,6 @@ function UserProfilePage() {
       console.error(error);
     }
   };
-  // ------reference leang  don't delete---
-  // const handleUpdateProfile = async () => {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from("profiles")
-  //       .update({
-  //         full_name: formData.full_name,
-  //         date_of_birth: formData.date_of_birth,
-  //         country: formData.country,
-  //         city: formData.city,
-  //         username: formData.username,
-  //         email: formData.email,
-  //         sex_identities: formData.sex_identities,
-  //         sex_preferences: formData.sex_preferences,
-  //         racial_preferences: formData.racial_preferences,
-  //         meeting_interest: formData.meeting_interest,
-  //         hobbies: formData.hobbies,
-  //         about_me: formData.about_me,
-  //       })
-  //       .eq("id", formData.id);
-
-  //     if (error) {
-  //       console.error(error);
-  //     } else {
-  //       console.log(data);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -208,10 +172,9 @@ function UserProfilePage() {
       console.error("Error deleting profile:", error.message);
     }
   };
-  console.log("formData.id before return", formData.id);
-  console.log("formData.name before return", formData.full_name);
+
   console.log("AllformData before return", formData);
-  console.log("formData URLbefore return", formData);
+
   return (
     <>
       <div className="nav-container flex justify-center items-center">
@@ -235,9 +198,6 @@ function UserProfilePage() {
             onClose={() => setShowDeleteConfirmation(false)}
             onDelete={handleDeleteAccount}
           />
-          {isPopUpOpen && (
-            <UserProfilePopup formData={formData} isPopUpOpen={isPopUpOpen} />
-          )}
         </div>
         <div className=" w-[931px]  ">
           <div className="profile-title-container flex justify-between ">
@@ -252,16 +212,22 @@ function UserProfilePage() {
             </div>
             <div className="flex flex-row justify-end items-end">
               <button
-                className="profile-preview-btn flex justify-center items-center gap-[8px] w-[170px] font-nunito text-[16px] text-red-600 font-bold  
-                           rounded-[99px]  bg-red-100  hover:bg-red-200 active:bg-red-500  active:text-[white]  shadow-setShadow01 h-12 p-[16px]"
-                type="button"
-                onClick={handlePreviewProfile}
-              >
-                Preview Profile
-              </button>
-              <button
                 className="profile-update-btn  flex justify-center items-center gap-[8px] w-[170px] font-nunito text-[16px] text-red-600 font-bold  
                            rounded-[99px]  bg-red-100  hover:bg-red-200 active:bg-red-500  active:text-[white]  shadow-setShadow01 h-12 p-[16px] ml-2"
+              >
+                <PopUpProfile
+                  useMenu={false}
+                  profileData={formData}
+                  isRound="true"
+                  variant="link"
+                  colorScheme="red"
+                  size="lg"
+                  name="Preview Profile"
+                />
+              </button>
+              <button
+                className="profile-update-btn  flex justify-center items-center gap-[8px] w-[170px] font-nunito text-[16px] text-white font-bold  
+                           rounded-[99px]  bg-rose-700  hover:bg-red-ถ00 active:bg-red-500  active:text-[white]  shadow-setShadow01 h-12 p-[16px] ml-2"
                 type="button"
                 onClick={handleUpdateProfile}
               >
@@ -507,7 +473,7 @@ function UserProfilePage() {
                 </div>
                 {/* <UserProfileUpload /> */}
                 <UserProfileUpload
-                  formDataId={formData.id}
+                  formDataId={user.user.id}
                   isEditMode={isEditMode}
                 />
 
@@ -576,5 +542,10 @@ function UserProfilePage() {
     </>
   );
 }
+
+UserProfilePage.propTypes = {
+  user: PropTypes.object,
+  setUser: PropTypes.func,
+};
 
 export default UserProfilePage;
