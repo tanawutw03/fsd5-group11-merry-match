@@ -3,9 +3,7 @@ import { useUser } from "../app/userContext";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-
 import ButtonNewMatch from "./ButtonNewMatch";
-
 const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
   const [merryMatch, setMerryMatch] = useState([]);
   const { user } = useUser();
@@ -54,6 +52,7 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
             <div
               key={profile.id}
               className="flex overflow-hidden relative flex-col     pt-12 pl-36 rounded-xl "
+              onClick={() => openChat(profile)}
             >
               <img
                 className="object-cover absolute inset-0 w-36 h-36"
