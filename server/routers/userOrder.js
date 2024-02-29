@@ -203,7 +203,8 @@ userOrderRoute.get("/payment-success/:id", async (req, res) => {
     profiles (full_name, email,city,country)
         `
       )
-      .eq("order_id", orderId);
+      .eq("order_id", orderId)
+      .eq("status", "complete");
     if (error) {
       throw error;
     }
