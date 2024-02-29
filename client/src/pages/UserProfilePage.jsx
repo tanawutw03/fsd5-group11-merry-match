@@ -7,7 +7,7 @@ import NavBar from "../components/common/NavBar";
 import { supabase } from "../utils/supabaseClient";
 import UserProfileUpload from "../components/UserProfileUpload";
 import ConfirmDeleteBtn from "../components/ConfirmDeleteBtn";
-import PopUpProfile from "../components/PopUpProfile";
+import UserProfilePopup from "../components/PopUpProfile";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../app/userContext";
 import axios from "axios";
@@ -38,6 +38,7 @@ function UserProfilePage() {
     meeting_interest: "",
     hobbies: "",
     about_me: "",
+    image_url: "",
   });
 
   useEffect(() => {
@@ -52,6 +53,7 @@ function UserProfilePage() {
         }));
 
         fetchUserData(userProfileId);
+        console.log("session: ", session);
       } else {
         setUserProfileId(null);
         localStorage.removeItem("userProfileId");
@@ -60,11 +62,8 @@ function UserProfilePage() {
   }, []);
 
   const fetchUserData = async (userId) => {
-    // passing userId as argument
     try {
-      const response = await axios.get(
-        `${API_PORT}/user/profile/${userId}` // using userId instead of userProfileID
-      );
+      const response = await axios.get(`${API_PORT}/user/profile/${userId}`);
       const data = response.data[0];
 
       if (response.status !== 200) {
@@ -72,6 +71,11 @@ function UserProfilePage() {
       }
 
       if (data) {
+        console.log(data);
+        console.log(
+          "url-index:",
+          data.user_profiles_url[0].storage_location.url1
+        );
         setFormData(data);
         setIsEditMode(true);
       }
@@ -125,7 +129,7 @@ function UserProfilePage() {
       console.error(error);
     }
   };
-
+  // ------reference leang  don't delete---
   // const handleUpdateProfile = async () => {
   //   try {
   //     const { data, error } = await supabase
@@ -204,8 +208,10 @@ function UserProfilePage() {
       console.error("Error deleting profile:", error.message);
     }
   };
-
-  console.log("formData before return", formData.full_name);
+  console.log("formData.id before return", formData.id);
+  console.log("formData.name before return", formData.full_name);
+  console.log("AllformData before return", formData);
+  console.log("formData URLbefore return", formData);
   return (
     <>
       <div className="nav-container flex justify-center items-center">
@@ -230,7 +236,7 @@ function UserProfilePage() {
             onDelete={handleDeleteAccount}
           />
           {isPopUpOpen && (
-            <PopUpProfile formData={formData} isPopUpOpen={isPopUpOpen} />
+            <UserProfilePopup formData={formData} isPopUpOpen={isPopUpOpen} />
           )}
         </div>
         <div className=" w-[931px]  ">

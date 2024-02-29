@@ -165,8 +165,12 @@ export default function UserProfileUpload({ formDataId, isEditMode }) {
             </>
           )}
           {imageUrls[index] && (
-            <div className=" relative p-3 object-cover border-[1px] rounded-[12px]  shadow-setShadow01">
-              <img src={imageUrls[index]} alt={`Uploaded Image ${index + 1}`} />
+            <div className=" relative p-3 object-cover border-[1px] rounded-[12px] shadow-setShadow01">
+              <img
+                src={imageUrls[index]}
+                alt={`Uploaded Image ${index + 1}`}
+                className=" w-56 h-40 object-cover"
+              />
               <button
                 className=" absolute z-20 top-0 right-0 flex items-center justify-center w-8 h-8 rounded-full bg-red-500 text-white "
                 onClick={() => handleDeleteImage(index)}
