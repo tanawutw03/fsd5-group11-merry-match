@@ -14,7 +14,6 @@ import action from "../assets/Matching/action button.svg";
 import heart from "../assets/Matching/heart button (1).svg";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 import location from "../assets/PopupProfile/location.png";
-import { propTypes } from "react-tinder-card";
 import { useState } from "react";
 
 const PopUpProfile = ({
@@ -97,12 +96,14 @@ const PopUpProfile = ({
                       color="gray"
                       variant="link"
                       icon={<ArrowBackIcon />}
+                      onClick={handleBackwardClick}
                     />
                     {/* Render forward arrow icon */}
                     <IconButton
                       color="gray"
                       variant="link"
                       icon={<ArrowForwardIcon />}
+                      onClick={handleForwardClick}
                     />
                   </div>
                 </div>
