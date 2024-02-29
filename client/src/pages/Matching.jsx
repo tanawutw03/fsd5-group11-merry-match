@@ -61,10 +61,12 @@ function Matching() {
           </div>
 
           {showChatroom ? (
-            <Chatroom profile={selectedProfile} user={user} />
+            <div className="w-screen h-screen">
+              <Chatroom profile={selectedProfile} user={user} />
+            </div>
           ) : (
             <>
-              <div className="w-full  flex">
+              <div className="w-full flex">
                 <div className="w-4/5">
                   <MerryCards user={user} onMutualMatch={handleMutualMatch} />
                 </div>

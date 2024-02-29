@@ -3,17 +3,17 @@ import ChakraButton from "./common/ChakraButton";
 import { supabase } from "../utils/supabaseClient.js";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import moment from "moment";
+import merrymatch from "../assets/MerryMatch/merrymatch.png";
 function Chatroom({ profile, user }) {
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const chatContainerRef = useRef(null);
+  const inputRef = useRef(null);
+  const firstName = profile?.full_name.split(" ")[0];
 
   useEffect(() => {
     // Join a room/topic. Can be anything except for 'realtime'.
     const chatChannel = supabase.channel("chatroom");
-
-    console.log(`chatChannel on mounted:`, chatChannel);
 
     // Simple function to log any messages we receive
     function messageReceived(payload) {
@@ -86,6 +86,7 @@ function Chatroom({ profile, user }) {
     if (lastMessage) {
       lastMessage.scrollIntoView({ behavior: "smooth", block: "end" });
     }
+    inputRef.current.focus();
   }, [chatMessages]);
 
   const handleSendMessage = async () => {
@@ -144,39 +145,65 @@ function Chatroom({ profile, user }) {
 
   return (
     <>
-      <div className="bg-black w-full h-3/5 p-5 flex flex-col justify-between items-center">
-        <div className="bg-white rounded p-5 w-fit border-2 border-green-500 flex flex-col justify-center items-start">
-          <h1>Now you and {profile.full_name} are Merry Match!</h1>
-          <h1>
-            You can message something nice and make a good conversation. Happy
-            Merry!
-          </h1>
+      <div className="bg-black w-full h-full p-5 flex flex-col justify-between items-center">
+        <div className="bg-white rounded p-5 w-fit border-2 border-green-500 flex justify-center items-center gap-5">
+          <div>
+            <img src={merrymatch} alt="" />
+          </div>
+          <div>
+            <h1>Now you and {firstName} are Merry Match!</h1>
+            <h1>
+              You can message something nice and make a good conversation. Happy
+              Merry!
+            </h1>
+          </div>
         </div>
 
-        <div className="overflow-auto" ref={chatContainerRef}>
+        <div className="overflow-auto w-full my-5" ref={chatContainerRef}>
           {chatMessages.map((msg, index) => (
             <div
               key={index}
-              className={`text-white mb-2 border-2 flex flex-col ${
+              className={`mb-2 flex ${
                 msg.from_userid === user.user.id
-                  ? "border-green-500 items-end"
-                  : "border-orange-500 items-start"
+                  ? "items-end justify-end"
+                  : "items-start justify-start"
               }`}
             >
-              <p>From: {msg.from_userid}</p>
-              <p>To: {msg.to_userid}</p>
-              <p>{msg.message}</p>
+              {msg.from_userid !== user.user.id &&
+                profile.avatar_url[0].publicUrl && (
+                  <img
+                    src={profile.avatar_url[0].publicUrl}
+                    alt="Profile Avatar"
+                    className="h-10 w-10 rounded-full mr-2"
+                  />
+                )}
+              <div
+                className={`p-2 rounded-lg ${
+                  msg.from_userid === user.user.id
+                    ? "bg-[#7D2262] text-white"
+                    : "bg-[#EFC4E2] text-black"
+                }`}
+              >
+                <p>{msg.message}</p>
+              </div>
             </div>
           ))}
         </div>
 
-        <div className="flex w-full">
+        <div className="flex w-full border-t-2">
           <input
             type="text"
-            className="rounded w-full p-5"
+            className="rounded w-full p-5 bg-black text-white"
             placeholder="Message here..."
             value={message}
             onChange={handleMessageChange}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                handleSendMessage();
+              }
+            }}
+            ref={inputRef}
           />
 
           <ChakraButton name="Send" onClick={handleSendMessage} />
