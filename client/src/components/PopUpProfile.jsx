@@ -14,11 +14,8 @@ import action from "../assets/Matching/action button.svg";
 import heart from "../assets/Matching/heart button (1).svg";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 import location from "../assets/PopupProfile/location.png";
-<<<<<<< HEAD
 import { propTypes } from "react-tinder-card";
 import { useState } from "react";
-=======
->>>>>>> 2b69d08 (feat(LeftSideMatching) add scrollbar in marry match and chat)
 
 const PopUpProfile = ({
   useMenu,

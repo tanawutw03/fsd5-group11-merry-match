@@ -3,14 +3,10 @@ import { useUser } from "../app/userContext";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-<<<<<<< HEAD
+
+import ButtonNewMatch from "./ButtonNewMatch";
 
 const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
-  const navigate = useNavigate();
-=======
-import ButtonNewMatch from "./ButtonNewMatch";
-const LeftSideMatching = ({ mutualMatch }) => {
->>>>>>> 2b69d08 (feat(LeftSideMatching) add scrollbar in marry match and chat)
   const [merryMatch, setMerryMatch] = useState([]);
   const { user } = useUser();
 
