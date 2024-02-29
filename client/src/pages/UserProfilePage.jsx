@@ -12,6 +12,16 @@ import PopUpProfile from "../components/PopUpProfile.jsx";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../app/userContext";
 import axios from "axios";
+import React from "react";
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  useDisclosure,
+} from "@chakra-ui/react";
 
 function UserProfilePage() {
   const navigate = useNavigate();
@@ -24,6 +34,10 @@ function UserProfilePage() {
   const [session, setSession] = useState(null);
   const [userProfileID, setUserProfileId] = useState(null);
   const API_PORT = "http://localhost:4008";
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef();
+
   let userProfile_id = null;
 
   const [formData, setFormData] = useState({
@@ -117,7 +131,7 @@ function UserProfilePage() {
         about_me: formData.about_me,
         id: formData.id,
       });
-
+      onClose();
       console.log(response.data);
     } catch (error) {
       console.error(error);
@@ -205,15 +219,16 @@ function UserProfilePage() {
               <p className="font-nunito text-[14px] text-[#7B4429] font-[600]">
                 PROFILE
               </p>
-              <p className="font-nunito text-[46px] text-purple-500 font-[800]">
+              <p className="font-nunito text-[46px] text-[#a62d82] font-black">
                 Let’s make profile <br />
                 to let others know you
               </p>
             </div>
             <div className="flex flex-row justify-end items-end">
               <button
-                className="profile-update-btn  flex justify-center items-center gap-[8px] w-[170px] font-nunito text-[16px] text-red-600 font-bold  
-                           rounded-[99px]  bg-red-100  hover:bg-red-200 active:bg-red-500  active:text-[white]  shadow-setShadow01 h-12 p-[16px] ml-2"
+                className="profile-preview-btn flex justify-center items-center gap-[8px] w-[170px] font-nunito text-[16px font-bold  
+                           rounded-[99px]  bg-[#ffe1ea] text-[#95002b] hover:bg-[#ffb1c8] active:bg-[#ff6390] shadow-sm h-12 p-[16px]"
+                type="button"
               >
                 <PopUpProfile
                   useMenu={false}
@@ -225,18 +240,51 @@ function UserProfilePage() {
                   name="Preview Profile"
                 />
               </button>
-              <button
-                className="profile-update-btn  flex justify-center items-center gap-[8px] w-[170px] font-nunito text-[16px] text-white font-bold  
-                           rounded-[99px]  bg-rose-700  hover:bg-red-ถ00 active:bg-red-500  active:text-[white]  shadow-setShadow01 h-12 p-[16px] ml-2"
-                type="button"
-                onClick={handleUpdateProfile}
-              >
-                Upadate Profile
-              </button>
+              <>
+                <button
+                  className="profile-update-btn  flex justify-center items-center gap-[8px] w-[170px] font-nunito text-[16px] font-bold  
+                           rounded-[99px] bg-[#c70039] text-white hover:bg-[#ff1659] active:bg-[#95002b] shadow-sm h-12 p-[16px] ml-2"
+                  type="button"
+                  onClick={onOpen}
+                >
+                  Update Profile
+                </button>
+
+                <AlertDialog
+                  isOpen={isOpen}
+                  leastDestructiveRef={cancelRef}
+                  onClose={onClose}
+                  isCentered={true}
+                  closeOnEsc={false}
+                  closeOnOverlayClick={false}
+                >
+                  <AlertDialogOverlay>
+                    <AlertDialogContent borderRadius="3xl">
+                      <AlertDialogHeader className="border-solid border-b-[1px] border-[#e4e6ed] text-[18px] font-bold font-nunito">
+                        Update Successfully
+                      </AlertDialogHeader>
+
+                      <AlertDialogBody className="font-nunito text-[#646d89]">
+                        Your profile has been updated successfully
+                      </AlertDialogBody>
+
+                      <AlertDialogFooter mb={1} justifyContent="flex-end">
+                        <button
+                          className="py-[12px] px-[24px] text-[16px] font-semibold rounded-full shadow-sm font-nunito bg-[#c70039] text-white hover:bg-[#ff1659] active:bg-[#95002b]"
+                          onClick={handleUpdateProfile}
+                          ml={3}
+                        >
+                          Back to Page
+                        </button>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialogOverlay>
+                </AlertDialog>
+              </>
             </div>
           </div>
           <form className="basic-info-con ">
-            <label className="font-nunito text-purple-500 text-[24px] font-bold mt-3 mb-3">
+            <label className="font-nunito text-[#a62d82] font-black text-[24px] mt-3 mb-3">
               Basic Information
             </label>
             <div className="flex flex-col justify-center ">
@@ -349,7 +397,7 @@ function UserProfilePage() {
                 </div>
               </div>
             </div>
-            <label className="font-nunito text-purple-500 text-[24px] font-bold mt-3 mb-3">
+            <label className="font-nunito text-[#a62d82] font-black text-[24px] mt-3 mb-3">
               Identities and Interests
             </label>
             <div className="flex flex-col justify-center ">
@@ -480,15 +528,16 @@ function UserProfilePage() {
                 <input
                   type="file"
                   ref={fileInputRef}
-                  style={{ display: "none" }}
+                  style={{
+                    display: "none",
+                  }}
                   onChange={handleFileInputChange}
                   multiple
                   accept="image/*"
                 />
                 <div className=" flex justify-end  w-full ">
                   <button
-                    className="choose-package-btn flex justify-center items-center  w-[170px] font-nunito text-[16px] text-red-600 font-bold  
-                           rounded-[10px]  bg-[white]  hover:bg-red-200 active:bg-red-500  active:text-[white]  shadow-setShadow01 h-12 p-[16px] mr-6"
+                    className="choose-package-btn flex justify-center items-center  w-[170px] font-nunito text-[16px] text-[#646d89] font-extrabold h-12 p-[16px] mr-6"
                     type="button"
                     onClick={() => setShowDeleteConfirmation(true)}
                     // onClick={handleDeleteAccount}
