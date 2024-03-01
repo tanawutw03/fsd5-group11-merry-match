@@ -306,11 +306,11 @@ function TabSteps() {
           />
           <ChakraButton
             name={renderButtonLabel}
-            rounded="88px"
             type={renderButtonType}
             onClick={isLastTab ? handleSubmit : handleNext}
             colorScheme="red"
-            variant="link"
+            variant="solid"
+            rounded="99px"
           />
         </div>
       </div>
