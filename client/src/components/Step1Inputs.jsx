@@ -34,14 +34,13 @@ function Step1Inputs({ onFormChange }) {
 
   return (
     <>
-      <div className="font-nunito justify-between item-center flex flex-col h-full  w-[930px] ">
-        <div className="flex justify-start item-center mt-10 mb-2">
-          <h1 className="text-2xl text-[#A62D82] font-bold">
-            Basic Information
-          </h1>
-        </div>
-        <form className="flex flex-row justify-center gap-10">
-          <div className="flex flex-col w-[453px]">
+      <div className="flex flex-col w-full h-full">
+        <h1 className="text-2xl text-[#A62D82] font-bold text-left w-full pl-28">
+          Basic Information
+        </h1>
+
+        <form className="flex justify-center w-full">
+          <div className="flex flex-col w-1/4 border-2 border-green-500">
             <label htmlFor="name" className="text-left">
               Name
             </label>
@@ -100,7 +99,8 @@ function Step1Inputs({ onFormChange }) {
               </span>
             )}
           </div>
-          <div className="flex flex-col w-[453px]">
+
+          <div className="flex flex-col w-1/4 border-2 border-pink-500">
             <label htmlFor="dob" className="text-left">
               Date of Birth
             </label>

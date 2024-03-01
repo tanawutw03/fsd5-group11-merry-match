@@ -46,7 +46,7 @@ function Step2Inputs({ onFormChange }) {
 
   return (
     <>
-      <div className="flex flex-col justify-between item-center w-[930px] h-full font-nunito bg-[#fcfcfe] mb-[100px]">
+      <div className="">
         <div className="flex justify-start my-[30px]">
           <h1 className="text-2xl text-[#A62D82] font-bold">
             Identities&nbsp;and&nbsp;Interests

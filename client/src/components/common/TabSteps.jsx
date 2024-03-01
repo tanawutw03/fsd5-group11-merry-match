@@ -266,31 +266,32 @@ function TabSteps() {
               ))}
             </TabList>
           </div>
-
-          <TabPanels className="text-md">
-            <TabPanel key={0} className="flex justify-center items-center">
-              <Step1Inputs
-                formData={formData}
-                setFormData={setFormData}
-                onFormChange={handleFormChange}
-              />
-            </TabPanel>
-            <TabPanel key={1} className="flex justify-center items-center">
-              <Step2Inputs
-                formData={formData}
-                setFormData={setFormData}
-                onFormChange={handleFormChange}
-              />
-            </TabPanel>
-            <TabPanel key={2} className="flex justify-center items-center">
-              <Step3Inputs
-                formData={formData}
-                setFormData={setFormData}
-                onFormChange={handleFormChange}
-                onRandomFileNames={handleRandomFileNames}
-              />
-            </TabPanel>
-          </TabPanels>
+          <div className="border-2 border-red-500 h-4/5">
+            <TabPanels className="text-md">
+              <TabPanel key={0} className="flex justify-center items-center">
+                <Step1Inputs
+                  formData={formData}
+                  setFormData={setFormData}
+                  onFormChange={handleFormChange}
+                />
+              </TabPanel>
+              <TabPanel key={1} className="flex justify-center items-center">
+                <Step2Inputs
+                  formData={formData}
+                  setFormData={setFormData}
+                  onFormChange={handleFormChange}
+                />
+              </TabPanel>
+              <TabPanel key={2} className="flex justify-center items-center">
+                <Step3Inputs
+                  formData={formData}
+                  setFormData={setFormData}
+                  onFormChange={handleFormChange}
+                  onRandomFileNames={handleRandomFileNames}
+                />
+              </TabPanel>
+            </TabPanels>
+          </div>
         </Tabs>
 
         <div className="flex justify-end">
