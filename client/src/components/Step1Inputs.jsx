@@ -109,6 +109,7 @@ function Step1Inputs({ onFormChange }) {
               className="border-2 px-3 py-2 mb-7 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="01/01/2022"
               onChange={handleInputChange}
+              type="date"
             />
             {errors.name && (
               <span className="flex justify-start -mt-4 text-[#af2758]">
