@@ -159,7 +159,7 @@ function UserProfilePage() {
       const { data, error } = await supabase
         .from("profiles")
         .delete()
-        .eq("id", profile_id);
+        .eq("id", user.user.id);
 
       if (error) {
         throw error;
@@ -182,6 +182,7 @@ function UserProfilePage() {
 
       console.log("Profile deleted successfully");
       setShowDeleteConfirmation(false);
+      navigate("/");
     } catch (error) {
       console.error("Error deleting profile:", error.message);
     }
