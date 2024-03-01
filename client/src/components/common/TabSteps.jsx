@@ -1,12 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Tabs,
-  TabList,
-  TabPanels,
-  TabPanel,
-  Tab,
-  TabIndicator,
-} from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, TabPanel, Tab } from "@chakra-ui/react";
 import Step1Inputs from "../Step1Inputs";
 import Step2Inputs from "../Step2Inputs";
 import Step3Inputs from "../Step3Inputs";
@@ -49,9 +42,9 @@ function TabSteps() {
   const navigate = useNavigate();
 
   // State to store data entered in each step
-  const [step1Data, setStep1Data] = useState({});
-  const [step2Data, setStep2Data] = useState({});
-  const [step3Data, setStep3Data] = useState({});
+  const [step1Data] = useState({});
+  const [step2Data] = useState({});
+  const [step3Data] = useState({});
 
   const renderButtonLabel = isLastTab ? "Submit" : "Next Step";
   const renderButtonType = isLastTab ? "submit" : "button";
@@ -210,7 +203,7 @@ function TabSteps() {
 
   return (
     <>
-      <div className="flex justify-center w-full">
+      <div className="flex flex-col h-screen justify-between">
         <NavBar
           useMenu={false}
           name="Login"
@@ -221,19 +214,18 @@ function TabSteps() {
           onClickSecondMenu={() => navigate("/")}
           showBell={false}
         />
-      </div>
-      <RegisterWords />
-      <div className="min-w-[1440px] flex flex-col justify-between item-center bg-[#fcfcfe]  relative">
+
         <Tabs
-          align="center"
+          align=""
           index={activeTabIndex}
           onChange={(index) => handleTabChange(index)}
           variant="unstyled"
           colorScheme="purple"
           size="lg"
         >
-          <div className="text-[#A62D82] flex flex-col absolute -mt-[7%] right-[20%] text-2xl font-nunito">
-            <TabList className="gap-5">
+          <div className="flex">
+            <RegisterWords />
+            <TabList className="gap-5 w-1/2 flex justify-end items-end pr-32">
               {stepperData.map((item, index) => (
                 <Tab
                   key={item.id}
@@ -275,62 +267,52 @@ function TabSteps() {
             </TabList>
           </div>
 
-          <div className="h-full">
-            <TabPanels className="text-md">
-              <TabPanel
-                key={0}
-                className="h-screen flex justify-center items-center"
-              >
-                <Step1Inputs
-                  formData={formData}
-                  setFormData={setFormData}
-                  onFormChange={handleFormChange}
-                />
-              </TabPanel>
-              <TabPanel
-                key={1}
-                className="h-screen flex justify-center items-center"
-              >
-                <Step2Inputs
-                  formData={formData}
-                  setFormData={setFormData}
-                  onFormChange={handleFormChange}
-                />
-              </TabPanel>
-              <TabPanel
-                key={2}
-                className="h-screen flex justify-center items-center"
-              >
-                <Step3Inputs
-                  formData={formData}
-                  setFormData={setFormData}
-                  onFormChange={handleFormChange}
-                  onRandomFileNames={handleRandomFileNames}
-                />
-              </TabPanel>
-            </TabPanels>
-          </div>
+          <TabPanels className="text-md">
+            <TabPanel key={0} className="flex justify-center items-center">
+              <Step1Inputs
+                formData={formData}
+                setFormData={setFormData}
+                onFormChange={handleFormChange}
+              />
+            </TabPanel>
+            <TabPanel key={1} className="flex justify-center items-center">
+              <Step2Inputs
+                formData={formData}
+                setFormData={setFormData}
+                onFormChange={handleFormChange}
+              />
+            </TabPanel>
+            <TabPanel key={2} className="flex justify-center items-center">
+              <Step3Inputs
+                formData={formData}
+                setFormData={setFormData}
+                onFormChange={handleFormChange}
+                onRandomFileNames={handleRandomFileNames}
+              />
+            </TabPanel>
+          </TabPanels>
         </Tabs>
-      </div>
-      <div className="bottom-0 w-screen h-112 p-5 bg-white shadow-md flex justify-end border-t-2">
-        <p className="flex justify-start items-center absolute left-20 bottom-12 text-base font-normal">
-          <span className="text-gray-600">{activeTabIndex + 1}</span>
-          <span className="text-gray-500">/3</span>
-        </p>
-        <ChakraButton
-          name="← Back"
-          variant="link"
-          onClick={handlePrev}
-          colorScheme="gray"
-        />
-        <ChakraButton
-          name={renderButtonLabel}
-          rounded="full"
-          type={renderButtonType}
-          onClick={isLastTab ? handleSubmit : handleNext}
-          colorScheme="red"
-          variant="link"
-        />
+
+        <div className="flex justify-end">
+          <p className="flex justify-start items-center absolute left-20 bottom-12 text-base font-normal">
+            <span className="text-gray-600">{activeTabIndex + 1}</span>
+            <span className="text-gray-500">/3</span>
+          </p>
+          <ChakraButton
+            name="← Back"
+            variant="link"
+            onClick={handlePrev}
+            colorScheme="gray"
+          />
+          <ChakraButton
+            name={renderButtonLabel}
+            rounded="88px"
+            type={renderButtonType}
+            onClick={isLastTab ? handleSubmit : handleNext}
+            colorScheme="red"
+            variant="link"
+          />
+        </div>
       </div>
     </>
   );
