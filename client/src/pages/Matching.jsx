@@ -31,6 +31,10 @@ function Matching() {
     setSelectedProfile(profile);
   };
 
+  const handleCloseChatroom = () => {
+    setShowChatroom(false);
+  };
+
   return (
     <>
       <div className="w-screen h-screen">
@@ -69,6 +73,7 @@ function Matching() {
             <LeftSideMatching
               mutualMatch={mutualMatch}
               onMutualMatchClick={toggleChatroom}
+              onCloseChatroom={handleCloseChatroom}
             />
           </div>
 
@@ -82,35 +87,37 @@ function Matching() {
                 <div className="w-4/5">
                   <MerryCards user={user} onMutualMatch={handleMutualMatch} />
                 </div>
-                <div className="w-1/5">
+                <div className="w-1/5 p-5">
                   <p className=" text-[#191C77] text-base font-bold">
                     Sex you interest
                   </p>
 
-                  <Checkbox colorScheme="pink" defaultChecked mt={2}>
-                    Default
-                  </Checkbox>
-                  <Checkbox colorScheme="pink" defaultChecked mt={2}>
-                    Female
-                  </Checkbox>
-                  <Checkbox colorScheme="pink" defaultChecked mt={2}>
-                    Non-bunary people
-                  </Checkbox>
-
+                  <div className="flex flex-col">
+                    <Checkbox colorScheme="pink" defaultChecked mt={2}>
+                      Default
+                    </Checkbox>
+                    <Checkbox colorScheme="pink" defaultChecked mt={2}>
+                      Female
+                    </Checkbox>
+                    <Checkbox colorScheme="pink" defaultChecked mt={2}>
+                      Non-bunary people
+                    </Checkbox>
+                  </div>
                   <SliderAge />
-
-                  <ChakraButton
-                    name=" Clear"
-                    colorScheme="red"
-                    variant="ghost"
-                    rounded="20px"
-                  ></ChakraButton>
-                  <ChakraButton
-                    name=" Search"
-                    colorScheme="red"
-                    variant="solid"
-                    rounded="20px"
-                  ></ChakraButton>
+                  <div className="flex justify-center">
+                    <ChakraButton
+                      name=" Clear"
+                      colorScheme="red"
+                      variant="ghost"
+                      rounded="20px"
+                    ></ChakraButton>
+                    <ChakraButton
+                      name=" Search"
+                      colorScheme="red"
+                      variant="solid"
+                      rounded="20px"
+                    ></ChakraButton>
+                  </div>
                 </div>
               </div>
             </>

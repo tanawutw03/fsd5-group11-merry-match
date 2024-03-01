@@ -7,7 +7,11 @@ import { supabase } from "../utils/supabaseClient.js";
 import moment from "moment";
 import ButtonNewMatch from "./ButtonNewMatch.jsx";
 
-const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
+const LeftSideMatching = ({
+  mutualMatch,
+  onMutualMatchClick,
+  onCloseChatroom,
+}) => {
   const [merryMatch, setMerryMatch] = useState([]);
   const { user } = useUser();
   const [lastMessages, setLastMessages] = useState([]);
@@ -90,8 +94,8 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
   return (
     <>
       <div className="w-full h-full flex flex-col items-center justify-start p-5 gap-5">
-        <ButtonNewMatch />
-        <div className="w-full h-48">
+        <ButtonNewMatch onCloseChatroom={onCloseChatroom} />
+        <div className="w-full h-80">
           <h1 className="text-xl font-bold">Merry Match!</h1>
           <div className="flex overflow-auto w-full h-full gap-5">
             {[...merryMatch].reverse().map((profile) => (
@@ -105,7 +109,7 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
                   src={profile.avatar_url[0].publicUrl}
                 />
                 <img
-                  className="w-6 h-6 absolute bottom-7 -right-1"
+                  className="w-10 h-10 absolute bottom-0 right-0"
                   src={merrymatch}
                 />
               </div>
@@ -156,6 +160,7 @@ const LeftSideMatching = ({ mutualMatch, onMutualMatchClick }) => {
 LeftSideMatching.propTypes = {
   mutualMatch: PropTypes.bool,
   onMutualMatchClick: PropTypes.func,
+  onCloseChatroom: PropTypes.func,
 };
 
 export default LeftSideMatching;
