@@ -30,7 +30,7 @@ const PopUpProfile = ({
 
   const IconOrButton = useMenu ? (
     <IconButton
-      onClick={isOpen}
+      onClick={onOpen}
       isRound={isRound}
       variant={variant}
       colorScheme={colorScheme}
