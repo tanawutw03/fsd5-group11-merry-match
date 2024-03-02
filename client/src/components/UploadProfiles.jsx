@@ -44,68 +44,66 @@ function UploadProfiles({ onFormChange, onRandomFileNames }) {
 
   return (
     <>
-      <div className="w-[930px] h-full flex flex-col justify-center items-start font-nunito mb-[30px] ">
-        <div className="flex flex-col justify-start items-start my-10">
-          <h1 className="text-3xl font-bold text-[#a62d82]">
+      <div className="flex flex-col w-full h-full">
+        <div className="h-[70px]">
+          <h1 className="text-2xl text-[#A62D82] font-bold text-left w-full pl-28">
             Profile&nbsp;Pictures
           </h1>
-          <h3 className="text-lg">
+          <h3 className="text-lg text-left w-full pl-28">
             Upload&nbsp;at&nbsp;least&nbsp;2&nbsp;photos
           </h3>
         </div>
 
-        <SimpleGrid
-          columns={[1, 2, 3, 4, 5]}
-          spacing="0px"
-          className="w-full mb-[20px]"
-        >
-          {Array.from({ length: 5 }).map((_, index) => (
-            <div key={index}>
-              <Card
-                sx={{
-                  w: "167px",
-                  h: "167px",
-                  rounded: "16px",
-                }}
-                onClick={() => fileInputRef.current.click()}
-                className="hover:cursor-pointer"
-              >
-                <CardBody className="flex flex-col justify-center items-center w-[167px] h-[167px] rounded-[16px] bg-[#f1f2f6]">
-                  {selectedFiles[index] ? (
-                    <>
-                      <img
-                        src={URL.createObjectURL(selectedFiles[index].file)}
-                        alt={`Thumbnail ${index}`}
-                        className="w-full h-full object-cover rounded-[16px]"
-                      />
-                      <IconButton
-                        icon={<CloseIcon />}
-                        aria-label="Delete"
-                        color="white"
-                        bgColor="red.500"
-                        _hover={{ bgColor: "red.600" }}
-                        onClick={(event) => handleDeleteFile(index, event)}
-                        style={{
-                          position: "absolute",
-                          top: -15,
-                          right: -15,
-                          borderRadius: "50%",
-                        }}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <AddIcon color="purple" />
-                      <h1 className="text-[#a62d82] text-xl absolute bottom-10">
-                        Upload photo
-                      </h1>
-                    </>
-                  )}
-                </CardBody>
-              </Card>
-            </div>
-          ))}
-        </SimpleGrid>
+        <div className="w-full h-[500px] flex items-center justify-center">
+          <SimpleGrid columns={[1, 2, 3, 4, 5]} spacing="20">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <div key={index}>
+                <Card
+                  sx={{
+                    w: "167px",
+                    h: "167px",
+                    rounded: "16px",
+                  }}
+                  onClick={() => fileInputRef.current.click()}
+                  className="hover:cursor-pointer"
+                >
+                  <CardBody className="flex flex-col justify-center items-center w-[167px] h-[167px] rounded-[16px] bg-[#f1f2f6]">
+                    {selectedFiles[index] ? (
+                      <>
+                        <img
+                          src={URL.createObjectURL(selectedFiles[index].file)}
+                          alt={`Thumbnail ${index}`}
+                          className="w-full h-full object-cover rounded-[16px]"
+                        />
+                        <IconButton
+                          icon={<CloseIcon />}
+                          aria-label="Delete"
+                          color="white"
+                          bgColor="red.500"
+                          _hover={{ bgColor: "red.600" }}
+                          onClick={(event) => handleDeleteFile(index, event)}
+                          style={{
+                            position: "absolute",
+                            top: -15,
+                            right: -15,
+                            borderRadius: "50%",
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <AddIcon color="purple" />
+                        <h1 className="text-[#a62d82] text-xl absolute bottom-10">
+                          Upload photo
+                        </h1>
+                      </>
+                    )}
+                  </CardBody>
+                </Card>
+              </div>
+            ))}
+          </SimpleGrid>
+        </div>
 
         <input
           type="file"

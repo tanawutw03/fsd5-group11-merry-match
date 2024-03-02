@@ -266,7 +266,7 @@ function TabSteps() {
               ))}
             </TabList>
           </div>
-          <div className="border-2 border-red-500 h-4/5">
+          <div className="h-4/5">
             <TabPanels className="text-md">
               <TabPanel key={0} className="flex justify-center items-center">
                 <Step1Inputs

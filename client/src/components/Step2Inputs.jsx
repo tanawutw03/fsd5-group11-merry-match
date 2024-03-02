@@ -46,92 +46,96 @@ function Step2Inputs({ onFormChange }) {
 
   return (
     <>
-      <div className="">
-        <div className="flex justify-start my-[30px]">
-          <h1 className="text-2xl text-[#A62D82] font-bold">
+      <div className="flex flex-col w-full h-full">
+        <div className="h-[70px]">
+          <h1 className="text-2xl text-[#A62D82] font-bold text-left w-full pl-28">
             Identities&nbsp;and&nbsp;Interests
           </h1>
         </div>
-        {/* "handleSubmit" will validate your inputs before invoking "onSubmit" */}
-        <form className="grid grid-cols-2  text-left item-center ">
-          {/* First selector column */}
-          <div className="h-[48px] w-[453px] flex flex-col justify-center my-[10%]">
-            <h3>Sexual&nbsp;Identities</h3>
-            <Select
-              placeholder="Select option"
-              {...register("sex_identities")}
-              name="sex_identities"
-              mb={10}
-              onChange={handleInputChange}
-            >
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </Select>
 
-            <h3>Racial&nbsp;Preferences</h3>
-            <Select
-              placeholder="Select option"
-              {...register("racial_preferences")}
-              name="racial_preferences"
-              onChange={handleInputChange}
-            >
-              <option value="asian">Asian</option>
-              <option value="black">Black</option>
-              <option value="indian">Indian</option>
-              <option value="latino">Latino</option>
-              <option value="mideast">Middle Eastern</option>
-              <option value="white">White</option>
-              <option value="multi">Multi-Racial</option>
-              <option value="other">Other</option>
-            </Select>
+        <form className="flex flex-col justify-center w-full h-[500px]">
+          <div className="flex w-full justify-center gap-5">
+            <div className="flex flex-col w-1/4">
+              <h3>Sexual&nbsp;Identities</h3>
+              <Select
+                placeholder="Select option"
+                {...register("sex_identities")}
+                name="sex_identities"
+                mb={10}
+                onChange={handleInputChange}
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </Select>
+
+              <h3>Racial&nbsp;Preferences</h3>
+              <Select
+                placeholder="Select option"
+                {...register("racial_preferences")}
+                name="racial_preferences"
+                onChange={handleInputChange}
+              >
+                <option value="asian">Asian</option>
+                <option value="black">Black</option>
+                <option value="indian">Indian</option>
+                <option value="latino">Latino</option>
+                <option value="mideast">Middle Eastern</option>
+                <option value="white">White</option>
+                <option value="multi">Multi-Racial</option>
+                <option value="other">Other</option>
+              </Select>
+            </div>
+
+            <div className="flex flex-col w-1/4">
+              <h3>Sexual&nbsp;Preferences</h3>
+              <Select
+                placeholder="Select option"
+                {...register("sex_preference")}
+                mb={10}
+                name="sex_preferences"
+                onChange={(e) => handleInputChange(e, "sex_identities")}
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </Select>
+
+              <h3>Meeting&nbsp;Interests</h3>
+              <Select
+                placeholder="Select option"
+                {...register("meeting_interest")}
+                name="meeting_interest"
+                onChange={handleInputChange}
+              >
+                <option value="date">Date</option>
+                <option value="friends">Friends</option>
+                <option value="other">Other</option>
+              </Select>
+            </div>
           </div>
 
-          {/* Second selector column */}
-          <div className="h-[48px] w-[453px] flex flex-col justify-center my-[10%]">
-            <h3>Sexual&nbsp;Preferences</h3>
-            <Select
-              placeholder="Select option"
-              {...register("sex_preference")}
-              mb={10}
-              name="sex_preferences"
-              onChange={(e) => handleInputChange(e, "sex_identities")}
-            >
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </Select>
+          <div className="w-full flex justify-center">
+            <div className="flex flex-col w-1/2">
+              <h3 className="pt-10">
+                Hobbies&nbsp;/&nbsp;Interests&nbsp;(Maximum&nbsp;10)
+              </h3>
 
-            <h3>Meeting&nbsp;Interests</h3>
-            <Select
-              placeholder="Select option"
-              {...register("meeting_interest")}
-              name="meeting_interest"
-              onChange={handleInputChange}
-            >
-              <option value="date">Date</option>
-              <option value="friends">Friends</option>
-              <option value="other">Other</option>
-            </Select>
-          </div>
-          <div className=" justify-center item-center w-full  h-[53px]  text-left col-span-2">
-            <h3 className="pt-10">
-              Hobbies&nbsp;/&nbsp;Interests&nbsp;(Maximum&nbsp;10)
-            </h3>
-            <TagSelect
-              control={control}
-              name="hobbies"
-              onHobbyChange={handleHobbyChange}
-              label=""
-              options={hobbiesOptions}
-              defaultValue={[
-                hobbiesOptions[0],
-                hobbiesOptions[1],
-                hobbiesOptions[2],
-              ]}
-              max={10}
-              components={animatedComponents}
-            />
+              <TagSelect
+                control={control}
+                name="hobbies"
+                onHobbyChange={handleHobbyChange}
+                label=""
+                options={hobbiesOptions}
+                defaultValue={[
+                  hobbiesOptions[0],
+                  hobbiesOptions[1],
+                  hobbiesOptions[2],
+                ]}
+                max={10}
+                components={animatedComponents}
+              />
+            </div>
           </div>
         </form>
       </div>

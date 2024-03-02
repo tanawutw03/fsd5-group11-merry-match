@@ -35,12 +35,14 @@ function Step1Inputs({ onFormChange }) {
   return (
     <>
       <div className="flex flex-col w-full h-full">
-        <h1 className="text-2xl text-[#A62D82] font-bold text-left w-full pl-28">
-          Basic Information
-        </h1>
+        <div className="h-[70px]">
+          <h1 className="text-2xl text-[#A62D82] font-bold text-left w-full pl-28">
+            Basic Information
+          </h1>
+        </div>
 
-        <form className="flex justify-center w-full">
-          <div className="flex flex-col w-1/4 border-2 border-green-500">
+        <form className="flex justify-center items-center w-full gap-5 h-[500px]">
+          <div className="flex flex-col w-1/4">
             <label htmlFor="name" className="text-left">
               Name
             </label>
@@ -100,13 +102,13 @@ function Step1Inputs({ onFormChange }) {
             )}
           </div>
 
-          <div className="flex flex-col w-1/4 border-2 border-pink-500">
+          <div className="flex flex-col w-1/4">
             <label htmlFor="dob" className="text-left">
-              Date of Birth
+              Date of birth
             </label>
             <input
               {...register("dob", { required: true })}
-              className="border-2 px-3 py-2 mb-7 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
+              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="01/01/2022"
               onChange={handleInputChange}
               type="date"
@@ -122,7 +124,6 @@ function Step1Inputs({ onFormChange }) {
               name="city"
               control={control}
               selectedCountry={selectedCountry}
-              className="border-2 px-3 py-2 mt-2 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82] text-left"
               onCityChange={handleCityChange}
             />
             {errors.city && (
@@ -151,7 +152,7 @@ function Step1Inputs({ onFormChange }) {
             </label>
             <input
               {...register("confirmPassword", { required: true })}
-              className="border-2 px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
+              className="border-2 px-3 py-2 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
               placeholder="At least 8 characters"
               onChange={handleInputChange}
             />
