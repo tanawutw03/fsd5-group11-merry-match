@@ -47,8 +47,6 @@ const PopUpProfile = ({
     />
   );
 
-  console.log(`profileData:`, profileData);
-
   // Define handleBackwardClick function
   const handleBackwardClick = () => {
     const newIndex = Math.max(0, avatarIndex - 1); // Ensure index doesn't go below 0

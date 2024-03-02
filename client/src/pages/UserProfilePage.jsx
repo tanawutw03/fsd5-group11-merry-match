@@ -60,21 +60,31 @@ function UserProfilePage() {
   });
 
   useEffect(() => {
-    console.log("User profileid", user.user.id);
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
           `${API_PORT}/profile/api/v1/profile/${user.user.id}`
         );
         const data = response.data.data;
-        console.log("User profile", response.data.data);
 
         if (response.status !== 200) {
           throw new Error(data.error || "Failed to fetch profile data");
         }
 
         if (data) {
-          setFormData(data);
+          const avatarFileNames = data.avatar_url.map((avatar) => {
+            const urlParts = avatar.publicUrl.split("/");
+            return urlParts[urlParts.length - 1]; // Get the last part of the URL (file name)
+          });
+          console.log(`avatarFileNames:`, avatarFileNames);
+
+          setFormData((prevFormData) => ({
+            ...data,
+            avatar_url: avatarFileNames,
+          }));
+
+          // setFormData(data);
+
           setSelectedFiles(data.avatar_url);
           setIsEditMode(true);
         }
@@ -107,21 +117,30 @@ function UserProfilePage() {
     handleFormChange({ avatar_url: randomFileNames.map((file) => file.name) });
 
     // อัปเดตสถานะด้วยออบเจกต์ไฟล์และชื่อเดิม
-    setSelectedFiles(newSelectedFiles);
+    setSelectedFiles((prevSelectedFiles) => [
+      ...prevSelectedFiles,
+      ...randomFileNames,
+    ]);
 
-    console.log(randomFileNames);
+    setRandomFileNames((prevRandomFileNames) => [
+      ...prevRandomFileNames,
+      ...randomFileNames,
+    ]);
   };
+
+  console.log(`formData:`, formData);
+  console.log(`selectedFiles:`, selectedFiles);
 
   const handleUpdateProfile = async () => {
     try {
-      const response = await axios.post(`${API_PORT}/user/updateProfile`, {
+      const response = await axios.patch(`${API_PORT}/user/updateProfile`, {
         full_name: formData.full_name,
         date_of_birth: formData.date_of_birth,
         country: formData.country,
         city: formData.city,
         username: formData.username,
         email: formData.email,
-        // avatar_url: formData.avatar_url, // เปลี่ยนเป็นส่งเฉพาะชื่อไฟล์
+        avatar_url: formData.avatar_url, // เปลี่ยนเป็นส่งเฉพาะชื่อไฟล์
         sex_identities: formData.sex_identities,
         sex_preferences: formData.sex_preferences,
         racial_preferences: formData.racial_preferences,
@@ -131,21 +150,21 @@ function UserProfilePage() {
         id: formData.id,
       });
 
-      console.log(response.data);
       if (randomFileNames.length > 0) {
         console.log(`randomFileNames`, randomFileNames);
-        const fileNames = randomFileNames.map((file) => file.name); // เก็บเฉพาะชื่อไฟล์
-
-        // ส่งชื่อไฟล์ไปยัง Supabase แทนที่ URL
         for (const { file, name: fileName } of randomFileNames) {
-          console.log("Final file name:", fileName); // Log file name
+          console.log("Final file name:", fileName);
 
           if (!file) {
             console.error(`File not found for ${fileName}`);
-            continue; // Skip to the next iteration
+            continue;
           }
 
+          console.log(`randomFileNames`, randomFileNames);
+
           const filePath = `${user.user.id}/${fileName}`; // เพิ่ม userId เข้าไปในเส้นทางไฟล์
+
+          console.log(`filePath:`, filePath);
           const { data: uploadData, error: uploadError } =
             await supabase.storage.from("avatars").upload(filePath, file, {
               cacheControl: "3600",
@@ -158,9 +177,10 @@ function UserProfilePage() {
           } else {
             console.log("Avatar uploaded successfully:", uploadData);
           }
+
+          onClose();
         }
       }
-      onClose();
     } catch (error) {
       console.error(error);
     }
@@ -191,6 +211,11 @@ function UserProfilePage() {
     setSelectedFiles((prevSelectedFiles) =>
       prevSelectedFiles.filter((file, i) => i !== index)
     );
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      avatar_url: prevFormData.avatar_url.filter((_, i) => i !== index),
+    }));
   };
 
   const handleDeleteAccount = async () => {
@@ -226,8 +251,6 @@ function UserProfilePage() {
       console.error("Error deleting profile:", error.message);
     }
   };
-
-  console.log("AllformData before return", formData);
 
   return (
     <>
@@ -581,7 +604,12 @@ function UserProfilePage() {
                             {selectedFiles[index] ? (
                               <>
                                 <img
-                                  src={selectedFiles[index].publicUrl}
+                                  src={
+                                    selectedFiles[index].publicUrl ||
+                                    URL.createObjectURL(
+                                      selectedFiles[index].file
+                                    )
+                                  }
                                   alt={`Thumbnail ${index}`}
                                   className="w-full h-full object-cover rounded-[16px]"
                                 />

@@ -107,10 +107,38 @@ userProfileRoute.put("/saveImageUrlSets", async (req, res) => {
   }
 });
 
-userProfileRoute.post("/updateProfile", async (req, res) => {
+userProfileRoute.patch("/updateProfile", async (req, res) => {
   const formData = req.body;
   try {
-    const { data, error } = await supabase
+    const { data: existingProfile, error } = await supabase
+      .from("profiles")
+      .select("avatar_url")
+      .eq("id", formData.id)
+      .single();
+
+    console.log(`existingProfile:`, existingProfile);
+    if (error) {
+      console.error(error);
+      return res
+        .status(500)
+        .json({ error: "An error occurred while updating profile" });
+    }
+
+    const deletedFiles = existingProfile.avatar_url.filter(
+      (url) => !formData.avatar_url.includes(url)
+    );
+
+    await Promise.all(
+      deletedFiles.map(async (url) => {
+        const fileName = url.split("/").pop();
+
+        const { data, error } = await supabase.storage
+          .from("avatars")
+          .remove([`${formData.id}/${fileName}`]);
+      })
+    );
+
+    const { data, error: updateError } = await supabase
       .from("profiles")
       .update({
         full_name: formData.full_name,
@@ -118,7 +146,7 @@ userProfileRoute.post("/updateProfile", async (req, res) => {
         country: formData.country,
         city: formData.city,
         username: formData.username,
-        // avatar_url: formData.avatar_url,
+        avatar_url: formData.avatar_url,
         email: formData.email,
         sex_identities: formData.sex_identities,
         sex_preferences: formData.sex_preferences,
@@ -129,18 +157,20 @@ userProfileRoute.post("/updateProfile", async (req, res) => {
       })
       .eq("id", formData.id);
 
-    if (error) {
-      console.error(error);
-      res
+    if (updateError) {
+      console.error(updateError);
+      return res
         .status(500)
         .json({ error: "An error occurred while updating profile" });
     } else {
-      console.log(data);
-      res.status(200).json({ message: "Profile updated successfully" });
+      console.log(`data:`, data);
+      return res.status(200).json({ message: "Profile updated successfully" });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "An error occurred while updating profile" });
+    return res
+      .status(500)
+      .json({ error: "An error occurred while updating profile" });
   }
 });
 
