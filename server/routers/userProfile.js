@@ -118,13 +118,14 @@ userProfileRoute.post("/updateProfile", async (req, res) => {
         country: formData.country,
         city: formData.city,
         username: formData.username,
+        // avatar_url: formData.avatar_url,
         email: formData.email,
         sex_identities: formData.sex_identities,
         sex_preferences: formData.sex_preferences,
         racial_preferences: formData.racial_preferences,
         meeting_interest: formData.meeting_interest,
         hobbies: formData.hobbies,
-        about_me: formData.about_me,
+        description: formData.about_me,
       })
       .eq("id", formData.id);
 

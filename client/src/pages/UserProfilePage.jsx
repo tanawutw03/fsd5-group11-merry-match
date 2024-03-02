@@ -5,7 +5,6 @@ import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
 import logo from "../assets/merryPackagePage/logo.svg";
 import NavBar from "../components/common/NavBar";
 import { supabase } from "../utils/supabaseClient";
-import UserProfileUpload from "../components/UserProfileUpload";
 import ConfirmDeleteBtn from "../components/ConfirmDeleteBtn";
 import PropTypes from "prop-types";
 import PopUpProfile from "../components/PopUpProfile.jsx";
@@ -13,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../app/userContext";
 import axios from "axios";
 import React from "react";
+import { SimpleGrid, Card, CardBody, IconButton } from "@chakra-ui/react";
+import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -33,6 +34,7 @@ function UserProfilePage() {
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
   const [session, setSession] = useState(null);
   const [userProfileID, setUserProfileId] = useState(null);
+  const [randomFileNames, setRandomFileNames] = useState([]);
   const API_PORT = "http://localhost:4008";
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -58,60 +60,56 @@ function UserProfilePage() {
   });
 
   useEffect(() => {
-    const authListener = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
+    console.log("User profileid", user.user.id);
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(
+          `${API_PORT}/profile/api/v1/profile/${user.user.id}`
+        );
+        const data = response.data.data;
+        console.log("User profile", response.data.data);
 
-        if (session) {
-          const userProfileId = session.user.id;
-          setUserProfileId(userProfileId);
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            id: userProfileId,
-          }));
-
-          fetchUserData(userProfileId);
-          console.log("session: ", session);
-        } else {
-          setUserProfileId(null);
-          localStorage.removeItem("userProfileId");
+        if (response.status !== 200) {
+          throw new Error(data.error || "Failed to fetch profile data");
         }
+
+        if (data) {
+          setFormData(data);
+          setSelectedFiles(data.avatar_url);
+          setIsEditMode(true);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error.message);
       }
-    );
+    };
+    fetchUserData();
   }, []);
 
-  const fetchUserData = async (userId) => {
-    try {
-      const response = await axios.get(`${API_PORT}/user/profile/${userId}`);
-      const data = response.data[0];
-
-      if (response.status !== 200) {
-        throw new Error(data.error || "Failed to fetch profile data");
-      }
-
-      if (data) {
-        setFormData(data);
-        setIsEditMode(true);
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error.message);
-    }
+  const handleRandomFileNames = (names) => {
+    setRandomFileNames(names);
   };
 
   const handleFileInputChange = () => {
     const files = Array.from(fileInputRef.current.files);
     const newSelectedFiles = files.slice(0, 5);
 
-    const uniqueFileNames = newSelectedFiles.map((file) => {
+    // สร้างชื่อไฟล์แบบสุ่มสำหรับไฟล์ที่เลือกใหม่
+    const randomFileNames = newSelectedFiles.map((file) => {
       const fileExt = file.name.split(".").pop();
-      const uniqueFileName = `${Date.now()}-${file.name}`;
-      return { file, name: uniqueFileName };
+      const randomString = Math.random().toString(36).substring(7);
+      const randomFileName = `${randomString}.${fileExt}`;
+
+      // สร้างออบเจกต์ที่มีไฟล์และชื่อของมัน
+      return { file, name: randomFileName };
     });
 
-    setSelectedFiles((prevSelectedFiles) => [
-      ...prevSelectedFiles,
-      ...randomFileNames,
-    ]);
+    // ส่งชื่อไฟล์กลับไปยังคอมโพเนนต์แม่
+    handleFormChange({ avatar_url: randomFileNames.map((file) => file.name) });
+
+    // อัปเดตสถานะด้วยออบเจกต์ไฟล์และชื่อเดิม
+    setSelectedFiles(newSelectedFiles);
+
+    console.log(randomFileNames);
   };
 
   const handleUpdateProfile = async () => {
@@ -123,19 +121,60 @@ function UserProfilePage() {
         city: formData.city,
         username: formData.username,
         email: formData.email,
+        // avatar_url: formData.avatar_url, // เปลี่ยนเป็นส่งเฉพาะชื่อไฟล์
         sex_identities: formData.sex_identities,
         sex_preferences: formData.sex_preferences,
         racial_preferences: formData.racial_preferences,
         meeting_interest: formData.meeting_interest,
         hobbies: formData.hobbies,
-        about_me: formData.about_me,
+        about_me: formData.description,
         id: formData.id,
       });
-      onClose();
+
       console.log(response.data);
+      if (randomFileNames.length > 0) {
+        console.log(`randomFileNames`, randomFileNames);
+        const fileNames = randomFileNames.map((file) => file.name); // เก็บเฉพาะชื่อไฟล์
+
+        // ส่งชื่อไฟล์ไปยัง Supabase แทนที่ URL
+        for (const { file, name: fileName } of randomFileNames) {
+          console.log("Final file name:", fileName); // Log file name
+
+          if (!file) {
+            console.error(`File not found for ${fileName}`);
+            continue; // Skip to the next iteration
+          }
+
+          const filePath = `${user.user.id}/${fileName}`; // เพิ่ม userId เข้าไปในเส้นทางไฟล์
+          const { data: uploadData, error: uploadError } =
+            await supabase.storage.from("avatars").upload(filePath, file, {
+              cacheControl: "3600",
+              upsert: false,
+            });
+
+          console.log(`User avatar upload successfully:`, uploadData);
+          if (uploadError) {
+            console.error("Error uploading avatar:", uploadError.message);
+          } else {
+            console.log("Avatar uploaded successfully:", uploadData);
+          }
+        }
+      }
+      onClose();
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleFormChange = (newFormData) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      ...newFormData,
+      avatar_url: [
+        ...(prevFormData.avatar_url || []), // Ensure it's an array even if undefined
+        ...(newFormData.avatar_url || []),
+      ],
+    }));
   };
 
   const handleInputChange = (e) => {
@@ -512,30 +551,80 @@ function UserProfilePage() {
                 </div>
               </div>
               <div className="w-full h-full flex flex-col justify-center items-start font-nunito mb-[30px] ">
-                <div className="flex flex-col justify-start items-start my-10">
-                  <h1 className="text-3xl font-bold text-[#a62d82]">
-                    Profile&nbsp;Pictures
-                  </h1>
-                  <h3 className="text-lg">
-                    Upload&nbsp;at&nbsp;least&nbsp;2&nbsp;photos
-                  </h3>
-                </div>
-                {/* <UserProfileUpload /> */}
-                <UserProfileUpload
-                  formDataId={user.user.id}
-                  isEditMode={isEditMode}
-                />
+                <div className="w-[930px] h-full flex flex-col justify-center items-start font-nunito mb-[30px] ">
+                  <div className="flex flex-col justify-start items-start my-10">
+                    <h1 className="text-3xl font-bold text-[#a62d82]">
+                      Profile&nbsp;Pictures
+                    </h1>
+                    <h3 className="text-lg">
+                      Upload&nbsp;at&nbsp;least&nbsp;2&nbsp;photos
+                    </h3>
+                  </div>
 
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  style={{
-                    display: "none",
-                  }}
-                  onChange={handleFileInputChange}
-                  multiple
-                  accept="image/*"
-                />
+                  <SimpleGrid
+                    columns={[1, 2, 3, 4, 5]}
+                    spacing="0px"
+                    className="w-full mb-[20px]"
+                  >
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index}>
+                        <Card
+                          sx={{
+                            w: "167px",
+                            h: "167px",
+                            rounded: "16px",
+                          }}
+                          onClick={() => fileInputRef.current.click()}
+                          className="hover:cursor-pointer"
+                        >
+                          <CardBody className="flex flex-col justify-center items-center w-[167px] h-[167px] rounded-[16px] bg-[#f1f2f6]">
+                            {selectedFiles[index] ? (
+                              <>
+                                <img
+                                  src={selectedFiles[index].publicUrl}
+                                  alt={`Thumbnail ${index}`}
+                                  className="w-full h-full object-cover rounded-[16px]"
+                                />
+                                <IconButton
+                                  icon={<CloseIcon />}
+                                  aria-label="Delete"
+                                  color="white"
+                                  bgColor="red.500"
+                                  _hover={{ bgColor: "red.600" }}
+                                  onClick={(event) =>
+                                    handleDeleteFile(index, event)
+                                  }
+                                  style={{
+                                    position: "absolute",
+                                    top: -15,
+                                    right: -15,
+                                    borderRadius: "50%",
+                                  }}
+                                />
+                              </>
+                            ) : (
+                              <>
+                                <AddIcon color="purple" />
+                                <h1 className="text-[#a62d82] text-xl absolute bottom-10">
+                                  Upload photo
+                                </h1>
+                              </>
+                            )}
+                          </CardBody>
+                        </Card>
+                      </div>
+                    ))}
+                  </SimpleGrid>
+
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    onChange={handleFileInputChange}
+                    multiple
+                    accept="image/*"
+                  />
+                </div>
                 <div className=" flex justify-end  w-full ">
                   <button
                     className="choose-package-btn flex justify-center items-center  w-[170px] font-nunito text-[16px] text-[#646d89] font-extrabold h-12 p-[16px] mr-6"
