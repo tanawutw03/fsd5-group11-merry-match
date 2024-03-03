@@ -506,9 +506,10 @@ matchRouter.put("/api/v2/unmatch", async (req, res) => {
     }
 
     let updatedUnmatchMatches = [...(unmatchUserData.matches || [])];
+    console.log(`updatedUnmatchMatches:`, updatedUnmatchMatches);
 
     // Remove userId from matches and mutual_matches and add it to unmatched_profiles
-    if (!unmatchUserData.matches.includes(userId)) {
+    if (unmatchUserData.matches && unmatchUserData.matches.includes(userId)) {
       updatedUnmatchMatches.push(userId);
     }
 
