@@ -180,10 +180,10 @@ function UserProfilePage() {
           } else {
             console.log("Avatar uploaded successfully:", uploadData);
           }
-
-          onClose();
         }
       }
+
+      onClose();
     } catch (error) {
       console.error(error);
     }
@@ -568,7 +568,7 @@ function UserProfilePage() {
                     type="text"
                     id="about_me"
                     name="about_me"
-                    value={formData.about_me || ""}
+                    value={formData.description || ""}
                     onChange={handleInputChange}
                     rows="4"
                     className="border-2 w-full px-3 py-2 mb-6 rounded-md focus:outline-none focus:ring-1 focus:ring-[#a62d82]"
