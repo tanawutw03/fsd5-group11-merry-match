@@ -143,6 +143,12 @@ function MerryListPage() {
 
   // const userPackage = packages.find((p) => p.user_id === user.user.id);
 
+  const handleChatroom = (profile) => {
+    console.log(`Clicked`);
+    console.log(`profileData:`, profile);
+    navigate("/matching", { state: { profileData: profile } });
+  };
+
   return (
     <>
       {/* Navbar Section */}
@@ -297,6 +303,7 @@ function MerryListPage() {
                             src={messageIcon}
                             alt="message icon"
                             className="w-[24px] h-[24px]"
+                            onClick={() => handleChatroom(profile)}
                           />
                         </button>
                       </Tooltip>

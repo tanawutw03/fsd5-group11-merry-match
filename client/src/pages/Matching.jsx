@@ -3,18 +3,20 @@ import NavBar from "../components/common/NavBar";
 import LeftSideMatching from "../components/LeftSideMatching";
 import { Checkbox } from "@chakra-ui/react";
 import SliderAge from "../components/SliderAge";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useUser } from "../app/userContext";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import Chatroom from "../components/Chatroom";
-
 import ChakraButton from "../components/common/ChakraButton";
+import { useEffect } from "react";
 function Matching() {
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
   const [mutualMatch, setMutualMatch] = useState(false);
   const [showChatroom, setShowChatroom] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(null);
+  const location = useLocation();
+  const profileData = location.state && location.state.profileData;
 
   const navigate = useNavigate();
 
@@ -34,6 +36,12 @@ function Matching() {
   const handleCloseChatroom = () => {
     setShowChatroom(false);
   };
+
+  useEffect(() => {
+    if (profileData) {
+      toggleChatroom(profileData);
+    }
+  }, [profileData]);
 
   return (
     <>
