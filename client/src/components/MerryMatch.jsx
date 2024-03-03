@@ -11,7 +11,8 @@ import {
 import PropTypes from "prop-types";
 import merrymatch from "../assets/MerryMatch/merrymatch.png";
 
-function MerryMatch({ isOpen, onClose }) {
+function MerryMatch({ isOpen, onClose, matchedProfile, toggleChatroom }) {
+  console.log(`matchedProfile merrymatch:`, matchedProfile);
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -25,7 +26,14 @@ function MerryMatch({ isOpen, onClose }) {
           {/* <ModalBody></ModalBody> */}
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={() => {
+                onClose();
+                toggleChatroom(matchedProfile);
+              }}
+            >
               Start Conversation
             </Button>
             {/* <Button variant="ghost">Secondary Action</Button> */}
@@ -39,6 +47,8 @@ function MerryMatch({ isOpen, onClose }) {
 MerryMatch.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
+  matchedProfile: PropTypes.object,
+  toggleChatroom: PropTypes.func,
 };
 
 export default MerryMatch;

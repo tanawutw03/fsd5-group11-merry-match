@@ -10,7 +10,7 @@ import MerryMatch from "./MerryMatch.jsx";
 import { useDisclosure } from "@chakra-ui/react";
 import PopUpProfile from "./PopUpProfile.jsx";
 
-function MerryCards({ user, onMutualMatch }) {
+function MerryCards({ user, onMutualMatch, toggleChatroom }) {
   const [people, setPeople] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [dataLoaded, setDataLoaded] = useState(false);
@@ -22,6 +22,7 @@ function MerryCards({ user, onMutualMatch }) {
   const [limitCount, setLimitCount] = useState();
   const [cardLeft, setCardLeft] = useState(0);
   const [totalCard, setTotalCard] = useState(0);
+  const [matchedProfile, setMatchedProfile] = useState(null);
 
   console.log(`people:`, people);
 
@@ -90,6 +91,10 @@ function MerryCards({ user, onMutualMatch }) {
 
       if (response.message === "Mutual match") {
         setMutualMatch(true);
+        const matchedProfile = people.find(
+          (person) => person.id === swipedUserId
+        );
+        setMatchedProfile(matchedProfile);
       }
 
       const updatedMerryCount = merryCount - 1;
@@ -153,6 +158,7 @@ function MerryCards({ user, onMutualMatch }) {
     if (mutualMatch) {
       setIsModalOpen(true);
       onMutualMatch(true);
+      console.log(`matchedProfile:`, matchedProfile);
     }
   }, [mutualMatch]);
 
@@ -219,6 +225,8 @@ function MerryCards({ user, onMutualMatch }) {
             setMutualMatch(false);
             onMutualMatch(false);
           }}
+          matchedProfile={matchedProfile}
+          toggleChatroom={toggleChatroom}
         />
       )}
     </>
@@ -228,6 +236,7 @@ function MerryCards({ user, onMutualMatch }) {
 MerryCards.propTypes = {
   user: PropTypes.object,
   onMutualMatch: PropTypes.func,
+  toggleChatroom: PropTypes.func,
 };
 
 export default MerryCards;

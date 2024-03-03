@@ -85,7 +85,11 @@ function Matching() {
             <>
               <div className="w-full flex">
                 <div className="w-4/5">
-                  <MerryCards user={user} onMutualMatch={handleMutualMatch} />
+                  <MerryCards
+                    user={user}
+                    onMutualMatch={handleMutualMatch}
+                    toggleChatroom={toggleChatroom}
+                  />
                 </div>
                 <div className="w-1/5 p-5">
                   <p className=" text-[#191C77] text-base font-bold">
