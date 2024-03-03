@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import NavBar from "../components/common/NavBar";
-import logo from "../assets/MerryPackagePage/logo.svg";
+import logo from "../assets/merryPackagePage/logo.svg";
 import fillCheckbox from "../assets/MerryPackagePage/checkbox-circle-fill.svg";
 import facebookIcon from "../assets/MerryPackagePage/facebook-circle-fill.svg";
 import instagramIcon from "../assets/MerryPackagePage/instagram-fill.svg";
