@@ -12,7 +12,7 @@ import CreatePackage from "./pages/CreatePackage";
 import EditPackage from "./pages/EditPackage";
 import MerryListPage from "./pages/MerryListPage.jsx";
 import { useUser } from "./app/userContext.js";
-import UserComplaint from "./pages/Usercomplaint";
+import UserComplaint from "./pages/UserComplaint.jsx";
 import AdminComplaint from "./pages/AdminComplaint.jsx";
 import ComplaintPage from "./pages/Complaint.jsx";
 import UserProfilePage from "./pages/UserProfilePage.jsx";
