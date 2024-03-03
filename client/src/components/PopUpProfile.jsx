@@ -107,7 +107,18 @@ const PopUpProfile = ({
                   <img className="w-20 h-20" src={heart} alt="Heart Icon" />
                 </div>
                 <div className="flex flex-row justify-between mt-4">
-                  <p className="text-[#646D89]">{avatarIndex + 1}/5</p>
+                  <p className="text-[#646D89]">
+                    {(profileData.avatarUrls &&
+                      profileData.avatarUrls.length > 0) ||
+                    (profileData.avatar_url &&
+                      profileData.avatar_url.length > 0)
+                      ? `${avatarIndex + 1}/${
+                          profileData.avatarUrls?.length ||
+                          profileData.avatar_url?.length ||
+                          0
+                        }`
+                      : "0/0"}
+                  </p>
                   <div className="flex flex-row z-30">
                     {/* Render backward arrow icon */}
                     <IconButton
