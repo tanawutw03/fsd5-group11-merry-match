@@ -57,8 +57,13 @@ const PopUpProfile = ({
   // Define handleForwardClick function
   const handleForwardClick = () => {
     const newIndex = Math.min(4, avatarIndex + 1); // Ensure index doesn't exceed 4
-    setAvatarIndex(newIndex);
-    console.log(`handleForwardClick`);
+    if (
+      (profileData.avatarUrls && newIndex < profileData.avatarUrls.length) ||
+      (profileData.avatar_url && newIndex < profileData.avatar_url.length)
+    ) {
+      setAvatarIndex(newIndex);
+      console.log(`handleForwardClick`);
+    }
   };
 
   // console.log(`profileData:`, profileData);

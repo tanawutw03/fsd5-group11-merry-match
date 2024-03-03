@@ -35,6 +35,7 @@ function UserProfilePage() {
   const [session, setSession] = useState(null);
   const [userProfileID, setUserProfileId] = useState(null);
   const [randomFileNames, setRandomFileNames] = useState([]);
+  const [previewData, setPreviewData] = useState([]);
   const API_PORT = "http://localhost:4008";
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -78,12 +79,14 @@ function UserProfilePage() {
           });
           console.log(`avatarFileNames:`, avatarFileNames);
 
+          console.log(`data:`, data);
+
           setFormData((prevFormData) => ({
             ...data,
             avatar_url: avatarFileNames,
           }));
 
-          // setFormData(data);
+          setPreviewData(data);
 
           setSelectedFiles(data.avatar_url);
           setIsEditMode(true);
@@ -295,7 +298,7 @@ function UserProfilePage() {
               >
                 <PopUpProfile
                   useMenu={false}
-                  profileData={formData}
+                  profileData={previewData}
                   isRound="true"
                   variant="link"
                   colorScheme="red"
