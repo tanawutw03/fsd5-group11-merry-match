@@ -190,16 +190,29 @@ function MerryListPage() {
                   className="flex justify-evenly border-solid border-b-[1px] border-[#e4e6ed] mb-[24px] pb-[40px] pt-[16px]"
                 >
                   <section className="flex w-[674px]">
-                    <img
-                      src={profile.avatar_url[0].publicUrl}
-                      alt="user's profile pic"
-                      className="mr-[40px] rounded-3xl"
-                      style={{
-                        width: "187px",
-                        height: "187px",
-                        objectFit: "cover",
-                      }}
-                    />
+                    {profile.avatar_url.length > 0 ? (
+                      <img
+                        src={profile.avatar_url[0].publicUrl}
+                        alt="user's profile pic"
+                        className="mr-[40px] rounded-3xl"
+                        style={{
+                          width: "187px",
+                          height: "187px",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src=""
+                        alt="Placeholder"
+                        className="mr-[40px] rounded-3xl"
+                        style={{
+                          width: "187px",
+                          height: "187px",
+                          objectFit: "cover",
+                        }}
+                      />
+                    )}
                     <div>
                       <section className="flex justify-start pb-[24px]">
                         <div className="flex mr-[16px]">
