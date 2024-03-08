@@ -15,7 +15,12 @@ async function init() {
   const app = express();
   const port = 4008;
 
-  app.use(cors());
+  app.use(
+    cors({
+      origin: ["https://fsd5-group11-merry-match-ly5k.vercel.app"],
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    })
+  );
   app.use(express.json());
   app.use("/admin", adminPackageRoute);
   app.use("/admin/complaint", adminComplaint);
