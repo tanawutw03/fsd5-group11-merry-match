@@ -24,8 +24,8 @@ dist-ssr
 *.sw?
 
 # Ignore environment files (modify these names based on your project)
-**/.env
-**/.env.development
-**/.env.prod
+*/.env
+*/.env.development
+*/.env.prod
 .env
 .vercel
