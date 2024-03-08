@@ -48,10 +48,12 @@ function MerryCards({ user, onMutualMatch, toggleChatroom }) {
 
         // Fetch merry count data
         const merryResponse = await axios.get(
-          "http://localhost:4008/merryLimit/count/" + user.user.id
+          `${import.meta.env.VITE_BASE_URL_PROD}/merryLimit/count/` +
+            user.user.id
         );
         const limitResponse = await axios.get(
-          "http://localhost:4008/merryLimit/limit/" + user.user.id
+          `${import.meta.env.VITE_BASE_URL_PROD}/merryLimit/limit/` +
+            user.user.id
         );
         const currentDate = new Date().toISOString();
         const formattedDate = currentDate.substring(0, 10); // Extract 'yyyy-mm-dd'
@@ -88,7 +90,7 @@ function MerryCards({ user, onMutualMatch, toggleChatroom }) {
       const response = await updateMatches(user.user.id, swipedUserIdsArray);
 
       const decreaseLimitResponse = await axios.put(
-        "http://localhost:4008/merryLimit/count/" + user.user.id
+        `${import.meta.env.VITE_BASE_URL_PROD}/merryLimit/count/` + user.user.id
       );
 
       if (response.message === "Mutual match") {
@@ -115,7 +117,7 @@ function MerryCards({ user, onMutualMatch, toggleChatroom }) {
   const updateMatches = async (swipingUserId, swipedUserIdsArray) => {
     try {
       const response = await axios.put(
-        "http://localhost:4008/match/api/v1/match",
+        `${import.meta.env.VITE_BASE_URL_PROD}/match/api/v1/match`,
         {
           userId: swipingUserId,
           matchedUserId: swipedUserIdsArray,
@@ -132,7 +134,7 @@ function MerryCards({ user, onMutualMatch, toggleChatroom }) {
   const updatedUnmatched = async (swipingUserId, swipedUserIdsArray) => {
     try {
       const response = await axios.put(
-        "http://localhost:4008/match/api/v1/unmatch",
+        `${import.meta.env.VITE_BASE_URL_PROD}/match/api/v1/unmatch`,
         {
           userId: swipingUserId,
           unmatchUserId: swipedUserIdsArray,
