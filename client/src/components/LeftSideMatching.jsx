@@ -16,6 +16,10 @@ const LeftSideMatching = ({
   const { user } = useUser();
   const [lastMessages, setLastMessages] = useState([]);
 
+  const baseURL = import.meta.env.DEV
+    ? import.meta.env.VITE_BASE_URL_DEV
+    : import.meta.env.VITE_BASE_URL_PROD;
+
   useEffect(() => {
     const changes = supabase
       .channel("table-db-changes")
@@ -72,7 +76,7 @@ const LeftSideMatching = ({
     async function fetchMerryMatch() {
       try {
         const response = await axios.get(
-          `http://localhost:4008/match/api/v1/mutual_matches/${id}`
+          `${baseURL}/match/api/v1/mutual_matches/${id}`
         );
 
         const data = response.data.data;
