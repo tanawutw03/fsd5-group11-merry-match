@@ -13,14 +13,24 @@ import chatRouter from "./routers/chatRouter.js";
 
 async function init() {
   const app = express();
-  const port = process.env.PORT || 4008;
+  const port = process.env.BASE_ENV;
 
-  app.use(
-    cors({
-      origin: ["https://fsd5-group11-merry-match-ly5k.vercel.app"],
-      methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    })
-  );
+  if (process.env.BASE_ENV === "BASE_URL_PROD") {
+    app.use(
+      cors({
+        origin: process.env.BASE_URL_PROD,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+      })
+    );
+  } else {
+    app.use(
+      cors({
+        origin: process.env.BASE_URL_DEV,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+      })
+    );
+  }
+
   app.use(express.json());
   app.use("/admin", adminPackageRoute);
   app.use("/admin/complaint", adminComplaint);
