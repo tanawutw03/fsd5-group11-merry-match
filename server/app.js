@@ -13,23 +13,17 @@ import chatRouter from "./routers/chatRouter.js";
 
 async function init() {
   const app = express();
-  const port = process.env.BASE_ENV;
+  const port = process.env.PORT || 3000;
 
-  if (process.env.BASE_ENV === "BASE_URL_PROD") {
-    app.use(
-      cors({
-        origin: process.env.BASE_URL_PROD,
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-      })
-    );
-  } else {
-    app.use(
-      cors({
-        origin: process.env.BASE_URL_DEV,
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-      })
-    );
-  }
+  app.use(
+    cors({
+      origin:
+        process.env.NODE_ENV === "production"
+          ? process.env.BASE_URL_PROD
+          : process.env.BASE_URL_DEV,
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    })
+  );
 
   app.use(express.json());
   app.use("/admin", adminPackageRoute);
