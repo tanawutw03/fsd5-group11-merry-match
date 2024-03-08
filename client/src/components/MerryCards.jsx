@@ -24,6 +24,10 @@ function MerryCards({ user, onMutualMatch, toggleChatroom }) {
   const [totalCard, setTotalCard] = useState(0);
   const [matchedProfile, setMatchedProfile] = useState(null);
 
+  const baseURL = import.meta.env.DEV
+    ? import.meta.env.VITE_BASE_URL_DEV
+    : import.meta.env.VITE_BASE_URL_PROD;
+
   console.log(`people:`, people);
 
   const fetchData = async () => {
@@ -31,9 +35,7 @@ function MerryCards({ user, onMutualMatch, toggleChatroom }) {
     try {
       // Fetch profile data
       const profileResponse = await axios.get(
-        `${import.meta.env.VITE_BASE_URL_PROD}/profile/api/v1/profile/${
-          user.user.id
-        }/5`
+        `${baseURL}/profile/api/v1/profile/${user.user.id}/5`
       );
       if (profileResponse.data.data.length === 0) {
         setPeople([]); // Set people to an empty array
@@ -48,12 +50,10 @@ function MerryCards({ user, onMutualMatch, toggleChatroom }) {
 
         // Fetch merry count data
         const merryResponse = await axios.get(
-          `${import.meta.env.VITE_BASE_URL_PROD}/merryLimit/count/` +
-            user.user.id
+          `${baseURL}/merryLimit/count/` + user.user.id
         );
         const limitResponse = await axios.get(
-          `${import.meta.env.VITE_BASE_URL_PROD}/merryLimit/limit/` +
-            user.user.id
+          `${baseURL}/merryLimit/limit/` + user.user.id
         );
         const currentDate = new Date().toISOString();
         const formattedDate = currentDate.substring(0, 10); // Extract 'yyyy-mm-dd'
@@ -90,7 +90,7 @@ function MerryCards({ user, onMutualMatch, toggleChatroom }) {
       const response = await updateMatches(user.user.id, swipedUserIdsArray);
 
       const decreaseLimitResponse = await axios.put(
-        `${import.meta.env.VITE_BASE_URL_PROD}/merryLimit/count/` + user.user.id
+        `${baseURL}/merryLimit/count/` + user.user.id
       );
 
       if (response.message === "Mutual match") {
@@ -116,13 +116,10 @@ function MerryCards({ user, onMutualMatch, toggleChatroom }) {
 
   const updateMatches = async (swipingUserId, swipedUserIdsArray) => {
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_BASE_URL_PROD}/match/api/v1/match`,
-        {
-          userId: swipingUserId,
-          matchedUserId: swipedUserIdsArray,
-        }
-      );
+      const response = await axios.put(`${baseURL}/match/api/v1/match`, {
+        userId: swipingUserId,
+        matchedUserId: swipedUserIdsArray,
+      });
 
       return response.data;
     } catch (error) {
@@ -133,13 +130,10 @@ function MerryCards({ user, onMutualMatch, toggleChatroom }) {
 
   const updatedUnmatched = async (swipingUserId, swipedUserIdsArray) => {
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_BASE_URL_PROD}/match/api/v1/unmatch`,
-        {
-          userId: swipingUserId,
-          unmatchUserId: swipedUserIdsArray,
-        }
-      );
+      const response = await axios.put(`${baseURL}/match/api/v1/unmatch`, {
+        userId: swipingUserId,
+        unmatchUserId: swipedUserIdsArray,
+      });
 
       return response.data;
     } catch (error) {
