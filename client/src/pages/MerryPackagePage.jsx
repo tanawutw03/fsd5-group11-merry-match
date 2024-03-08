@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import NavBar from "../components/common/NavBar";
 import logo from "../assets/merryPackagePage/logo.svg";
-import fillCheckbox from "../assets/MerryPackagePage/checkbox-circle-fill.svg";
-import facebookIcon from "../assets/MerryPackagePage/facebook-circle-fill.svg";
-import instagramIcon from "../assets/MerryPackagePage/instagram-fill.svg";
-import twitterIcon from "../assets/MerryPackagePage/twitter-fill.svg";
+import fillCheckbox from "../assets/merryPackagePage/checkbox-circle-fill.svg";
+import facebookIcon from "../assets/merryPackagePage/facebook-circle-fill.svg";
+import instagramIcon from "../assets/merryPackagePage/instagram-fill.svg";
+import twitterIcon from "../assets/merryPackagePage/twitter-fill.svg";
 import { supabase } from "../utils/supabaseClient";
 // import stripe from "stripe";
 
