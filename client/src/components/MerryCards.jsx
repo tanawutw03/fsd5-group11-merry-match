@@ -31,7 +31,9 @@ function MerryCards({ user, onMutualMatch, toggleChatroom }) {
     try {
       // Fetch profile data
       const profileResponse = await axios.get(
-        `http://localhost:4008/profile/api/v1/profile/${user.user.id}/5`
+        `${import.meta.env.VITE_BASE_URL_PROD}/profile/api/v1/profile/${
+          user.user.id
+        }/5`
       );
       if (profileResponse.data.data.length === 0) {
         setPeople([]); // Set people to an empty array
