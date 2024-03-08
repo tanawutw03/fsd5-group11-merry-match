@@ -19,6 +19,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
+    "build": "echo 'No build required'",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js"
   },
