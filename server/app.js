@@ -13,7 +13,7 @@ import chatRouter from "./routers/chatRouter.js";
 
 async function init() {
   const app = express();
-  const port = 4008;
+  const port = process.env.PORT || 4008;
 
   app.use(
     cors({
