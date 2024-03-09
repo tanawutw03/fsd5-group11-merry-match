@@ -28,6 +28,10 @@ function CreatePackage() {
   const navigate = useNavigate();
   const [newComplaintCount, setNewComplaintCount] = useState(0);
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
+  const baseURL = import.meta.env.DEV
+    ? import.meta.env.VITE_BASE_URL_DEV
+    : import.meta.env.VITE_BASE_URL_PROD;
+
   if (user.user.role !== "admin") {
     navigate("/homepage");
     console.log("you not role admin");
@@ -36,9 +40,7 @@ function CreatePackage() {
   useEffect(() => {
     async function fetchNewComplaintCount() {
       try {
-        const response = await axios.get(
-          "http://localhost:4008/admin/complaint/news"
-        );
+        const response = await axios.get(`${baseURL}/admin/complaint/news`);
         setNewComplaintCount(response.data.newComplaintCount);
       } catch (error) {
         console.error("Error fetching new complaints:", error.message);
@@ -138,7 +140,7 @@ function CreatePackage() {
     // Insert package data into the database
     try {
       const response = await axios.post(
-        "http://localhost:4008/admin/create/package",
+        `${baseURL}/admin/create/package`,
         createPackageData
       );
       // Reset form fields or redirect to another page after successful creation

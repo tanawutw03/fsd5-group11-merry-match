@@ -29,6 +29,10 @@ function AdminPage() {
   const [packageData, setPackageData] = useState([]);
   const [newComplaintCount, setNewComplaintCount] = useState(0);
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
+  const baseURL = import.meta.env.DEV
+    ? import.meta.env.VITE_BASE_URL_DEV
+    : import.meta.env.VITE_BASE_URL_PROD;
+
   if (user.user.role !== "admin") {
     navigate("/homepage");
     console.log("you not role admin");
@@ -42,7 +46,7 @@ function AdminPage() {
       // Example using Supabase
 
       try {
-        const response = await axios.get("http://localhost:4008/admin/package");
+        const response = await axios.get(`${baseURL}/admin/package`);
         setPackageData(response.data);
       } catch (error) {
         console.error(error);
@@ -50,9 +54,7 @@ function AdminPage() {
     };
     async function fetchNewComplaintCount() {
       try {
-        const response = await axios.get(
-          "http://localhost:4008/admin/complaint/news"
-        );
+        const response = await axios.get(`${baseURL}/admin/complaint/news`);
         setNewComplaintCount(response.data.newComplaintCount);
       } catch (error) {
         console.error("Error fetching new complaints:", error.message);
@@ -91,7 +93,7 @@ function AdminPage() {
     try {
       // Perform the delete operation using Axios
       const response = await axios.delete(
-        `http://localhost:4008/admin/delete/package/${packageId}`
+        `${baseURL}/admin/delete/package/${packageId}`
       );
 
       if (response.status === 200) {

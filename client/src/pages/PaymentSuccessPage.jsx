@@ -12,6 +12,9 @@ const PaymentSuccessPage = () => {
   const [packageICON, setPackageIcon] = useState("");
   const [packagePrice, setPackagePrice] = useState("");
   const [profileID, setProfileId] = useState("");
+  const baseURL = import.meta.env.DEV
+    ? import.meta.env.VITE_BASE_URL_DEV
+    : import.meta.env.VITE_BASE_URL_PROD;
 
   const navigate = useNavigate();
 
@@ -22,9 +25,8 @@ const PaymentSuccessPage = () => {
         const orderId = urlParams.get("id");
         setOrderId(orderId);
 
-        const API_PORT = "http://localhost:4008";
         const response = await axios.get(
-          `${API_PORT}/payment-success/${orderId}`
+          `${baseURL}/payment-success/${orderId}`
         );
         const data = response.data;
 
@@ -49,7 +51,7 @@ const PaymentSuccessPage = () => {
         };
 
         const response2 = await axios.put(
-          `${API_PORT}/userPackage/updatePackage/${profileId}`,
+          `${baseURL}/userPackage/updatePackage/${profileId}`,
           dataToSend
         );
         console.log("Response2: ", response2);

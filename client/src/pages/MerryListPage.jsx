@@ -31,6 +31,9 @@ function MerryListPage() {
   const [hasMoreData, setHasMoreData] = useState(true);
   const [displayedMerryLimit, setDisplayedMerryLimit] = useState();
   const [isUnmerryCalled, setIsUnmerryCalled] = useState(false);
+  const baseURL = import.meta.env.DEV
+    ? import.meta.env.VITE_BASE_URL_DEV
+    : import.meta.env.VITE_BASE_URL_PROD;
 
   useEffect(() => {
     const id = user.user.id;
@@ -38,7 +41,7 @@ function MerryListPage() {
     async function fetchMerryListData() {
       try {
         const response = await axios.get(
-          `http://localhost:4008/match/api/v1/merged_matches/${id}`
+          `${baseURL}/match/api/v1/merged_matches/${id}`
         );
         const data = response.data.data;
         console.log(data);
@@ -54,9 +57,7 @@ function MerryListPage() {
     }
     async function fetchMerryLimitData() {
       try {
-        const response = await axios.get(
-          `http://localhost:4008/merryLimit/limit/` + id
-        );
+        const response = await axios.get(`${baseURL}/merryLimit/limit/` + id);
         const data = response.data.merry_limit;
         setDisplayedMerryLimit(data);
       } catch (error) {
@@ -65,9 +66,7 @@ function MerryListPage() {
     }
     async function fetchMerryCountData() {
       try {
-        const response = await axios.get(
-          `http://localhost:4008/merryLimit/count/` + id
-        );
+        const response = await axios.get(`${baseURL}/merryLimit/count/` + id);
         const data = response.data.remainingCount;
 
         setMatchCount(data);
@@ -95,13 +94,10 @@ function MerryListPage() {
   const HandleisUnmerry = async (idUnmatch) => {
     const id = user.user.id;
     try {
-      const response = await axios.put(
-        "http://localhost:4008/match/api/v2/unmatch",
-        {
-          userId: id,
-          idUnmatch: idUnmatch,
-        }
-      );
+      const response = await axios.put(`${baseURL}/match/api/v2/unmatch`, {
+        userId: id,
+        idUnmatch: idUnmatch,
+      });
       console.log(response.data);
       setIsUnmerryCalled(true);
 

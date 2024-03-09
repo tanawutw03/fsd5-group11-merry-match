@@ -24,7 +24,9 @@ function PackagePage() {
   const [userProfileCity, setUserProfileCity] = useState(null);
   const [userProfileCountry, setUserProfileCountry] = useState(null);
   const [loading, setLoading] = useState(false);
-  const API_PORT = "http://localhost:4008";
+  const baseURL = import.meta.env.DEV
+    ? import.meta.env.VITE_BASE_URL_DEV
+    : import.meta.env.VITE_BASE_URL_PROD;
 
   useEffect(() => {
     const authListener = supabase.auth.onAuthStateChange((_event, session) => {
@@ -45,7 +47,7 @@ function PackagePage() {
 
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_PORT}/admin/package`);
+        const response = await axios.get(`${baseURL}/admin/package`);
         setData(response.data);
       } catch (error) {
         console.error(error);
@@ -55,7 +57,7 @@ function PackagePage() {
     const fetchDataProfiles = async () => {
       try {
         const resProfile = await axios.get(
-          `${API_PORT}/user/profile/${userProfileId}`
+          `${baseURL}/user/profile/${userProfileId}`
         );
         const profileFullname = resProfile.data[0].full_name;
         const profileCity = resProfile.data[0].city;
@@ -95,7 +97,7 @@ function PackagePage() {
           },
         };
 
-        const response = await axios.post(`${API_PORT}/checkout`, data);
+        const response = await axios.post(`${baseURL}/checkout`, data);
         const resData = response.data;
         const sessionId = resData.session_id;
         const { data: urlData, error: errorUrlData } = await supabase

@@ -68,9 +68,13 @@ export const handleLogout = async (
   setAvatarUrl,
   navigate
 ) => {
+  const baseURL = import.meta.env.DEV
+    ? import.meta.env.VITE_BASE_URL_DEV
+    : import.meta.env.VITE_BASE_URL_PROD;
+
   try {
     const { error } = await supabase.auth.signOut();
-    await axios.put("http://localhost:4008/logout/api/v1/logout");
+    await axios.put(`${baseURL}/logout/api/v1/logout`);
 
     if (error) {
       console.error("Error during sign out:", error.message);

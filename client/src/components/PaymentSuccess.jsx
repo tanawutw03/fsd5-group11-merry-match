@@ -8,13 +8,16 @@ const PaymentSuccessPage = () => {
   const navigate = useNavigate();
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
   const [dataPackage, setDataPackage] = useState({});
+  const baseURL = import.meta.env.DEV
+    ? import.meta.env.VITE_BASE_URL_DEV
+    : import.meta.env.VITE_BASE_URL_PROD;
 
   useEffect(() => {
     console.log(user.user.id);
     async function fetchPackageData() {
       try {
         const response = await axios.get(
-          `http://localhost:4008/userPackage/${user.user.id}`
+          `${baseURL}}/userPackage/${user.user.id}`
         );
         const packageData = response.data[0];
         setDataPackage(packageData);

@@ -31,6 +31,10 @@ function EditPackage() {
   const navigate = useNavigate();
   const { package_id } = useParams();
   const [newComplaintCount, setNewComplaintCount] = useState(0);
+  const baseURL = import.meta.env.DEV
+    ? import.meta.env.VITE_BASE_URL_DEV
+    : import.meta.env.VITE_BASE_URL_PROD;
+
   if (user.user.role !== "admin") {
     navigate("/homepage");
     console.log("you not role admin");
@@ -39,9 +43,7 @@ function EditPackage() {
   useEffect(() => {
     async function fetchNewComplaintCount() {
       try {
-        const response = await axios.get(
-          "http://localhost:4008/admin/complaint/news"
-        );
+        const response = await axios.get(`${baseURL}/admin/complaint/news`);
         setNewComplaintCount(response.data.newComplaintCount);
       } catch (error) {
         console.error("Error fetching new complaints:", error.message);
@@ -56,7 +58,7 @@ function EditPackage() {
       try {
         // Make a GET request to fetch package data by ID from your Express.js server
         const response = await axios.get(
-          `http://localhost:4008/admin/package/${package_id}`
+          `${baseURL}/admin/package/${package_id}`
         );
         const packData = response.data; // Assuming the response contains the package data
         const name = packData.name;
@@ -167,7 +169,7 @@ function EditPackage() {
       };
 
       const response = await axios.put(
-        `http://localhost:4008/admin/package/${package_id}`,
+        `${baseURL}/admin/package/${package_id}`,
         updatedPackageData
       );
       console.log("Package updated successfully:", response.data);

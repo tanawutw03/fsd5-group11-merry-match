@@ -9,7 +9,7 @@ export default function UserProfileUpload({ formDataId, isEditMode }) {
   const [session, setSession] = useState(null);
   const [refresh, setRefresh] = useState(false);
 
-  const SERVER_PORT = "http://localhost:4008";
+  // const SERVER_PORT = "http://localhost:4008";
 
   useEffect(() => {
     const fetchProfileImages = async () => {

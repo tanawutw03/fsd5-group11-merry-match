@@ -30,6 +30,10 @@ function AdminComplaint() {
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
+  const baseURL = import.meta.env.DEV
+    ? import.meta.env.VITE_BASE_URL_DEV
+    : import.meta.env.VITE_BASE_URL_PROD;
+
   if (user.user.role !== "admin") {
     navigate("/homepage");
     console.log("you not role admin");
@@ -39,7 +43,7 @@ function AdminComplaint() {
     try {
       // Send a PUT request to update the status of the complaint to "pending"
       const response = await axios.put(
-        `http://localhost:4008/admin/complaint/pending/${complaintId}`,
+        `${baseURL}/admin/complaint/pending/${complaintId}`,
         {
           complaintId: complaintId,
         }
@@ -64,9 +68,7 @@ function AdminComplaint() {
     // Replace this with your actual Supabase query or API call
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:4008/admin/complaint"
-        );
+        const response = await axios.get(`${baseURL}/admin/complaint`);
         const data = response.data;
         setComplainData(data);
       } catch (error) {
@@ -75,9 +77,7 @@ function AdminComplaint() {
     };
     async function fetchNewComplaintCount() {
       try {
-        const response = await axios.get(
-          "http://localhost:4008/admin/complaint/news"
-        );
+        const response = await axios.get(`${baseURL}/admin/complaint/news`);
         setNewComplaintCount(response.data.newComplaintCount);
       } catch (error) {
         console.error("Error fetching new complaints:", error.message);

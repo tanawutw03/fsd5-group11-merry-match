@@ -27,6 +27,10 @@ function ComplaintPage() {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showResolveModal, setShowResolveModal] = useState(false);
   const { user, setUser, avatarUrl, setAvatarUrl } = useUser();
+  const baseURL = import.meta.env.DEV
+    ? import.meta.env.VITE_BASE_URL_DEV
+    : import.meta.env.VITE_BASE_URL_PROD;
+
   if (user.user.role !== "admin") {
     navigate("/homepage");
     console.log("you not role admin");
@@ -37,7 +41,7 @@ function ComplaintPage() {
       try {
         // Send a GET request to fetch complaint data by ID
         const response = await axios.get(
-          `http://localhost:4008/admin/complaint/${complaint_Id}`
+          `${baseURL}/admin/complaint/${complaint_Id}`
         );
         const complaintData = response.data;
 
@@ -49,9 +53,7 @@ function ComplaintPage() {
     }
     async function fetchNewComplaintCount() {
       try {
-        const response = await axios.get(
-          "http://localhost:4008/admin/complaint/news"
-        );
+        const response = await axios.get(`${baseURL}/admin/complaint/news`);
         setNewComplaintCount(response.data.newComplaintCount);
       } catch (error) {
         console.error("Error fetching new complaints:", error.message);
@@ -95,7 +97,7 @@ function ComplaintPage() {
     try {
       // Make a PUT request to update the status of the complaint to "resolved"
       const response = await axios.put(
-        `http://localhost:4008/admin/complaint/cancel/${complaintId}`,
+        `${baseURL}/admin/complaint/cancel/${complaintId}`,
         { complaintId }
       );
 
@@ -116,7 +118,7 @@ function ComplaintPage() {
     try {
       // Make a PUT request to update the status of the complaint to "resolved"
       const response = await axios.put(
-        `http://localhost:4008/admin/complaint/resolved/${complaintId}`,
+        `${baseURL}/admin/complaint/resolved/${complaintId}`,
         { complaintId }
       );
 

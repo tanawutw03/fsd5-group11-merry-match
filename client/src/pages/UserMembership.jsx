@@ -27,6 +27,9 @@ function UserMembership() {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [history, setHistory] = useState([]);
   const [lastBill, setLastBill] = useState();
+  const baseURL = import.meta.env.DEV
+    ? import.meta.env.VITE_BASE_URL_DEV
+    : import.meta.env.VITE_BASE_URL_PROD;
 
   const navigate = useNavigate();
 
@@ -40,7 +43,7 @@ function UserMembership() {
     async function fetchPackageData() {
       try {
         const response = await axios.get(
-          `http://localhost:4008/userPackage/${user.user.id}`
+          `${baseURL}/userPackage/${user.user.id}`
         );
         const packageData = response.data[0];
         setDataPackage(packageData);
@@ -51,7 +54,7 @@ function UserMembership() {
     async function fetchHistoryData() {
       try {
         const response = await axios.get(
-          `http://localhost:4008/userPackage/history/${user.user.id}`
+          `${baseURL}/userPackage/history/${user.user.id}`
         );
         const historyData = response.data;
         setHistory(historyData);
@@ -118,7 +121,7 @@ function UserMembership() {
     try {
       // Make an Axios PUT request to cancel the package
       const response = await axios.put(
-        `http://localhost:4008/userPackage/cancel/${user.user.id}`
+        `${baseURL}/userPackage/cancel/${user.user.id}`
       );
 
       // Check if the cancellation was successful

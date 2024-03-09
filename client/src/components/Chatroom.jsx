@@ -10,6 +10,9 @@ function Chatroom({ profile, user }) {
   const chatContainerRef = useRef(null);
   const inputRef = useRef(null);
   const firstName = profile?.full_name.split(" ")[0];
+  const baseURL = import.meta.env.DEV
+    ? import.meta.env.VITE_BASE_URL_DEV
+    : import.meta.env.VITE_BASE_URL_PROD;
 
   useEffect(() => {
     // Join a room/topic. Can be anything except for 'realtime'.
@@ -37,7 +40,7 @@ function Chatroom({ profile, user }) {
   const fetchMessages = async () => {
     try {
       const messageToOtherUserResponse = await axios.get(
-        `http://localhost:4008/chat/api/v1/to-other-user`,
+        `${baseURL}/chat/api/v1/to-other-user`,
         {
           params: {
             userId: user.user.id,
@@ -47,7 +50,7 @@ function Chatroom({ profile, user }) {
       );
 
       const messageFromOtherUserResponse = await axios.get(
-        `http://localhost:4008/chat/api/v1/from-other-user`,
+        `${baseURL}/chat/api/v1/from-other-user`,
         {
           params: {
             userId: user.user.id,
@@ -91,14 +94,11 @@ function Chatroom({ profile, user }) {
 
   const handleSendMessage = async () => {
     try {
-      const response = await axios.put(
-        `http://localhost:4008/chat/api/v1/chat/`,
-        {
-          userId: user.user.id,
-          profileId: profile.id,
-          messages: message,
-        }
-      );
+      const response = await axios.put(`${baseURL}/chat/api/v1/chat/`, {
+        userId: user.user.id,
+        profileId: profile.id,
+        messages: message,
+      });
 
       // Extract the ID of the newly inserted message from the response
       const messageId = response.data.data[0].id;

@@ -9,6 +9,10 @@ dotenv.config();
 
 const stripe = stripePackage(process.env.STRIPE_SECRET_KEY);
 const userOrderRoute = Router();
+const baseURL =
+  process.env.NODE_ENV === "production"
+    ? process.env.BASE_URL_PROD
+    : process.env.BASE_URL_DEV;
 
 userOrderRoute.post("/checkout", express.json(), async (req, res) => {
   try {
@@ -45,8 +49,8 @@ userOrderRoute.post("/checkout", express.json(), async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `http://localhost:5173/paymentSuccessPage?id=${orderId}`,
-      cancel_url: `http://localhost:5173/package`,
+      success_url: `${baseURL}/paymentSuccessPage?id=${orderId}`,
+      cancel_url: `${baseURL}/package`,
     });
 
     const { data, error } = await supabase.from("orders").insert([

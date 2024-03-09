@@ -36,7 +36,9 @@ function UserProfilePage() {
   const [userProfileID, setUserProfileId] = useState(null);
   const [randomFileNames, setRandomFileNames] = useState([]);
   const [previewData, setPreviewData] = useState([]);
-  const API_PORT = "http://localhost:4008";
+  const baseURL = import.meta.env.DEV
+    ? import.meta.env.VITE_BASE_URL_DEV
+    : import.meta.env.VITE_BASE_URL_PROD;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
@@ -64,7 +66,7 @@ function UserProfilePage() {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `${API_PORT}/profile/api/v1/profile/${user.user.id}`
+          `${baseURL}/profile/api/v1/profile/${user.user.id}`
         );
         const data = response.data.data;
 
@@ -136,7 +138,7 @@ function UserProfilePage() {
 
   const handleUpdateProfile = async () => {
     try {
-      const response = await axios.patch(`${API_PORT}/user/updateProfile`, {
+      const response = await axios.patch(`${baseURL}/user/updateProfile`, {
         full_name: formData.full_name,
         date_of_birth: formData.date_of_birth,
         country: formData.country,

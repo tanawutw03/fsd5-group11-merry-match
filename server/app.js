@@ -38,7 +38,7 @@ async function init() {
   app.use("/chat", chatRouter);
 
   app.get("/", (req, res) => {
-    res.send("Hello Marry Porject!");
+    res.send("Merry Match Project's Backend");
   });
 
   app.get("*", (req, res) => {
